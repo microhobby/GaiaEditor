@@ -20,6 +20,7 @@ public abstract class MproEntity
           public int cod;
           private boolean joined = false;
           private String nameRelation = "";
+          private ArrayList<String> namesRelation = new ArrayList();
           
           public static void setProjectName(String project)
           {
@@ -46,15 +47,20 @@ public abstract class MproEntity
                               T c = classe.newInstance();
                               String[][] res;
                               T tmp;
-                              Class arrT = null;
-                              Field join = null;
+                              //Class arrT = null;
+                              //Field join = null;
+                              ArrayList<Class> arrT = new ArrayList();
+                              ArrayList<Field> join = new ArrayList();
+                              
                               
                               for(int j = 0; j < c.getClass().getFields().length; j++)
                               {
                                         if(c.getClass().getFields()[j].getType().equals(ArrayList.class))
                                         {
-                                                  join = c.getClass().getFields()[j];
-                                                  arrT = (Class)((ParameterizedType) c.getClass().getFields()[j].getGenericType()).getActualTypeArguments()[0];
+                                                  //join = c.getClass().getFields()[j];
+                                                  join.add(c.getClass().getFields()[j]);
+                                                  //arrT = (Class)((ParameterizedType) c.getClass().getFields()[j].getGenericType()).getActualTypeArguments()[0];
+                                                  arrT.add((Class)((ParameterizedType) c.getClass().getFields()[j].getGenericType()).getActualTypeArguments()[0]);
                                         }
                                         else
                                                   contains.add(c.getClass().getFields()[j]);
@@ -83,12 +89,16 @@ public abstract class MproEntity
                                                    }
                                         }
                                         
-                                        if(join != null)
+                                        //if(join != null)
+                                        if(join.size() > 0)
                                         {
-                                                  MproEntityRelation t = (MproEntityRelation) arrT.newInstance();
-                                                  t.superCod = ((MproEntity)tmp).cod;
-                                                  ArrayList<?> mpR = MproEntity.getWhere(arrT.cast(t));
-                                                  join.set(tmp, mpR);
+                                                  for(int k = 0; k < join.size(); k++)
+                                                  {
+                                                        MproEntityRelation t = (MproEntityRelation) arrT.get(k).newInstance();
+                                                        t.superCod = ((MproEntity)tmp).cod;
+                                                        ArrayList<?> mpR = MproEntity.getWhere(arrT.get(k).cast(t));
+                                                        join.get(k).set(tmp, mpR);
+                                                  }
                                         }
                                         
                                         list.add(tmp);
@@ -126,7 +136,9 @@ public abstract class MproEntity
                     String where = "";
                     String filds = "";
                     String sql = "SELECT ";
-                    Field cf = null;
+                    //Field cf = null;
+                    ArrayList<Field> cf = new ArrayList();
+                    
                     try {
                               // constroi o where
                               for(int j = 0; j < c.getFields().length; j++)
@@ -136,7 +148,8 @@ public abstract class MproEntity
                                                   
                                                   if (c.getFields()[j].getType().equals(ArrayList.class)) 
                                                   {
-                                                            cf = c.getFields()[j];
+                                                            //cf = c.getFields()[j];
+                                                            cf.add(c.getFields()[j]);
                                                             continue;
                                                   }
                                                   else
@@ -201,13 +214,17 @@ public abstract class MproEntity
                                                   }
                                         }
                                         
-                                        if(cf != null)
+                                        //if(cf != null)
+                                        if(cf.size() > 0)
                                         {
-                                                  Class typin = (Class)((ParameterizedType) cf.getGenericType()).getActualTypeArguments()[0];
-                                                  MproEntityRelation t = (MproEntityRelation) typin.newInstance();
-                                                  t.superCod = ((MproEntity)tmp).cod;
-                                                  ArrayList<?> mpR = MproEntity.getWhere(typin.cast(t));
-                                                  cf.set(tmp, mpR);
+                                                    for(int k = 0; k < cf.size(); k++)
+                                                    {
+                                                            Class typin = (Class)((ParameterizedType) cf.get(k).getGenericType()).getActualTypeArguments()[0];
+                                                            MproEntityRelation t = (MproEntityRelation) typin.newInstance();
+                                                            t.superCod = ((MproEntity)tmp).cod;
+                                                            ArrayList<?> mpR = MproEntity.getWhere(typin.cast(t));
+                                                            cf.get(k).set(tmp, mpR);
+                                                    }
                                         }
                                         
                                         list.add(tmp);
@@ -250,12 +267,19 @@ public abstract class MproEntity
                               {
                                         try 
                                         {
-                                                  ArrayList<MproEntityRelation> arr = (ArrayList<MproEntityRelation>) this._class.getField(this.nameRelation).get(this);
-                                                  for(int i = 0; i < arr.size(); i++)
-                                                  {
-                                                            arr.get(i).superCod = this.cod;
-                                                            arr.get(i).Save();
-                                                  }
+                                                    for(int j = 0; j < this.namesRelation.size(); j++)
+                                                    {
+                                                            //ArrayList<MproEntityRelation> arr = (ArrayList<MproEntityRelation>) this._class.getField(this.nameRelation).get(this);
+                                                            ArrayList<MproEntityRelation> arr = (ArrayList<MproEntityRelation>) this._class.getField(this.namesRelation.get(j)).get(this);
+                                                            if(arr != null)
+                                                            {
+                                                                    for(int i = 0; i < arr.size(); i++)
+                                                                    {
+                                                                              arr.get(i).superCod = this.cod;
+                                                                              arr.get(i).Save();
+                                                                    }
+                                                            }
+                                                    }
                                         } 
                                         catch (NoSuchFieldException ex) 
                                         {
@@ -282,12 +306,19 @@ public abstract class MproEntity
                               {
                                         try 
                                         {
-                                                  ArrayList<MproEntityRelation> arr = (ArrayList<MproEntityRelation>) this._class.getField(this.nameRelation).get(this);
-                                                  for(int i = 0; i < arr.size(); i++)
-                                                  {
-                                                            arr.get(i).superCod = this.cod;
-                                                            arr.get(i).Save();
-                                                  }
+                                                  for(int j = 0; j < this.namesRelation.size(); j++)
+                                                    {
+                                                            //ArrayList<MproEntityRelation> arr = (ArrayList<MproEntityRelation>) this._class.getField(this.nameRelation).get(this);
+                                                            ArrayList<MproEntityRelation> arr = (ArrayList<MproEntityRelation>) this._class.getField(this.namesRelation.get(j)).get(this);
+                                                            if(arr != null)
+                                                            {
+                                                                    for(int i = 0; i < arr.size(); i++)
+                                                                    {
+                                                                              arr.get(i).superCod = this.cod;
+                                                                              arr.get(i).Save();
+                                                                    }
+                                                            }
+                                                    }
                                                   this.joined = true;
                                         } 
                                         catch (NoSuchFieldException ex) 
@@ -367,6 +398,7 @@ public abstract class MproEntity
                     }    
                     else
                     {
+                                this.namesRelation.clear();
                               // verifica os campos
                               for(int j = 0; j < this._class.getFields().length; j++)
                               {
@@ -382,6 +414,7 @@ public abstract class MproEntity
                                                  {
                                                            this.joined = true;
                                                            this.nameRelation = this._class.getFields()[j].getName();
+                                                           this.namesRelation.add(this._class.getFields()[j].getName());
                                                  }
                                         } 
                                         // se tem campo q nao tem temos q alterar
@@ -430,6 +463,7 @@ public abstract class MproEntity
           private String getTableFields()
           {
                     String parts = "";
+                    this.namesRelation.clear();
                     for(int i = 0; i < this._class.getFields().length; i++)
                     {
                               if(this._class.getFields()[i].getType() != ArrayList.class)
@@ -443,6 +477,7 @@ public abstract class MproEntity
                               {
                                         this.joined = true;
                                         this.nameRelation = this._class.getFields()[i].getName();
+                                        this.namesRelation.add(this._class.getFields()[i].getName());
                               }
                     }
                     return parts;
@@ -505,6 +540,7 @@ public abstract class MproEntity
           private String getValues()
           {
                     String parts = "";
+                    this.namesRelation.clear();
                     for(int i = 0; i < this._class.getFields().length; i++)
                     {
                               try {
@@ -523,6 +559,7 @@ public abstract class MproEntity
                                         {
                                                   this.joined = true;
                                                   this.nameRelation = this._class.getFields()[i].getName();
+                                                  this.namesRelation.add(this._class.getFields()[i].getName());
                                         }
                               } catch (IllegalArgumentException ex) {
                                         Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);

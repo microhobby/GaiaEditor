@@ -1,0 +1,211 @@
+#mask {
+  position:absolute;
+  left:0;
+  top:0;
+  z-index:9000;
+  background-color:#000;
+  display:none;
+}
+
+#boxes .window {
+  position:absolute;
+  left:0;
+  top:0;
+  width:440px;
+  height:200px;
+  display:none;
+  z-index:9999;
+  padding:5px;
+}
+
+#boxes #dialog {
+  width:700px;
+  height:480px;
+  background-color:#ffffff;
+}
+
+#boxes #modal{
+  width:600px;
+  height:350px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog1{
+  width:640px;
+  height:520px;
+  background-color:#e3e3e3;
+}
+
+#boxes #dialog2{
+width:400px;
+  height:250px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog3{
+width:400px;
+  height:250px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog4{
+width:400px;
+  height:250px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog5{
+width:500px;
+  height:400px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog6{
+  width:700px;
+  height:515px;
+  background-color:#fff;
+}
+
+#boxes #dialog7{
+  width:700px;
+  height:510px;
+  background-color:#fff;
+}
+
+#boxes #dialog8{
+  width:700px;
+  height:510px;
+  background-color:#fff;
+}
+
+#boxes #dialog9{
+  width:750px;
+  height:450px;
+  background-color:#fff;
+}
+
+#boxes #dialog10{
+  width:650px;
+  height:560px;
+  background-color:#fff;
+}
+
+#boxes #dialogExe2{
+width:600px;
+  height:400px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialogBordas{
+width:600px;
+  height:750px;
+  padding:10px;
+  background-color:#fff;
+  border:6px #4EB700 solid;
+}
+
+#boxes #dialog_ferias{
+	width:600px;
+	height:auto;
+	padding:10px;
+	background-color:#fff;
+}
+
+#boxes #dialogINSS{
+	width:600px;
+	height:auto;
+	padding:10px;
+	background-color:#fff;
+}
+
+#boxes #dialogSALARIO{
+	width:600px;
+	height:auto;
+	padding:10px;
+	background-color:#fff;
+}
+
+
+/*---***DIALOG DA LIÇÃO3***---*/
+#boxes #dialog31{
+  width:600px;
+  height:480px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog32{
+  width:600px;
+  height:480px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog33{
+  width:600px;
+  height:480px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog34{
+  width:600px;
+  height:480px;
+  padding:10px;
+  background-color:#fff;
+}
+
+#boxes #dialog35{
+  width:600px;
+  height:480px;
+  padding:10px;
+  background-color:#fff;
+}
+
+
+
+#boxes #dialog_img,#dialog_img1,#dialog_img2,#dialog_img3,#dialog_img4 {
+  width:430px;
+  height:260px;
+  padding:10px;
+  background-color:#ffffff;
+  text-align: center;
+}
+
+#dialog1 .d-header {
+  background:url(login-header.png) no-repeat 0 0 transparent;
+  width:375px;
+  height:150px;
+}
+
+#dialog1 .d-header input {
+  position:relative;
+  top:60px;
+  left:100px;
+  border:3px solid #cccccc;
+  height:22px;
+  width:200px;
+  font-size:15px;
+  padding:5px;
+  margin-top:4px;
+}
+
+#dialog1 .d-blank {
+  float:left;
+  background:url(login-blank.png) no-repeat 0 0 transparent;
+  width:267px;
+  height:53px;
+}
+
+#dialog1 .d-login {
+  float:left;
+  width:108px;
+  height:53px;
+}
+.close{display:block; text-align:right;}

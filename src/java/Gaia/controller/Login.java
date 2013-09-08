@@ -1,5 +1,8 @@
 package Gaia.controller;
 
+import Gaia.model.Layout;
+import Gaia.model.Paginas;
+import Gaia.model.Projeto;
 import Gaia.model.User;
 import java.util.ArrayList;
 import mpro.MproEntity.MproEntity;
@@ -23,6 +26,10 @@ public class Login
 
                         for(User u : thisus)
                         {
+                                //u.Projetos.add(new Projeto("Teste", 500, 600, "Teste para ver a coisa coisando"));
+                                //u.Projetos.get(0).paginas.add(new Paginas("", 1));
+                                u.Projetos.get(0).layout.add(new Layout(0, "FadeIn"));
+                                u.Save();
                                 numus++;
                         }
 

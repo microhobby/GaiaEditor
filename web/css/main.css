@@ -1,0 +1,639 @@
+body{
+  margin: 0; padding: 0;
+  /*font-family: Verdana,Arial;*/
+  font-family: Ubuntu;
+  color: #333;
+  /*color:#191970;*/
+  overflow-x: hidden;
+  overflow-y: hidden;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transform: translateZ(0);
+  background-size: 100%;
+  /* select colorido */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div
+{
+        text-align: justify;
+        font-size: inherit;
+        color: inherit;
+        font-family: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        text-decoration: inherit;
+}
+
+.ui-multidraggable 
+{
+        border:2px solid #000;
+}
+
+button
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        border-style: none;
+        background-color: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        width: inherit;
+        height: inherit;
+        color: white;
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btB.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btB.png', sizingMethod='scale')";
+}
+
+button:hover
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        width: inherit;
+        height: inherit;
+        color: white;
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btC.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btC.png', sizingMethod='scale')";
+}
+
+button:active
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        width: inherit;
+        height: inherit;
+        color: black;
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale')";
+}
+
+.buttonOk a
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        width: inherit;
+        height: inherit;
+        color: white;
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btB.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btB.png', sizingMethod='scale')";
+}
+
+.buttonOk a:hover
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        width: inherit;
+        height: inherit;
+        color: white;
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btC.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btC.png', sizingMethod='scale')";
+}
+
+.buttonOk a:active
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        width: inherit;
+        height: inherit;
+        color: black;
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale')";
+}
+
+.buttonText
+{
+        color: inherite; 
+        position: absolute; 
+        text-align: center;
+        width: inherit;
+        height: inherit; 
+        top: 30%;
+}
+
+.buttonText:active
+{
+        /*IE hack*/
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale');
+        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale')";	
+}
+
+.borda10shadow
+{
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow:9px 14px 18px -14px #211620;
+        -moz-box-shadow:9px 14px 18px -14px #211620;
+        -o-box-shadow:9px 14px 18px -14px #211620;
+        -ms-box-shadow:9px 14px 18px -14px #211620;
+        box-shadow:9px 14px 18px -14px #211620;
+}
+
+.borda10shadowGreen
+{
+        background-color: #FF6;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow:9px 14px 18px -14px #211620;
+        -moz-box-shadow:9px 14px 18px -14px #211620;
+        -o-box-shadow:9px 14px 18px -14px #211620;
+        -ms-box-shadow:9px 14px 18px -14px #211620;
+        box-shadow:9px 14px 18px -14px #211620;
+}
+
+.borda10shadowCian
+{
+        background-color: #9CC;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow:9px 14px 18px -14px #211620;
+        -moz-box-shadow:9px 14px 18px -14px #211620;
+        -o-box-shadow:9px 14px 18px -14px #211620;
+        -ms-box-shadow:9px 14px 18px -14px #211620;
+        box-shadow:9px 14px 18px -14px #211620;
+}
+
+img{
+  border:none;
+}
+
+h1{
+  font-family: Arial,Verdana;
+  font-size: 1.7em;
+  border-bottom: 1px solid #CCC;
+  width: 330px;
+  margin-left: 2px;
+}
+
+h2{
+  font-family: Arial,Verdana;
+  font-size: 1.0em;
+  border-bottom: 1px solid #CCC;
+  width: 600px;
+  margin-left: 10px;
+  color:#191970;
+}
+
+h3{
+  font-family: Arial,Verdana;
+  font-size: 0.9em;
+  width: 700px;
+  margin-left: 15px;
+  color:#191970;
+}
+
+p{
+  margin: 5px;
+  text-align: justify;
+  font-size: 0.8em;
+  color:#000;
+}
+
+ol{
+  font-size: 0.8em;
+  color:#000;
+}
+ol li{
+  margin-bottom: 4px;
+}
+
+ul{
+  font-size: 0.8em;
+  color:#000;
+  list-style: none;
+}
+
+ul li{
+  margin-bottom: 4px;
+  margin-left:30px;
+  padding-left: 30px;
+  background: url(../img/marcador.png) no-repeat left top;
+}
+
+
+.centralizar{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+#page{
+    width: 800px;
+        height: 698px;
+        position: absolute;
+    /*margin:10px auto;*/
+/*    padding: 10px;
+    padding-top:0px;*/
+    /*text-align:left; /* "remédio" para o hack do IE */
+    /*border: 1px solid #333;*/
+        background-color: transparent;
+        /*overflow-x: hidden;*/
+}
+
+#zoomO
+{
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        background-image: url(../img/btB1.png);
+        background-repeat: no-repeat;
+        left: 15px;
+        top: 3px;
+        opacity: 0.5;
+}
+
+#zoomO:hover
+{
+        opacity: 0.9;
+}
+
+#zoomI
+{
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        background-image: url(../img/btB2.png);
+        background-repeat: no-repeat;
+        left: 52px;
+        top: 3px;
+        opacity: 0.5;
+}
+
+#zoomI:hover
+{
+        opacity: 0.9;
+}
+
+#cont_zoom
+{
+        position: absolute;
+        width: 88px;
+        height: 39px;
+        left: 709px;
+        top: -603px;
+}
+
+.header{
+  /*background-image: url(../img/fundo_topo.jpg);
+  background-repeat: repeat-x;*/
+  position: absolute;
+  width: 800px;
+  height: 101px;
+  background-image: url(../img/topo_pag.png);
+  background-repeat: no-repeat; 
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.content{
+  width: 750px;
+  margin-left: 3%;
+  margin-right: 2%;
+}
+
+#clear{
+  clear: both;
+}
+
+.footer{
+        background-image: url(../img/fundo_rodape.png);
+        background-repeat: no-repeat;
+        position: absolute;
+        height: 50px;
+        width: 800px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        position: absolute;
+        top: 648px;
+}
+
+#voltar_pag{
+  float: left;
+}
+
+#avancar_pag{
+  float:right;
+  display:none;
+}
+
+
+.onde_estou{
+  position: relative;
+  margin: 0px 0px 0px 548px;
+  z-index:99999;
+  background:#FFFFCC url(../img/lupa_onde_estou.jpg) no-repeat top right;
+  width: 250px;
+  height: auto;
+  border: 1px solid #FFFFCC;
+  color: #FFFFCC;
+  font-size: 0.8em;
+  display: none;
+}
+
+#clique_onde_estou{
+        font-size:0.8em;
+}
+
+.onde_estou a{
+  color: #006600;
+  text-decoration: none;
+}
+
+
+.fechar_onde{
+  text-align: right;
+  font-weight: bold;
+}
+
+.onde_estou ul{
+  list-style: none;
+  margin: 8px;
+  padding: 0px;
+}
+
+.onde_estou ul li{
+  padding-left: 25px;
+  margin-bottom: 5px;
+  background: url(../img/pasta_fechada.gif) no-repeat left top;
+}
+
+.onde_estou ul .ativa{
+     background: url(../img/pasta_ativa.gif) no-repeat left top;
+     font-weight: bold;
+}
+
+.retrovisor{
+  position: absolute;
+  margin: 0px 0px 0px 120px;
+  z-index:99999;
+  background:#EDFFDF url(../img/retrovisor.gif) no-repeat top left;
+  width: 480px;
+  height: auto;
+  border: 1px solid #92C376;
+  color: #3C5B28;
+  font-size: 0.8em;
+  display: none;
+}
+
+.retrovisor .titulo{
+  font-size: 1.3em;
+  font-weight:bold;
+  font-family: Arial,Verdana;
+  text-align: right;
+  width: 480px;
+  margin-right: 10px;
+  margin-top:50px;
+  padding-right: 10px;
+}
+
+.retrovisor a{
+  color: #609461;
+  text-decoration: none;
+}
+
+.retrovisor ol{
+  font-size: 0.9em;
+  font-family: Verdana;
+  margin-top: 20px;
+}
+
+.retrovisor ol li{
+  padding-bottom: 5px;
+}
+
+.retrovisor .fechar_retro{
+  text-align: right;
+  font-weight: bold;
+}
+
+.forum_borda{
+        border:1px solid #D1E9C5;margin:6px;
+}
+
+.forum_cor{
+        background-color:#D1E9C5;
+}
+
+.btn_fechar{
+        position:relative;
+        margin:0;
+        padding:0 0 0 20px;
+}
+
+.caixa_texto{
+        background-color:#dfeaff;border:2px solid #0066CC;
+        width:650px;
+        display:none;
+        position:absolute;
+        margin:-200px 0 0 50px;
+}
+
+.link_tab
+{
+        font-size:0.9em;
+        color:#003399;
+        /*color:#00641A;*/
+        font-family:Arial, Helvetica, sans-serif;
+        font-weight:bold;
+}
+
+.opaque8 {
+        -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+}
+
+#blackOut {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 998;
+    display: none;
+    background-color: #666;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+}
+
+.pg
+{
+        position: absolute;
+        display: none;
+        opacity: 0.0;
+        width: 799px; /*default: 799px*/
+        height: 530px; /*default: 394px*/
+        background-color: #EAEAEA;
+        top: 114px;
+}
+
+.gaiaFocused
+{
+        border-style: solid;
+        border-width: 1px;
+        border-color: #F33;
+}
+
+.gaiaNormal
+{
+        border-style: solid;
+        border-width: 1px;
+        border-color: #09F;
+}
+
+#offSetGrid
+{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        background-image: url(../img/1101t.gif);
+        display: none;
+}
+
+.pg_sub
+{
+        position: absolute;
+        width: 799px; /*default: 799px*/
+        height: 530px; /*default: 394px*/
+        background-color: #EAEAEA;
+}
+
+/* CLASSES PARA SCROLL */
+#scroller {
+        width: 0px;
+        /*display: table-cell;*/
+        height:100%;
+        float:left;
+        padding:0;
+}
+
+.tool
+{
+        -moz-box-shadow: -5px -5px 5px #888;
+        -webkit-box-shadow: -5px -5px 5px #888;
+        box-shadow: -5px -5px 5px #888; 
+        border: 1px #CCC solid;
+        background-color:#333;
+}
+
+.things
+{
+        overflow-y: auto;
+        overflow-x: hidden;
+}
+
+#tool1base
+{
+        position: absolute;
+        top:  0px;
+        left:  5px;
+        width: 225px;
+        height: 400px;
+}
+
+#tool1
+{
+        position: absolute;
+        top:  5px;
+        left:  10px;
+        width: 220px;
+        height: 400px;
+}
+
+#tool1Things
+{
+        position: absolute;
+        top:  35px;
+        left:  5px;
+        width: 212px;
+        height: 200px;
+}
+
+#tool2base
+{
+        position: absolute;
+        top:  0px;
+        left:  5px;
+        width: 225px;
+        height: 400px;
+}
+
+#tool2
+{
+        position: absolute;
+        top:  5px;
+        left:  10px;
+        width: 220px;
+        height: 400px;
+}
+
+#tool2Things
+{
+        position: absolute;
+        top:  35px;
+        left:  5px;
+        width: 212px;
+        height: 200px;
+}
+
+#tool3
+{
+        position: absolute;
+        top:  5px;
+        left:  500px;
+        width: 220px;
+        height: 400px;
+        overflow: auto;
+}
+
+#tool3Things
+{
+        position: absolute;
+        top:  35px;
+        left:  5px;
+        width: 212px;
+        height: 200px;
+}
+
+#safiraInputContainer
+{
+        position: absolute;
+        top: 0px;
+        left: 50px;
+        height: 100%;
+        width: 100%;
+}
+
+.androidInput
+{
+        border-bottom: solid 1px #ccc; 
+        border-left: solid 1px #ccc; 
+        margin: 20px; 
+        border-right: solid 1px #ccc;
+        overflow: visible; 
+        max-height: 0.2em;
+        display: inline-block;
+        padding: 2px;
+}
+
+.inputAndroid
+{
+        outline: none;
+        border: none;
+        background: transparent;
+        display: inline-block;
+        position: relative;
+        bottom: 1em;
+}

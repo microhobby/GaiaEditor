@@ -1,0 +1,41 @@
+button
+{
+	background-image: url(../img/btB.png);
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+button:hover
+{
+	background-image: url(../img/btC.png);
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+button:active
+{
+	background-image: url(../img/btD.png);
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+.buttonOk a
+{
+	background-image: url(../img/btB.png);
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+.buttonOk a:hover
+{
+	background-image: url(../img/btC.png);
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+.buttonOk a:active
+{
+	background-image: url(../img/btD.png);
+	-webkit-background-size: 100% 100%;
+	background-size: 100% 100%;
+}

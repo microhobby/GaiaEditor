@@ -1,0 +1,18 @@
+.pg
+{
+	position: absolute;
+	display: none;
+	opacity: 0.0;
+	width: 799px; /*default: 799px*/
+	height: 530px; /*default: 394px*/
+	background-color: #EAEAEA;
+	top: 109px;
+}
+
+.pg_sub
+{
+	position: absolute;
+	width: 799px; /*default: 799px*/
+	height: 530px; /*default: 394px*/
+	background-color: #EAEAEA;
+}
