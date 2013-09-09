@@ -2,6 +2,7 @@
 package Gaia.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import mpro.MproEntity.MproEntityRelation;
 
 /**
@@ -12,7 +13,7 @@ public class Paginas extends MproEntityRelation
 {
         public String ScriptGeral;
         public int Indice;
-        public ArrayList<Objetos> Elementos = new ArrayList();
+        public List<Objetos> Elementos = new ArrayList();
         
         public Paginas() {}
         

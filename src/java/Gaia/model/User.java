@@ -2,6 +2,7 @@ package Gaia.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import mpro.MproEntity.MproEntity;
 
 /**
@@ -15,8 +16,8 @@ public class User  extends MproEntity
         public String Key;
         public String Email;
         public String DataNascimento;
-        public boolean Loged;
-        public ArrayList<Projeto> Projetos = new ArrayList();
+        //public boolean Loged;
+        public List<Projeto> Projetos = new ArrayList();
         
         /**
          * Construtor

@@ -1,5 +1,6 @@
 package Gaia.model;
 
+import java.util.List;
 import java.util.ArrayList;
 import mpro.MproEntity.MproEntityRelation;
 
@@ -12,9 +13,9 @@ public class Projeto extends MproEntityRelation
         public String Nome;
         public double AlturaPaginas;
         public double LarguraPaginas;
-        public ArrayList<Layout> layout = new ArrayList();
-        public ArrayList<Paginas> paginas = new ArrayList();
-        public  ArrayList<Recursos> recursos = new ArrayList();
+        public List<Layout> layout = new ArrayList();
+        public List<Paginas> paginas = new ArrayList();
+        public  List<Recursos> recursos = new ArrayList();
         public String Obs;
         
         public Projeto(){}

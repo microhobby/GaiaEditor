@@ -523,15 +523,49 @@ ul li{
 {
         -moz-box-shadow: -5px -5px 5px #888;
         -webkit-box-shadow: -5px -5px 5px #888;
-        box-shadow: -5px -5px 5px #888; 
+        box-shadow: 2px 2px 3px #555; 
         border: 1px #CCC solid;
-        background-color:#333;
+        background-color:#444;
 }
 
 .things
 {
         overflow-y: auto;
         overflow-x: hidden;
+}
+
+#windowProjects
+{
+        position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 400px;
+        height: 225px;
+        display: none;
+}
+
+#containerWindowProjects
+{
+        position: absolute;
+        width: 400px;
+        height: 225px;
+}
+
+#windowProjectsNew
+{
+        position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 400px;
+        height: 245px;
+        display: none;
+}
+
+#containerWindowProjectsNew
+{
+        position: absolute;
+        width: 400px;
+        height: 245px;
 }
 
 #tool1base
@@ -636,4 +670,85 @@ ul li{
         display: inline-block;
         position: relative;
         bottom: 1em;
+}
+
+#searchProject
+{
+        position: absolute;
+        top: 30px;
+        left: -13px;
+        height: 100%;
+        width: 100%;
+}
+
+#nameProject
+{
+        position: absolute;
+        top: 60px;
+        left: -13px;
+        height: 100%;
+        width: 100%;
+}
+
+#alturaProject
+{
+        position: absolute;
+        top: 110px;
+        left: -13px;
+        height: 100%;
+        width: 100%;
+}
+
+#larguraProject
+{
+        position: absolute;
+        top: 110px;
+        left: 190px;
+        height: 100%;
+        width: 100%;
+}
+
+#obsProject
+{
+        position: absolute;
+        top: 160px;
+        left: -13px;
+        height: 100%;
+        width: 100%;
+}
+
+#criaProjecto
+{
+        position: absolute;
+        top: 205px;
+        left: 305px;
+        width: 90px;
+        height: 30px;
+}
+
+#fechaProjectoNew
+{
+        position: absolute;
+        top: 205px;
+        left: 205px;
+        width: 90px;
+        height: 30px;
+}
+
+#novoProjecto
+{
+        position: absolute;
+        top: 192px;
+        left: 305px;
+        width: 90px;
+        height: 30px;
+}
+
+#meusProjetos
+{
+        position: absolute;
+        top: 70px;
+        left: 5px;
+        width: 388px;
+        height: 120px;
 }

@@ -2,6 +2,7 @@
 package Gaia.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import mpro.MproEntity.MproEntityRelation;
 
 /**
@@ -12,8 +13,8 @@ public class Layout extends MproEntityRelation
 {
         public int Efeito;
         public String Tipo;
-        public ArrayList<Paginas> Topo = new ArrayList();
-        public ArrayList<Paginas> Rodape = new ArrayList();
+        public List<LayoutPaginaTopo> Topo = new ArrayList();
+        public List<LayoutPaginaRodape> Rodape = new ArrayList();
         
         public Layout() {}
         

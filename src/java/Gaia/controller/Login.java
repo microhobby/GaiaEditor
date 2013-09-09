@@ -1,9 +1,7 @@
 package Gaia.controller;
 
-import Gaia.model.Layout;
-import Gaia.model.Paginas;
-import Gaia.model.Projeto;
 import Gaia.model.User;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import mpro.MproEntity.MproEntity;
 
@@ -13,6 +11,8 @@ import mpro.MproEntity.MproEntity;
  */
 public class Login 
 {
+        public static User LogedUser = null;
+        
         public static boolean canLog(String user, String key)
         {
                 if(user != null && key != null)
@@ -26,16 +26,20 @@ public class Login
 
                         for(User u : thisus)
                         {
-                                //u.Projetos.add(new Projeto("Teste", 500, 600, "Teste para ver a coisa coisando"));
-                                //u.Projetos.get(0).paginas.add(new Paginas("", 1));
-                                u.Projetos.get(0).layout.add(new Layout(0, "FadeIn"));
-                                u.Save();
                                 numus++;
+                                Login.LogedUser = u;
                         }
-
+                        
                         return numus == 1 ? true : false;
                 }
                 
                 return false;
+        }
+        
+        public static String UserToJson()
+        {
+                //User u = MproEntity.fromJson("{\"Nome\":\"Matheus de Barros Castello\",\"UserName\":\"matheus\",\"Key\":\"22032010\",\"Email\":\"assyral-v@ig.com.br\",\"DataNascimento\":\"14/11/1990\",\"Loged\":false,\"Projetos\":[{\"Nome\":\"Teste\",\"AlturaPaginas\":500,\"LarguraPaginas\":600,\"layout\":[],\"paginas\":[],\"recursos\":[],\"Obs\":\"teste\"},{\"Nome\":\"Teste\",\"AlturaPaginas\":500,\"LarguraPaginas\":600,\"layout\":[],\"paginas\":[],\"recursos\":[],\"Obs\":\"teste\"},{\"Nome\":\"Teste\",\"AlturaPaginas\":500,\"LarguraPaginas\":600,\"layout\":[],\"paginas\":[],\"recursos\":[],\"Obs\":\"teste\"},{\"Nome\":\"Teste\",\"AlturaPaginas\":500,\"LarguraPaginas\":600,\"layout\":[],\"paginas\":[],\"recursos\":[],\"Obs\":\"teste\"},{\"Nome\":\"Teste\",\"AlturaPaginas\":500,\"LarguraPaginas\":600,\"layout\":[],\"paginas\":[],\"recursos\":[],\"Obs\":\"teste\"},{\"Nome\":\"Teste\",\"AlturaPaginas\":500,\"LarguraPaginas\":600,\"layout\":[],\"paginas\":[],\"recursos\":[],\"Obs\":\"teste\"}]}", User.class);
+                String json = Login.LogedUser.toJson();
+                return json;
         }
 }

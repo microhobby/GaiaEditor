@@ -2,8 +2,11 @@
  * main for VIEW Gaia Editor
  */
 
+var LogedUser = null;
+var slice_url = "http://localhost:8084/GaiaEditor/system/server.jsp";
+
 $(document).ready(function()
-{
+{  
         /**
          *  REDIMENSIONAMENTO DAS TOOLS
          */
@@ -27,12 +30,18 @@ $(document).ready(function()
                 $("#safiraInputContainer").css("top", document.documentElement.clientHeight - 40);
                 $("#safiraInputContainer").css("left", document.documentElement.clientWidth - 670);
                 
+                $("#windowProjects").css("top", (document.documentElement.clientHeight / 2) - (225 / 2));
+                $("#windowProjects").css("left", (document.documentElement.clientWidth / 2) - (400 / 2));
+                
+                $("#windowProjectsNew").css("top", (document.documentElement.clientHeight / 2) - (245 / 2));
+                $("#windowProjectsNew").css("left", (document.documentElement.clientWidth / 2) - (400 / 2));
+                
                 goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
         }
         window.onresize();
     
         /**
-         *  TOOL1 MOUSEHOVER
+         *  TOOLS MOUSEHOVER
          */
         $("#tool1base, #tool2base").mouseenter(function()
         {
@@ -49,9 +58,9 @@ $(document).ready(function()
         });
         
         /**
-         * FOCUS CMD SAFIRA
+         * FOCUS INPUTS
          */
-        $("#cmdSafira").focus(function()
+        $("input").focus(function()
         {
                 $(this).animate(
                 {
@@ -63,9 +72,120 @@ $(document).ready(function()
                 {
                         boxShadow: "0px 0px 0px #888"
                 });
-        })
+        });
         
+        /**
+         * FLIP JANELA
+         */
+        $("body").fadeIn(2000);
+        unFlipWindowProjectsNew();
+        unFlipWindowProjects(flipWindowProjects);
 });
+
+function flipWindowProjectsNew()
+{
+       //$("#windowProjectsNew").show();
+       $("#windowProjectsNew").flippyReverse();
+}
+
+function unFlipWindowProjectsNew(callB)
+{
+        $("#windowProjectsNew").flippy({color_target: "#333333", duration: 500, 
+            onMidway: function()
+            {
+                    $("#windowProjectsNew").fadeOut(100);
+            },
+            onFinish: callB,
+            onReverseStart : function()
+            {
+                    $("#windowProjectsNew").fadeIn(300);
+            },
+            onReverseFinish: function()
+            {
+                    /* FECHA JANELA DE NOVO PROJETO E RETORNA PARA SELECIONAR PROJETO */
+                    $("#fechaProjectoNew").click(function()
+                    {
+                            unFlipWindowProjectsNew(function()
+                            {
+                                    $("#windowProjects").flippyReverse();
+                            });
+                    });
+                
+                    /* GERA NOVO PROJETO */
+                    $("#criaProjecto").click(function()
+                    {
+                            newProject();
+                    });
+                
+                    $("input").focus(function()
+                    {
+                            $(this).animate(
+                            {
+                                    boxShadow: "0px 3px 5px #888"
+                            });
+                    }).focusout(function()
+                    {
+                            $(this).animate(
+                            {
+                                    boxShadow: "0px 0px 0px #888"
+                            });
+                    });
+            }
+        });
+}
+
+function flipWindowProjects()
+{
+       $("#windowProjects").flippyReverse();
+}
+
+function unFlipWindowProjects(callB)
+{
+        $("#windowProjects").flippy({color_target: "#333333", duration: 500,
+            onMidway: function()
+            {
+                    $("#windowProjects").fadeOut(100);
+            },
+            onFinish: callB,
+            onReverseStart: function()
+            {
+                    $("#windowProjects").fadeIn(300);
+            },
+            onReverseFinish: function()
+            {
+                    /* CHAMA JANELA DE NOVO PROJETO */
+                    $("#novoProjecto").click(function()
+                    {
+                            unFlipWindowProjects(function()
+                            {
+                                    $("#windowProjectsNew").flippyReverse();
+                            });
+                    });
+
+                    $("input").focus(function()
+                    {
+                            $(this).animate(
+                            {
+                                    boxShadow: "0px 3px 5px #888"
+                            });
+                    }).focusout(function()
+                    {
+                            $(this).animate(
+                            {
+                                    boxShadow: "0px 0px 0px #888"
+                            });
+                    });
+            }
+        });
+}
+
+/**
+ * ROTINA PARA BUSCAR UM PROJETO
+ */
+function buscaProjeto(ev)
+{
+        
+}
 
 /**
 * ENTER NO INPUT SAFIRA

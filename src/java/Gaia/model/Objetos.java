@@ -2,6 +2,7 @@
 package Gaia.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import mpro.MproEntity.MproEntityRelation;
 
 /**
@@ -33,10 +34,11 @@ public class Objetos extends MproEntityRelation
         public int Zindex;
         public double Opacity;
         public String Script;
-        public ArrayList<Recursos> recursos = new ArrayList();
+        public List<Recursos> recursos = new ArrayList();
         public String Text;
         public String FatherId;
-        public ArrayList<Eventos> eventos = new ArrayList();
+        public List<Eventos> eventos = new ArrayList();
+        public String ClassType;
         
         public Objetos(){}
         
@@ -69,5 +71,6 @@ public class Objetos extends MproEntityRelation
                 this.Script = script;
                 this.Text = text;
                 this.FatherId = fatherId;
+                this.ClassType = this.getClass().getName();
         }
 }

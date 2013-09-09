@@ -3,9 +3,10 @@ package mpro.MproEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import com.google.gson.Gson;
 
 /**
  *
@@ -33,6 +34,18 @@ public abstract class MproEntity
           }
           
           /**
+           * Transforma um JSON para MproEntity
+           */
+          public static <T> T fromJson(String json, Class<T> classe)
+          {
+                    Gson gson = new Gson();
+                    T c;
+                    c = gson.fromJson(json, classe);
+                    
+                    return c;
+          }
+          
+          /**
            * Retorna a tabela inteira sem exeção 
            */
           public static <T> ArrayList<T> getAll(Class<T> classe)
@@ -55,7 +68,7 @@ public abstract class MproEntity
                               
                               for(int j = 0; j < c.getClass().getFields().length; j++)
                               {
-                                        if(c.getClass().getFields()[j].getType().equals(ArrayList.class))
+                                        if(c.getClass().getFields()[j].getType().equals(ArrayList.class) || c.getClass().getFields()[j].getType().equals(List.class))
                                         {
                                                   //join = c.getClass().getFields()[j];
                                                   join.add(c.getClass().getFields()[j]);
@@ -146,7 +159,7 @@ public abstract class MproEntity
                                         /*if(!"cod".equals(c.getFields()[j].getName()))
                                         {*/
                                                   
-                                                  if (c.getFields()[j].getType().equals(ArrayList.class)) 
+                                                  if (c.getFields()[j].getType().equals(ArrayList.class) || c.getFields()[j].getType().equals(List.class)) 
                                                   {
                                                             //cf = c.getFields()[j];
                                                             cf.add(c.getFields()[j]);
@@ -404,7 +417,7 @@ public abstract class MproEntity
                               {
                                         for(int i = 0; i < tableInfo.length; i++)
                                         {
-                                                 if(this._class.getFields()[j].getType() != ArrayList.class)
+                                                 if((this._class.getFields()[j].getType() != ArrayList.class) && (this._class.getFields()[j].getType() != List.class))
                                                  {
                                                             isEqual = tableInfo[i][1].equals(this._class.getFields()[j].getName()) ? true : false;
                                                             if(isEqual)
@@ -466,7 +479,7 @@ public abstract class MproEntity
                     this.namesRelation.clear();
                     for(int i = 0; i < this._class.getFields().length; i++)
                     {
-                              if(this._class.getFields()[i].getType() != ArrayList.class)
+                              if((this._class.getFields()[i].getType() != ArrayList.class) && (this._class.getFields()[i].getType() != List.class))
                               {
                                         if(!"cod".equals(this._class.getFields()[i].getName()))
                                                   parts += this._class.getFields()[i].getName() + " " + (this._class.getFields()[i].getType() == String.class ? "TEXT, " : "NUMERIC, ");
@@ -545,7 +558,7 @@ public abstract class MproEntity
                     {
                               try {
                                         
-                                        if(this._class.getFields()[i].getType() != ArrayList.class)
+                                        if((this._class.getFields()[i].getType() != ArrayList.class) && (this._class.getFields()[i].getType() != List.class))
                                         {
                                                   if(this._class.getFields()[i].getType() == boolean.class)
                                                             parts += ((Boolean)this._class.getFields()[i].get(this)) ? "1, " : "0, ";
@@ -594,6 +607,52 @@ public abstract class MproEntity
                               }
                     }
                     return parts;
+          }
+          
+          public String toJson()
+          {
+                    String json = "{";
+                    
+                    for(int i = 0; i < this._class.getFields().length; i++)
+                    {
+                            json += "\"" + this._class.getFields()[i].getName() + "\":";
+                            try 
+                            {
+                                    if(this._class.getFields()[i].getType().equals(boolean.class) 
+                                            || this._class.getFields()[i].getType().equals(int.class) 
+                                            || this._class.getFields()[i].getType().equals(long.class) 
+                                            || this._class.getFields()[i].getType().equals(double.class))
+                                            json += "" + this._class.getFields()[i].get(this).toString() + ",";
+                                    else if((this._class.getFields()[i].getType() == ArrayList.class) || (this._class.getFields()[i].getType() == List.class))
+                                    {
+                                            json += "[";
+                                            ArrayList<MproEntity> arr = (ArrayList<MproEntity>)this._class.getFields()[i].get(this);
+                                            for(int j = 0; j < arr.size(); j++)
+                                            {
+                                                    json += arr.get(j).toJson() + ",";
+                                            }
+                                            json = json.replaceFirst(",$", "");
+                                            json += "],";
+                                    }
+                                    else 
+                                    {
+                                            if(this._class.getFields()[i].get(this) != null)
+                                                    json += "\"" + this._class.getFields()[i].get(this).toString() + "\",";
+                                            else
+                                                    json += "null,";
+                                    }
+                            }
+                            catch (IllegalArgumentException ex) 
+                            {
+                                        Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                            } 
+                            catch (IllegalAccessException ex) 
+                            {
+                                        Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                             }
+                    }
+                    json = json.replaceFirst(",$", "");
+                    return (json + "}");
           }
           
           private class containField
