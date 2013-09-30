@@ -35,6 +35,7 @@ function Objetos(id, jqueryId, w, h, t, l, b, p,
                 this.FatherId = fatherId;
                 this.recursos = new Array();
                 this.eventos = new Array();
+                this.ClassType = "Objetos";
                 this.cod = 2147483647;
                 this.superCod = 2147483647;
         }
@@ -65,6 +66,7 @@ function Objetos(id, jqueryId, w, h, t, l, b, p,
                 this.Script = id.Script;
                 this.Text = id.Text;
                 this.FatherId = id.FatherId;
+                this.ClassType = id.ClassType;
                 this.cod = id.cod;
                 this.superCod = id.superCod;
         }

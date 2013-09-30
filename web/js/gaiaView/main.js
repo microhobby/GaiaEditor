@@ -14,13 +14,13 @@ $(document).ready(function()
         {
                 $("#tool1").css("height", (document.documentElement.clientHeight / 2.2) -20);
                 $("#tool1base").css("height", (document.documentElement.clientHeight / 2.2) -20);
-                $("#tool1base").css("left", -195);
+                $("#tool1base").css("left", -200);
                 $("#tool1Things").css("height", (document.documentElement.clientHeight / 2.2) -60);
                 
                 $("#tool2").css("height", (document.documentElement.clientHeight / 1.8) -20);
                 $("#tool2base").css("height", (document.documentElement.clientHeight / 1.8) -20);
                 $("#tool2base").css("top", parseInt($("#tool1").css("height")) + 10);
-                $("#tool2base").css("left", -195);
+                $("#tool2base").css("left", -200);
                 $("#tool2Things").css("height", (document.documentElement.clientHeight / 1.8) - 60);
                 
                 $("#tool3").css("height", document.documentElement.clientHeight -20);
@@ -36,6 +36,9 @@ $(document).ready(function()
                 $("#windowProjectsNew").css("top", (document.documentElement.clientHeight / 2) - (245 / 2));
                 $("#windowProjectsNew").css("left", (document.documentElement.clientWidth / 2) - (400 / 2));
                 
+                $("#windowLayout").css("top", (document.documentElement.clientHeight / 2) - (245 / 2));
+                $("#windowLayout").css("left", (document.documentElement.clientWidth / 2) - (400 / 2));
+                
                 goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
         }
         window.onresize();
@@ -45,15 +48,15 @@ $(document).ready(function()
          */
         $("#tool1base, #tool2base").mouseenter(function()
         {
-                $(this).animate(
+                $(this).stop().animate(
                 {
-                        left: -1
+                        left: -7
                 }, 100);
         }).mouseleave(function()
         {
-                $(this).animate(
+                $(this).stop().animate(
                 {
-                        left: -195
+                        left: -200
                 }, 100);
         });
         
@@ -62,15 +65,19 @@ $(document).ready(function()
          */
         $("input").focus(function()
         {
-                $(this).animate(
+                $(this).parent().animate(
                 {
-                        boxShadow: "0px 3px 5px #888"
+                       borderBottomColor : "#09F",
+                       borderLeftColor : "#09F",
+                       borderRightColor : "#09F"
                 });
         }).focusout(function()
         {
-                $(this).animate(
+                $(this).parent().animate(
                 {
-                        boxShadow: "0px 0px 0px #888"
+                       borderBottomColor : "#CCC",
+                       borderLeftColor : "#CCC",
+                       borderRightColor : "#CCC"
                 });
         });
         
@@ -79,6 +86,7 @@ $(document).ready(function()
          */
         $("body").fadeIn(2000);
         unFlipWindowProjectsNew();
+        unFlipWindowLayout();
         unFlipWindowProjects(flipWindowProjects);
 });
 
@@ -119,15 +127,19 @@ function unFlipWindowProjectsNew(callB)
                 
                     $("input").focus(function()
                     {
-                            $(this).animate(
+                            $(this).parent().animate(
                             {
-                                    boxShadow: "0px 3px 5px #888"
+                                   borderBottomColor : "#09F",
+                                   borderLeftColor : "#09F",
+                                   borderRightColor : "#09F"
                             });
                     }).focusout(function()
                     {
-                            $(this).animate(
+                            $(this).parent().animate(
                             {
-                                    boxShadow: "0px 0px 0px #888"
+                                   borderBottomColor : "#CCC",
+                                   borderLeftColor : "#CCC",
+                                   borderRightColor : "#CCC"
                             });
                     });
             }
@@ -164,15 +176,61 @@ function unFlipWindowProjects(callB)
 
                     $("input").focus(function()
                     {
-                            $(this).animate(
+                            $(this).parent().animate(
                             {
-                                    boxShadow: "0px 3px 5px #888"
+                                   borderBottomColor : "#09F",
+                                   borderLeftColor : "#09F",
+                                   borderRightColor : "#09F"
                             });
                     }).focusout(function()
                     {
-                            $(this).animate(
+                            $(this).parent().animate(
                             {
-                                    boxShadow: "0px 0px 0px #888"
+                                   borderBottomColor : "#CCC",
+                                   borderLeftColor : "#CCC",
+                                   borderRightColor : "#CCC"
+                            });
+                    });
+            }
+        });
+}
+
+function flipWindowLayout()
+{
+       $("#windowLayout").flippyReverse();
+}
+
+function unFlipWindowLayout(callB)
+{
+        $("#windowLayout").flippy({color_target: "#333333", duration: 500,
+            onMidway: function()
+            {
+                    $("#windowLayout").fadeOut(100);
+            },
+            onFinish: callB,
+            onReverseStart: function()
+            {
+                    $("#windowLayout").fadeIn(300);
+            },
+            onReverseFinish: function()
+            {
+                    
+                
+                     $("input").focus(function()
+                    {
+                            $(this).parent().animate(
+                            {
+                                   borderBottomColor : "#09F",
+                                   borderLeftColor : "#09F",
+                                   borderRightColor : "#09F"
+                            });
+                    }).focusout(function()
+                    {
+                            $(this).parent().animate(
+                            {
+                                   borderBottomColor : "#CCC",
+                                   borderLeftColor : "#CCC",
+                                   borderRightColor : "#CCC"
                             });
                     });
             }
@@ -185,6 +243,28 @@ function unFlipWindowProjects(callB)
 function buscaProjeto(ev)
 {
         
+}
+
+/**
+ * ROTINA PARA COMBO DE LAYOUTS
+ */
+function changeChoiceLayout(ix)
+{
+          switch(ix)
+          {
+                    case 1:
+                    break;
+                    case 1:
+                    break;
+                    case 1:
+                    break;
+                    case 1:
+                    break;
+                    case 1:
+                    break;
+                    case 1:
+                    break;
+          }
 }
 
 /**

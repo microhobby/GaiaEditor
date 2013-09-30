@@ -14,5 +14,8 @@
 	position: absolute;
 	width: 799px; /*default: 799px*/
 	height: 530px; /*default: 394px*/
-	background-color: #EAEAEA;
+	background-color: #fff;
+                        -moz-box-shadow: 4px 4px 3px #888;
+                        -webkit-box-shadow: 4px 4px 3px #888;
+                        box-shadow: 4px 4px 3px #555; 
 }

@@ -8,6 +8,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" import="Gaia.controller.*, Gaia.model.*, mpro.MproEntity.*"%>
 
 <%
+        //MproEntity.setBasePath("c:\\MproEntity\\");
         MproEntity.setBasePath("/home/matheus");
         MproEntity.setProjectName("GaiaEditor");
         String usu = request.getParameter("usu");
@@ -56,6 +57,7 @@
                             <!--<![endif]-->
                             <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
                             <link rel="stylesheet" href="../css/aulas.css" type="text/css" />
+                            <link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />
 
                             <!-- SCRIPTS -->
                             <script src="../js/jquery.js" type="text/javascript"> </script>
@@ -96,7 +98,8 @@
 
                 <!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->
                 <body style="margin: 0; background-color:#444; display: none;" onload="">
-                        
+                        <!-- STACK.JS -->
+                        <div class="page">
                         <!-- DIV CONTAINER -->
                         <!--PAGE-->
                         <div id="page">
@@ -149,7 +152,7 @@
                         <!-- MENU TOOL 1 -->
                         <div id="tool1base">
                                 <div id="tool1" class="tool">
-                                        <span style="position: absolute; top: 5px; left: 20px; color:  #fefefe">Projeto</span>
+                                        <span style="position: absolute; top: 0px; left: 10px; color:  #fefefe; font-size:  12px;">PROJETO</span>
                                         <img id="iconConfig" style="position: absolute; top: 5px; left:  200px;" src="../img/project.png" />
                                         <div id="tool1Things" class="things">
                                         <%
@@ -162,7 +165,7 @@
                         <!-- MENU TOOL2 -->
                         <div id="tool2base">
                                 <div id="tool2" class="tool">
-                                        <span style="position: absolute; top: 5px; left: 20px; color:  #fefefe">Ferramentas</span>
+                                        <span style="position: absolute; top: 0px; left: 10px; color:  #fefefe; font-size:  12px;">FERRAMENTAS</span>
                                         <img id="iconConfig" style="position: absolute; top: 5px; left:  200px;" src="../img/set.png" />
                                         <div id="tool2Things" class="things">
                                         <%
@@ -174,7 +177,7 @@
                         
                         <!-- MENU TOOL 3 -->
                         <div id="tool3" class="tool">
-                                <span style="position: absolute; top: 5px; left: 102px; color:  #fefefe">Propriedades</span>
+                                <span style="position: absolute; top: 0px; left: 115px; color:  #fefefe; font-size:  12px;">PROPRIEDADES</span>
                                 <img id="iconConfig" style="position: absolute; top: 5px; left:  5px;" src="../img/properties.png" />
                                 <div id="tool3Things" class="things">
                                         <%
@@ -186,7 +189,7 @@
                         <!-- JANELA DE PROJETOS -->
                         <div id="windowProjects" class="flipbox-container">
                         <div id="containerWindowProjects" class="tool">
-                                <span style="position: absolute; top: 5px; left: 20px; color:  #fefefe">Seus Projetos:</span>
+                                <span style="position: absolute; top: 0px; left: 5px; color:  #fefefe; font-size:  12px;">SEUS PROJETOS:</span>
                                 <img id="iconConfig" style="position: absolute; top: 5px; left:  380px;" src="../img/project.png" />
                                 <div id="searchProject">
                                         <span class="androidInput">
@@ -194,9 +197,9 @@
                                                        width: 200px;" onkeypress="buscaProjeto(event)">
                                         </span>
                                 </div>
-                                <button id="novoProjecto">
-                                        <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/project.png" />
-                                        &nbsp;&nbsp;&nbsp;&nbsp;Novo
+                                <button id="novoProjecto" class="btn">
+                                          &nbsp;&nbsp;&nbsp;&nbsp;Novo
+                                          <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/project.png" />
                                 </button>
                                 <!-- TABELA DE PROJETOS -->
                                 <div id="meusProjetos" style="border: 1px solid #EAEAEA">
@@ -210,47 +213,69 @@
                         <!-- JANELA DE NOVO PROJETO  -->
                         <div id="windowProjectsNew" class="flipbox-container">
                         <div id="containerWindowProjectsNew" class="tool">
-                                <span style="position: absolute; top: 5px; left: 20px; color:  #fefefe">Novo Projeto:</span>
+                                <span style="position: absolute; top: 0px; left: 5px; color:  #fefefe; font-size:  12px;">NOVO PROJETO:</span>
                                 <img id="iconConfig" style="position: absolute; top: 5px; left:  380px;" src="../img/project.png" />
-                                <span style="position: absolute; top: 50px; left: 8px; color:  #fefefe; font-size: 15px">Nome do Projeto:</span>
+                                <span style="position: absolute; top: 40px; left: 8px; color:  #fefefe; font-size: 15px; font-size:  11px;">NOME DE PROJETO:</span>
                                 <div id="nameProject">
                                         <span class="androidInput">
                                                 <input id="nameProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
                                                        width: 380px;">
                                         </span>
                                 </div>
-                                <span style="position: absolute; top: 100px; left: 8px; color:  #fefefe; font-size: 15px">Altura das Páginas:</span>
+                                <span style="position: absolute; top: 90px; left: 8px; color:  #fefefe; font-size: 11px">ALTURA DE PÁGINAS:</span>
                                 <div id="alturaProject">
                                         <span class="androidInput">
                                                 <input id="alturaProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
                                                        width: 177px;">
                                         </span>
                                 </div>
-                                <span style="position: absolute; top: 100px; left: 210px; color:  #fefefe; font-size: 15px">Largura das Páginas:</span>
+                                <span style="position: absolute; top: 90px; left: 210px; color:  #fefefe; font-size: 11px">LARGURA DAS PÁGINAS:</span>
                                 <div id="larguraProject">
                                         <span class="androidInput">
                                                 <input id="larguraProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
                                                        width: 177px;">
                                         </span>
                                 </div>
-                                <span style="position: absolute; top: 150px; left: 8px; color:  #fefefe; font-size: 15px">Observações:</span>
+                                <span style="position: absolute; top: 140px; left: 8px; color:  #fefefe; font-size: 11px">OBSERVAÇÕES:</span>
                                 <div id="obsProject">
                                         <span class="androidInput">
                                                 <input id="obsProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
                                                        width: 380px;">
                                         </span>
                                 </div>
-                                <button id="criaProjecto">
+                                <button id="criaProjecto" class="btn">
                                         <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/+.png" />
                                         &nbsp;&nbsp;&nbsp;&nbsp;Novo
                                 </button>
-                                <button id="fechaProjectoNew">
+                                <button id="fechaProjectoNew" class="btn">
                                         <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/verifica_false.png" />
                                         &nbsp;&nbsp;&nbsp;&nbsp;Fecha
                                 </button>
                         </div>
                         </div>
                                 
+                        <!-- JANELA DE ESCOLHA DE LAYOUT -->
+                        <div id="windowLayout" class="flipbox-container">
+                              <div id="containerWindowLayout" class="tool">
+                                      <span style="position: absolute; top: 0px; left: 5px; color:  #fefefe; font-size:  12px;">ESCOLHA O LAYOUT:</span>
+                                      <img id="iconConfig" style="position: absolute; top: 5px; left:  380px;" src="../img/project.png" />
+                                      <div id="comboLayout">
+                                                <div id="choiceLayout" class="form-spinner">
+                                                          <a href="javascript: void(0);" class="toggle-spinner">Layouts</a>
+                                                          <ul class="spinner">
+                                                                    <li class="spinner-item"><a href="javascript: void(0);">SMARTPHONE</a></li>
+                                                                    <li class="spinner-item"><a href="javascript: void(0);">WEB</a></li>
+                                                                    <li class="spinner-item"><a href="javascript: void(0);">EAD</a></li>
+                                                          </ul>
+                                                </div>
+                                      </div>
+                                      <button id="okLAyout" class="btn">
+                                                  &nbsp;&nbsp;&nbsp;&nbsp;Ok
+                                                  <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/ok.png" />
+                                        </button>
+                              </div>
+                        </div>
+                        
                         <!-- SAFIRA TESTE -->
                         <div id="safiraInputContainer">
                                 <span class="androidInput">
@@ -258,7 +283,9 @@
                                                width: 400px;" onkeypress="safiraEnter(event)">
                                 </span>
                         </div>
-                        
+                        </div>
+                        <script src="../js/fries.min.js"></script>
+                        <script src="../js/fingerblast.js"></script>
                 </body>
                 <!--FIM PAGE-->
                 </html>

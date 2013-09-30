@@ -4,6 +4,7 @@
     Author     : matheus
 --%>
 
+<%@page import="mpro.MproEntity.MproEntity"%>
 <%@page import="Gaia.controller.GaiaController"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -12,6 +13,10 @@
             response.setHeader("Content-Type", "text/html");
             response.setHeader("Cache-Control", "no-cache");
 
+            //MproEntity.setBasePath("c:\\MproEntity\\");
+            MproEntity.setBasePath("/home/matheus");
+            MproEntity.setProjectName("GaiaEditor");
+            
             if(session.getAttribute("isLoged") != null && (Boolean)session.getAttribute("isLoged"))
             {
                     if(request.getParameter("user") != null)

@@ -9,19 +9,23 @@ function newProject()
             && $("#alturaProjectText").val() != ""
             &&  $("#larguraProjectText").val() != "")
         {
-                LogedUser.Projetos.push(new Projeto($("#nameProjectText").val(), 
+                var ptrProject = new Projeto($("#nameProjectText").val(), 
                                         parseFloat($("#alturaProjectText").val()), parseFloat($("#larguraProjectText").val()),
-                                        $("#obsProjectText").val()));
+                                        $("#obsProjectText").val());
                 $.ajax({
                             async: true,
                             type:'post',
                             cache:false,
                             url: slice_url,
-                            data: {user: JSON.stringify(LogedUser), method: "newProject"},
+                            data: {user: LogedUser.cod, project: JSON.stringify(ptrProject), method: "newProject"},
                             success: function(data)
                             {
                                       console.log(data);
-                                      result1 = data;
+                                      var objData = JSON.parse(data);
+                                      var pro = new Projeto(objData.data);
+                                      LogedUser.Projetos.push(pro);
+                                      
+                                      unFlipWindowProjectsNew(flipWindowLayout);
                             },
                             error: function(data)
                             {

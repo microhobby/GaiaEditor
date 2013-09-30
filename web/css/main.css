@@ -34,49 +34,6 @@ div
         border:2px solid #000;
 }
 
-button
-{
-        display: block;
-        /*width: 67px;
-        height: 28px;*/
-        border-style: none;
-        background-color: transparent;
-        font-family: inherit;
-        font-size: inherit;
-        width: inherit;
-        height: inherit;
-        color: white;
-        /*IE hack*/
-        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btB.png', sizingMethod='scale');
-        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btB.png', sizingMethod='scale')";
-}
-
-button:hover
-{
-        display: block;
-        /*width: 67px;
-        height: 28px;*/
-        width: inherit;
-        height: inherit;
-        color: white;
-        /*IE hack*/
-        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btC.png', sizingMethod='scale');
-        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btC.png', sizingMethod='scale')";
-}
-
-button:active
-{
-        display: block;
-        /*width: 67px;
-        height: 28px;*/
-        width: inherit;
-        height: inherit;
-        color: black;
-        /*IE hack*/
-        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale');
-        -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/btD.png', sizingMethod='scale')";
-}
-
 .buttonOk a
 {
         display: block;
@@ -171,60 +128,6 @@ button:active
 img{
   border:none;
 }
-
-h1{
-  font-family: Arial,Verdana;
-  font-size: 1.7em;
-  border-bottom: 1px solid #CCC;
-  width: 330px;
-  margin-left: 2px;
-}
-
-h2{
-  font-family: Arial,Verdana;
-  font-size: 1.0em;
-  border-bottom: 1px solid #CCC;
-  width: 600px;
-  margin-left: 10px;
-  color:#191970;
-}
-
-h3{
-  font-family: Arial,Verdana;
-  font-size: 0.9em;
-  width: 700px;
-  margin-left: 15px;
-  color:#191970;
-}
-
-p{
-  margin: 5px;
-  text-align: justify;
-  font-size: 0.8em;
-  color:#000;
-}
-
-ol{
-  font-size: 0.8em;
-  color:#000;
-}
-ol li{
-  margin-bottom: 4px;
-}
-
-ul{
-  font-size: 0.8em;
-  color:#000;
-  list-style: none;
-}
-
-ul li{
-  margin-bottom: 4px;
-  margin-left:30px;
-  padding-left: 30px;
-  background: url(../img/marcador.png) no-repeat left top;
-}
-
 
 .centralizar{
     margin-left: 10%;
@@ -521,9 +424,9 @@ ul li{
 
 .tool
 {
-        -moz-box-shadow: -5px -5px 5px #888;
-        -webkit-box-shadow: -5px -5px 5px #888;
-        box-shadow: 2px 2px 3px #555; 
+        -moz-box-shadow: 4px 4px 3px #888;
+        -webkit-box-shadow: 4px 4px 3px #888;
+        box-shadow: 4px 4px 3px #555; 
         border: 1px #CCC solid;
         background-color:#444;
 }
@@ -562,6 +465,23 @@ ul li{
 }
 
 #containerWindowProjectsNew
+{
+        position: absolute;
+        width: 400px;
+        height: 245px;
+}
+
+#windowLayout
+{
+        position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 400px;
+        height: 245px;
+        display: none;
+}
+
+#containerWindowLayout
 {
         position: absolute;
         width: 400px;
@@ -650,6 +570,8 @@ ul li{
         width: 100%;
 }
 
+
+
 .androidInput
 {
         border-bottom: solid 1px #ccc; 
@@ -669,7 +591,7 @@ ul li{
         background: transparent;
         display: inline-block;
         position: relative;
-        bottom: 1em;
+        bottom: 1.4em;
 }
 
 #searchProject
@@ -724,6 +646,7 @@ ul li{
         left: 305px;
         width: 90px;
         height: 30px;
+        padding: 0px;
 }
 
 #fechaProjectoNew
@@ -733,15 +656,17 @@ ul li{
         left: 205px;
         width: 90px;
         height: 30px;
+        padding: 0px;
 }
 
 #novoProjecto
 {
         position: absolute;
-        top: 192px;
+        top: 190px;
         left: 305px;
         width: 90px;
         height: 30px;
+        padding: 0px;
 }
 
 #meusProjetos
@@ -750,5 +675,23 @@ ul li{
         top: 70px;
         left: 5px;
         width: 388px;
-        height: 120px;
+        height: 115px;
+}
+
+#comboLayout
+{
+        position: absolute;
+        top: 70px;
+        left: 65px;
+        width: 250px;
+}
+
+#okLAyout
+{
+        position: absolute;
+        top: 200px;
+        left: 300px;
+        width: 90px;
+        height: 30px;
+        padding: 0px;
 }
