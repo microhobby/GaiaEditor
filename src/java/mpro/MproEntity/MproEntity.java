@@ -130,6 +130,86 @@ public abstract class MproEntity
                     return list;
           }
           
+          public static <T> ArrayList<T> getSQL(Class<T> classe, String where)
+          {
+                  if(_conn == null)
+                            _conn = new LauDB(BasePath + "/MproEntity"  + ProjectName +  ".lau");
+                  
+                        ArrayList<T> list = new ArrayList();
+                        ArrayList<String> fildsnames = new ArrayList();
+                        Class c = classe;
+                        String filds = "";
+                        ArrayList<Field> cf = new ArrayList();
+                  
+                  try
+                  {    
+                        for(int j = 0; j < c.getFields().length; j++)
+                        {
+                                if (c.getFields()[j].getType().equals(ArrayList.class) || c.getFields()[j].getType().equals(List.class)) 
+                                {
+                                          //cf = c.getFields()[j];
+                                          cf.add(c.getFields()[j]);
+                                          continue;
+                                }
+                                else
+                                          fildsnames.add(c.getFields()[j].getName());
+                        }
+                        
+                        String sql = "SELECT * FROM " + c.getName().replace('.', '_') + " WHERE " + where + ";";
+                        String[][] res = _conn.query(sql);
+                        for(int i = 0; i < res.length; i++)
+                        {
+                                T tmp = (T) c.newInstance();
+                                //for(int j = 0; j < c.getFields().length; j++)
+                                for(int j = 0; j < fildsnames.size(); j++)
+                                {
+                                          if(res[i][j] != null)
+                                          {
+                                                    if(tmp.getClass().getField(fildsnames.get(j)).getType().equals(int.class))
+                                                             tmp.getClass().getField(fildsnames.get(j)).set(tmp, Integer.parseInt(res[i][j])); 
+                                                    else if(tmp.getClass().getField(fildsnames.get(j)).getType().equals(double.class))
+                                                             tmp.getClass().getField(fildsnames.get(j)).set(tmp, Double.parseDouble(res[i][j]));  
+                                                    else if(tmp.getClass().getField(fildsnames.get(j)).getType().equals(long.class))
+                                                             tmp.getClass().getField(fildsnames.get(j)).set(tmp, Long.parseLong(res[i][j])); 
+                                                    else if(tmp.getClass().getField(fildsnames.get(j)).getType().equals(boolean.class))
+                                                              tmp.getClass().getField(fildsnames.get(j)).set(tmp, (res[i][j].equals("1") ? true : false));
+                                                    else
+                                                    {
+                                                             Class<?> theClass = tmp.getClass().getField(fildsnames.get(j)).getType();
+                                                             tmp.getClass().getField(fildsnames.get(j)).set(tmp, theClass.cast(res[i][j]));
+                                                    }
+                                          }
+                                }
+
+                                //if(cf != null)
+                                if(cf.size() > 0)
+                                {
+                                            for(int k = 0; k < cf.size(); k++)
+                                            {
+                                                    Class typin = (Class)((ParameterizedType) cf.get(k).getGenericType()).getActualTypeArguments()[0];
+                                                    MproEntityRelation t = (MproEntityRelation) typin.newInstance();
+                                                    t.superCod = ((MproEntity)tmp).cod;
+                                                    ArrayList<?> mpR = MproEntity.getWhere(typin.cast(t));
+                                                    cf.get(k).set(tmp, mpR);
+                                            }
+                                }
+
+                                list.add(tmp);
+                        }
+                    } catch (IllegalArgumentException ex) {
+                              Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                              Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InstantiationException ex) {
+                              Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (NoSuchFieldException ex) {
+                              Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SecurityException ex) {
+                              Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    return list;
+          }
+          
           public static <T> ArrayList<T> getWhere(T filterObj)
           {
                     if(_conn == null)

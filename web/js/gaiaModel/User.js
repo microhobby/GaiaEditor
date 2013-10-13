@@ -4,7 +4,7 @@
 
 function User(username, key, nome, email, datanascimento)
 {
-        if(username.UserName == undefined)
+        if(username !== undefined && username.UserName === undefined)
         {
                 this.Nome = nome;
                 this.UserName = username;
@@ -15,7 +15,7 @@ function User(username, key, nome, email, datanascimento)
                 this.Projetos = new Array();
                 this.cod = 2147483647;
         }
-        else
+        else if(username !== undefined)
         {
                 this.Nome = username.Nome;
                 this.UserName = username.UserName;

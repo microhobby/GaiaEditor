@@ -2,11 +2,41 @@
  * main for VIEW Gaia Editor
  */
 
+/**@type User */
 var LogedUser = null;
+var listProj = new List();
+var comboLayouts = new Combobox();
+var modelProj = new ItemModel();
+var modelLayouts = new ItemModel();
 var slice_url = "http://localhost:8084/GaiaEditor/system/server.jsp";
 
 $(document).ready(function()
 {  
+        /**
+         * SETA PROJETOS
+         */
+        listProj.setModel(modelProj);
+        listProj.setElement("#meusProjetos");
+        listProj.setInputFilter("#searchText");
+        
+        for(var i = 0; i < LogedUser.Projetos.length; i++)
+        {
+               modelProj.add(new Item(LogedUser.Projetos[i].Nome, LogedUser.Projetos[i]));
+        }
+        
+        /**
+         * SETA LAYOUTS
+         */
+        comboLayouts.setElement("#comboLayout");
+        comboLayouts.setModel(modelLayouts);
+        
+        modelLayouts.add(new Item("BOOK", null));
+        modelLayouts.add(new Item("EAD", null));
+        modelLayouts.add(new Item("SMARTPHONE", null));
+        modelLayouts.add(new Item("SMARTPHONEAPP", null));
+        modelLayouts.add(new Item("WEB", null));
+        modelLayouts.add(new Item("WEBAPP", null));
+        
         /**
          *  REDIMENSIONAMENTO DAS TOOLS
          */
@@ -28,7 +58,7 @@ $(document).ready(function()
                 $("#tool3Things").css("height", document.documentElement.clientHeight - 60);
                 
                 $("#safiraInputContainer").css("top", document.documentElement.clientHeight - 40);
-                $("#safiraInputContainer").css("left", document.documentElement.clientWidth - 670);
+                $("#safiraInputContainer").css("left", document.documentElement.clientWidth - 650);
                 
                 $("#windowProjects").css("top", (document.documentElement.clientHeight / 2) - (225 / 2));
                 $("#windowProjects").css("left", (document.documentElement.clientWidth / 2) - (400 / 2));
@@ -61,188 +91,80 @@ $(document).ready(function()
         });
         
         /**
-         * FOCUS INPUTS
-         */
-        $("input").focus(function()
-        {
-                $(this).parent().animate(
-                {
-                       borderBottomColor : "#09F",
-                       borderLeftColor : "#09F",
-                       borderRightColor : "#09F"
-                });
-        }).focusout(function()
-        {
-                $(this).parent().animate(
-                {
-                       borderBottomColor : "#CCC",
-                       borderLeftColor : "#CCC",
-                       borderRightColor : "#CCC"
-                });
-        });
-        
-        /**
          * FLIP JANELA
          */
-        $("body").fadeIn(2000);
-        unFlipWindowProjectsNew();
-        unFlipWindowLayout();
-        unFlipWindowProjects(flipWindowProjects);
+        $("body").fadeIn(2000, function()
+        {
+                    scalePanels("windowProjects");
+        });
+        $("#windowProjects").css("transform", "scale(0)").css("opacity", "0");
+        $("#windowProjectsNew").css("transform", "scale(0)").css("opacity", "0");
+        $("#windowLayout").css("transform", "scale(0)").css("opacity", "0");
+        
+        /**
+         * ABRE PROJETO
+         */
+        listProj.addMouseActionListener(function(obj)
+        {
+                console.log(obj);
+        });
+        
+           /* CHAMA JANELA DE NOVO PROJETO */
+          $("#novoProjecto").click(function()
+          {
+                    scalePanels("windowProjects", true, function()
+                    {
+                              scalePanels("windowProjectsNew");
+                    });
+          });
+          
+          /* FECHA JANELA DE NOVO PROJETO E RETORNA PARA SELECIONAR PROJETO */
+          $("#fechaProjectoNew").click(function()
+          {
+                    scalePanels("windowProjectsNew", true, function()
+                    {
+                              scalePanels("windowProjects");
+                    });
+          });
+          
+          /* REGISTRA NOVO PROJETO */
+          $("#criaProjecto").click(function()
+          {
+                  newProject();
+          });
 });
 
-function flipWindowProjectsNew()
-{
-       //$("#windowProjectsNew").show();
-       $("#windowProjectsNew").flippyReverse();
-}
-
-function unFlipWindowProjectsNew(callB)
-{
-        $("#windowProjectsNew").flippy({color_target: "#333333", duration: 500, 
-            onMidway: function()
-            {
-                    $("#windowProjectsNew").fadeOut(100);
-            },
-            onFinish: callB,
-            onReverseStart : function()
-            {
-                    $("#windowProjectsNew").fadeIn(300);
-            },
-            onReverseFinish: function()
-            {
-                    /* FECHA JANELA DE NOVO PROJETO E RETORNA PARA SELECIONAR PROJETO */
-                    $("#fechaProjectoNew").click(function()
-                    {
-                            unFlipWindowProjectsNew(function()
-                            {
-                                    $("#windowProjects").flippyReverse();
-                            });
-                    });
-                
-                    /* GERA NOVO PROJETO */
-                    $("#criaProjecto").click(function()
-                    {
-                            newProject();
-                    });
-                
-                    $("input").focus(function()
-                    {
-                            $(this).parent().animate(
-                            {
-                                   borderBottomColor : "#09F",
-                                   borderLeftColor : "#09F",
-                                   borderRightColor : "#09F"
-                            });
-                    }).focusout(function()
-                    {
-                            $(this).parent().animate(
-                            {
-                                   borderBottomColor : "#CCC",
-                                   borderLeftColor : "#CCC",
-                                   borderRightColor : "#CCC"
-                            });
-                    });
-            }
-        });
-}
-
-function flipWindowProjects()
-{
-       $("#windowProjects").flippyReverse();
-}
-
-function unFlipWindowProjects(callB)
-{
-        $("#windowProjects").flippy({color_target: "#333333", duration: 500,
-            onMidway: function()
-            {
-                    $("#windowProjects").fadeOut(100);
-            },
-            onFinish: callB,
-            onReverseStart: function()
-            {
-                    $("#windowProjects").fadeIn(300);
-            },
-            onReverseFinish: function()
-            {
-                    /* CHAMA JANELA DE NOVO PROJETO */
-                    $("#novoProjecto").click(function()
-                    {
-                            unFlipWindowProjects(function()
-                            {
-                                    $("#windowProjectsNew").flippyReverse();
-                            });
-                    });
-
-                    $("input").focus(function()
-                    {
-                            $(this).parent().animate(
-                            {
-                                   borderBottomColor : "#09F",
-                                   borderLeftColor : "#09F",
-                                   borderRightColor : "#09F"
-                            });
-                    }).focusout(function()
-                    {
-                            $(this).parent().animate(
-                            {
-                                   borderBottomColor : "#CCC",
-                                   borderLeftColor : "#CCC",
-                                   borderRightColor : "#CCC"
-                            });
-                    });
-            }
-        });
-}
-
-function flipWindowLayout()
-{
-       $("#windowLayout").flippyReverse();
-}
-
-function unFlipWindowLayout(callB)
-{
-        $("#windowLayout").flippy({color_target: "#333333", duration: 500,
-            onMidway: function()
-            {
-                    $("#windowLayout").fadeOut(100);
-            },
-            onFinish: callB,
-            onReverseStart: function()
-            {
-                    $("#windowLayout").fadeIn(300);
-            },
-            onReverseFinish: function()
-            {
-                    
-                
-                     $("input").focus(function()
-                    {
-                            $(this).parent().animate(
-                            {
-                                   borderBottomColor : "#09F",
-                                   borderLeftColor : "#09F",
-                                   borderRightColor : "#09F"
-                            });
-                    }).focusout(function()
-                    {
-                            $(this).parent().animate(
-                            {
-                                   borderBottomColor : "#CCC",
-                                   borderLeftColor : "#CCC",
-                                   borderRightColor : "#CCC"
-                            });
-                    });
-            }
-        });
-}
-
 /**
- * ROTINA PARA BUSCAR UM PROJETO
- */
-function buscaProjeto(ev)
+* Scale for panels
+* */
+function scalePanels(id, out, funct)
 {
-        
+          if(out !== undefined && out)
+                    $("#" + id).animate(
+                    {
+                              opacity: 0
+                    }, 
+                    {
+                              step: function( now, fx ) 
+                              {
+                                        $("#" + id).css("transform", "scale(" + now + ")");
+                              },
+                              duration: 500,
+                              complete: funct
+                    });
+          else
+                   $("#" + id).animate(
+                    {
+                              opacity: 1
+                    }, 
+                    {
+                              step: function( now, fx ) 
+                              {
+                                        $("#" + id).css("transform", "scale(" + now + ")");
+                              },
+                              duration: 500,
+                              complete: funct
+                    }); 
 }
 
 /**

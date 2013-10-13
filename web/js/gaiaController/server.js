@@ -24,8 +24,12 @@ function newProject()
                                       var objData = JSON.parse(data);
                                       var pro = new Projeto(objData.data);
                                       LogedUser.Projetos.push(pro);
+                                      modelProj.add(new Item(pro.Nome, pro));
                                       
-                                      unFlipWindowProjectsNew(flipWindowLayout);
+                                        scalePanels("windowProjectsNew", true, function()
+                                        {
+                                                  scalePanels("windowLayout");
+                                        });
                             },
                             error: function(data)
                             {

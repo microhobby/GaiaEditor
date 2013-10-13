@@ -424,11 +424,11 @@ img{
 
 .tool
 {
-        -moz-box-shadow: 4px 4px 3px #888;
-        -webkit-box-shadow: 4px 4px 3px #888;
-        box-shadow: 4px 4px 3px #555; 
-        border: 1px #CCC solid;
-        background-color:#444;
+        -moz-box-shadow: 4px 4px 3px #393939 !important;
+        -webkit-box-shadow: 4px 4px 3px #393939 !important;
+        box-shadow: 4px 4px 3px #393939 !important; 
+        /*border: 1px #CCC solid;
+        background-color:#444;*/
 }
 
 .things
@@ -444,7 +444,7 @@ img{
         left:  20px;
         width: 400px;
         height: 225px;
-        display: none;
+        /*display: none;*/
 }
 
 #containerWindowProjects
@@ -461,7 +461,7 @@ img{
         left:  20px;
         width: 400px;
         height: 245px;
-        display: none;
+        /*display: none;*/
 }
 
 #containerWindowProjectsNew
@@ -478,7 +478,7 @@ img{
         left:  20px;
         width: 400px;
         height: 245px;
-        display: none;
+        /*display: none;*/
 }
 
 #containerWindowLayout
@@ -570,44 +570,18 @@ img{
         width: 100%;
 }
 
-
-
-.androidInput
-{
-        border-bottom: solid 1px #ccc; 
-        border-left: solid 1px #ccc; 
-        margin: 20px; 
-        border-right: solid 1px #ccc;
-        overflow: visible; 
-        max-height: 0.2em;
-        display: inline-block;
-        padding: 2px;
-}
-
-.inputAndroid
-{
-        outline: none;
-        border: none;
-        background: transparent;
-        display: inline-block;
-        position: relative;
-        bottom: 1.4em;
-}
-
 #searchProject
 {
         position: absolute;
-        top: 30px;
-        left: -13px;
-        height: 100%;
-        width: 100%;
+        top: 40px;
+        left: 5px;
 }
 
 #nameProject
 {
         position: absolute;
         top: 60px;
-        left: -13px;
+        left: 8px;
         height: 100%;
         width: 100%;
 }
@@ -616,7 +590,7 @@ img{
 {
         position: absolute;
         top: 110px;
-        left: -13px;
+        left: 8px;
         height: 100%;
         width: 100%;
 }
@@ -625,7 +599,7 @@ img{
 {
         position: absolute;
         top: 110px;
-        left: 190px;
+        left: 208px;
         height: 100%;
         width: 100%;
 }
@@ -634,7 +608,7 @@ img{
 {
         position: absolute;
         top: 160px;
-        left: -13px;
+        left: 8px;
         height: 100%;
         width: 100%;
 }
@@ -676,14 +650,15 @@ img{
         left: 5px;
         width: 388px;
         height: 115px;
+        overflow-y: auto;
+        box-shadow:  0 0 2px rgba(0, 0, 0, 0.54);
 }
 
 #comboLayout
 {
         position: absolute;
         top: 70px;
-        left: 65px;
-        width: 250px;
+        left: 40px;
 }
 
 #okLAyout
@@ -694,4 +669,10 @@ img{
         width: 90px;
         height: 30px;
         padding: 0px;
+}
+
+.btn-mpro
+{
+          height: 25px;
+          padding: 5px;
 }

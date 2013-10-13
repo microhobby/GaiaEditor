@@ -57,7 +57,20 @@
                             <!--<![endif]-->
                             <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
                             <link rel="stylesheet" href="../css/aulas.css" type="text/css" />
-                            <link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />
+                            <!--<link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />-->
+                              <!-- Bootstrap core CSS -->
+                              <link href="../dist/css/bootstrap.css" rel="stylesheet">
+                              <!-- Bootstrap theme -->
+                              <link href="../dist/css/bootstrap-theme.min.css" rel="stylesheet">
+
+                              <!-- Custom styles for this template -->
+                              <!--<link href="theme.css" rel="stylesheet">-->
+
+                              <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+                              <!--[if lt IE 9]>
+                                <script src="../assets/js/html5shiv.js"></script>
+                                <script src="../assets/js/respond.min.js"></script>
+                              <![endif]-->
 
                             <!-- SCRIPTS -->
                             <script src="../js/jquery.js" type="text/javascript"> </script>
@@ -77,21 +90,36 @@
                             <!--<script src="../lib/app.js" type="text/javascript"> </script>
                             <script type="text/javascript" src="../js/KineticScroll.js"> </script>-->
                             <script src="../js/utils.js" type="text/javascript"> </script>
+                            <script src="../dist/js/bootstrap.min.js"></script>
+                            <script src="../assets/js/holder.js"></script>
                             
                             <!-- MODEL -->
                             <script src="../js/gaiaModel/User.js" type="text/javascript"> </script>
                             <script src="../js/gaiaModel/Projeto.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaModel/Layout.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaModel/Paginas.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaModel/Objetos.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaModel/Eventos.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaModel/Recursos.js" type="text/javascript"> </script>
+
                             
                             <!-- CONTROLLER -->
                             <script src="../js/gaiaController/server.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GText.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->
+                            <script src="../js/gaiaView/Lista.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/Item.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/ItemModel.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/List.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/Combobox.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/main.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/EntitysCmds.js" type="text/javascript"> </script>
                             
                             <script type="text/javascript">
                                     LogedUser = $.parseJSON('<% out.print(Login.UserToJson()); %>');
-                                    LogedUser = new User(LogedUser);
+                                    LogedUser = $.extend(new User(), LogedUser);
+                                    //LogedUser = new User(LogedUser);
                             </script>
                             
                 </head>
@@ -142,7 +170,7 @@
                                           });
                                 </script>
                                 
-                                <div id="main" class="pg_sub">
+                                <div id="main" class="pg_sub" style="display: none;">
                                         <!-- MAKE WHAT YOU HAVE TO DO -->
                                 </div>
                         </div>
@@ -151,8 +179,10 @@
                     
                         <!-- MENU TOOL 1 -->
                         <div id="tool1base">
-                                <div id="tool1" class="tool">
-                                        <span style="position: absolute; top: 0px; left: 10px; color:  #fefefe; font-size:  12px;">PROJETO</span>
+                                <div id="tool1" class="panel panel-default tool">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Projeto</h3>
+                                        </div>
                                         <img id="iconConfig" style="position: absolute; top: 5px; left:  200px;" src="../img/project.png" />
                                         <div id="tool1Things" class="things">
                                         <%
@@ -164,8 +194,10 @@
                         
                         <!-- MENU TOOL2 -->
                         <div id="tool2base">
-                                <div id="tool2" class="tool">
-                                        <span style="position: absolute; top: 0px; left: 10px; color:  #fefefe; font-size:  12px;">FERRAMENTAS</span>
+                                <div id="tool2" class="panel panel-default tool">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Ferramentas</h3>
+                                        </div>
                                         <img id="iconConfig" style="position: absolute; top: 5px; left:  200px;" src="../img/set.png" />
                                         <div id="tool2Things" class="things">
                                         <%
@@ -176,8 +208,10 @@
                         </div>
                         
                         <!-- MENU TOOL 3 -->
-                        <div id="tool3" class="tool">
-                                <span style="position: absolute; top: 0px; left: 115px; color:  #fefefe; font-size:  12px;">PROPRIEDADES</span>
+                        <div id="tool3" class="panel panel-default tool">
+                                <div class="panel-heading">
+                                        <h3 class="panel-title">&nbsp;&nbsp;&nbsp;&nbsp;Propiedades</h3>
+                                </div>
                                 <img id="iconConfig" style="position: absolute; top: 5px; left:  5px;" src="../img/properties.png" />
                                 <div id="tool3Things" class="things">
                                         <%
@@ -187,67 +221,56 @@
                         </div>
                          
                         <!-- JANELA DE PROJETOS -->
-                        <div id="windowProjects" class="flipbox-container">
-                        <div id="containerWindowProjects" class="tool">
-                                <span style="position: absolute; top: 0px; left: 5px; color:  #fefefe; font-size:  12px;">SEUS PROJETOS:</span>
-                                <img id="iconConfig" style="position: absolute; top: 5px; left:  380px;" src="../img/project.png" />
+                        <div id="windowProjects" class="tool">
+                        <div id="containerWindowProjects" class="panel panel-default">
+                                 <div class="panel-heading">
+                                        <h3 class="panel-title">Seus Projetos</h3>
+                                 </div>
+                                <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/project.png" />
                                 <div id="searchProject">
-                                        <span class="androidInput">
-                                                <input id="searchText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
-                                                       width: 200px;" onkeypress="buscaProjeto(event)">
-                                        </span>
+                                        <input type="text" class="form-control" style="height: 25px; padding: 5px;" id="searchText" placeholder="Busque">  
                                 </div>
-                                <button id="novoProjecto" class="btn">
+                                <button id="novoProjecto" class="btn btn-default">
                                           &nbsp;&nbsp;&nbsp;&nbsp;Novo
                                           <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/project.png" />
                                 </button>
                                 <!-- TABELA DE PROJETOS -->
-                                <div id="meusProjetos" style="border: 1px solid #EAEAEA">
-                                    <table id="projectsContainer">
-                                            
-                                    </table>
+                                <div id="meusProjetos" class="list-group">
+                                         <!-- CARREGA AQUI UMA LISTA -->
+                                        
                                 </div>
                         </div>
                         </div>
                         
                         <!-- JANELA DE NOVO PROJETO  -->
-                        <div id="windowProjectsNew" class="flipbox-container">
-                        <div id="containerWindowProjectsNew" class="tool">
-                                <span style="position: absolute; top: 0px; left: 5px; color:  #fefefe; font-size:  12px;">NOVO PROJETO:</span>
-                                <img id="iconConfig" style="position: absolute; top: 5px; left:  380px;" src="../img/project.png" />
-                                <span style="position: absolute; top: 40px; left: 8px; color:  #fefefe; font-size: 15px; font-size:  11px;">NOME DE PROJETO:</span>
+                        <div id="windowProjectsNew" class="tool">
+                        <div id="containerWindowProjectsNew" class="panel panel-default">
+                                  <div class="panel-heading">
+                                        <h3 class="panel-title">Novo Projeto</h3>
+                                 </div>
+                                <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/project.png" />
+                                <span style="position: absolute; top: 41px; left: 8px; color:  #333333; font-size: 11px">Nome do Projeto:</span>
                                 <div id="nameProject">
-                                        <span class="androidInput">
-                                                <input id="nameProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
-                                                       width: 380px;">
-                                        </span>
+                                          <input id="nameProjectText" type="text" class="form-control" placeholder="Nome do Projeto" style="height: 25px; padding: 5px; width: 380px">
                                 </div>
-                                <span style="position: absolute; top: 90px; left: 8px; color:  #fefefe; font-size: 11px">ALTURA DE PÁGINAS:</span>
+                                <span style="position: absolute; top: 90px; left: 8px; color:  #333333; font-size: 11px">Altura das Páginas:</span>
                                 <div id="alturaProject">
-                                        <span class="androidInput">
-                                                <input id="alturaProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
-                                                       width: 177px;">
-                                        </span>
+                                          <input id="alturaProjectText" type="text" class="form-control" placeholder="Altura da Página" style="height: 25px; padding: 5px; width: 177px;">
                                 </div>
-                                <span style="position: absolute; top: 90px; left: 210px; color:  #fefefe; font-size: 11px">LARGURA DAS PÁGINAS:</span>
+                                <span style="position: absolute; top: 90px; left: 210px; color:  #333333; font-size: 11px">Largura das Páginas:</span>
                                 <div id="larguraProject">
-                                        <span class="androidInput">
-                                                <input id="larguraProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
-                                                       width: 177px;">
-                                        </span>
+                                          <input id="larguraProjectText" type="text" class="form-control" placeholder="Largura da Página" style="height: 25px; padding: 5px; width: 177px;">
                                 </div>
-                                <span style="position: absolute; top: 140px; left: 8px; color:  #fefefe; font-size: 11px">OBSERVAÇÕES:</span>
+                                <span style="position: absolute; top: 140px; left: 8px; color:  #333333; font-size: 11px">Observações:</span>
                                 <div id="obsProject">
-                                        <span class="androidInput">
-                                                <input id="obsProjectText" type="text" class="inputAndroid" style="font-size:  15px; color: white;
-                                                       width: 380px;">
-                                        </span>
+                                          <input id="obsProjectText" type="text" class="form-control" placeholder="Observações" style="height: 25px; padding: 5px;
+                                               width: 380px;">          
                                 </div>
-                                <button id="criaProjecto" class="btn">
+                                <button id="criaProjecto" class="btn btn-default">
                                         <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/+.png" />
                                         &nbsp;&nbsp;&nbsp;&nbsp;Novo
                                 </button>
-                                <button id="fechaProjectoNew" class="btn">
+                                <button id="fechaProjectoNew" class="btn btn-default">
                                         <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/verifica_false.png" />
                                         &nbsp;&nbsp;&nbsp;&nbsp;Fecha
                                 </button>
@@ -255,21 +278,25 @@
                         </div>
                                 
                         <!-- JANELA DE ESCOLHA DE LAYOUT -->
-                        <div id="windowLayout" class="flipbox-container">
-                              <div id="containerWindowLayout" class="tool">
-                                      <span style="position: absolute; top: 0px; left: 5px; color:  #fefefe; font-size:  12px;">ESCOLHA O LAYOUT:</span>
-                                      <img id="iconConfig" style="position: absolute; top: 5px; left:  380px;" src="../img/project.png" />
-                                      <div id="comboLayout">
-                                                <div id="choiceLayout" class="form-spinner">
-                                                          <a href="javascript: void(0);" class="toggle-spinner">Layouts</a>
-                                                          <ul class="spinner">
-                                                                    <li class="spinner-item"><a href="javascript: void(0);">SMARTPHONE</a></li>
-                                                                    <li class="spinner-item"><a href="javascript: void(0);">WEB</a></li>
-                                                                    <li class="spinner-item"><a href="javascript: void(0);">EAD</a></li>
-                                                          </ul>
-                                                </div>
+                        <div id="windowLayout" class="tool">
+                              <div id="containerWindowLayout" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Layout</h3>
+                                        </div>
+                                      <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/project.png" />
+                                      <div id="comboLayout" class="btn-group">
+                                              <button type="button" class="btn btn-default dropdown-toggle" style="width: 320px;" data-toggle="dropdown">
+                                                        Escolha o Layout <span class="caret"></span>
+                                                </button>
+                                              <ul class="dropdown-menu" style="width: 320px;" role="menu">
+                                                        <li><a href="#">Action</a></li>
+                                                        <li><a href="#">Another action</a></li>
+                                                        <li><a href="#">Something else here</a></li>
+                                                        <li class="divider"></li>
+                                                        <li><a href="#">Separated link</a></li>
+                                                </ul>
                                       </div>
-                                      <button id="okLAyout" class="btn">
+                                      <button id="okLAyout" class="btn btn-default">
                                                   &nbsp;&nbsp;&nbsp;&nbsp;Ok
                                                   <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/ok.png" />
                                         </button>
@@ -279,13 +306,13 @@
                         <!-- SAFIRA TESTE -->
                         <div id="safiraInputContainer">
                                 <span class="androidInput">
-                                        <input id="cmdSafira" type="text" class="inputAndroid" style="font-size:  15px; color: white;
+                                        <input id="cmdSafira" type="text" class="form-control" placeholder="Safira" style="height: 25px; padding: 5px;
                                                width: 400px;" onkeypress="safiraEnter(event)">
                                 </span>
                         </div>
                         </div>
-                        <script src="../js/fries.min.js"></script>
-                        <script src="../js/fingerblast.js"></script>
+                        <!--<script src="../js/fries.min.js"></script>
+                        <script src="../js/fingerblast.js"></script>-->
                 </body>
                 <!--FIM PAGE-->
                 </html>
