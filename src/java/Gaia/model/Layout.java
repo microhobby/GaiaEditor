@@ -17,8 +17,13 @@ public class Layout extends MproEntityRelation
         public static final int WEBAPP = 4;
         public static final int SMARTPHONEAPP = 5;
         public static final int BOOK = 6;
+        public static final int PAGINA = 1;
+        public static final int ZOOM = 2;
+        public static final int NENHUM = 0;
         public int Efeito;
         public int Tipo;
+        public String BackgroundImage = "";
+        public String BackgroundColor = "";
         public List<LayoutPaginaTopo> Topo = new ArrayList();
         public List<LayoutPaginaRodape> Rodape = new ArrayList();
         public boolean hasFooterTop;

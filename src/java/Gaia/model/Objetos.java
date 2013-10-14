@@ -75,6 +75,7 @@ public class Objetos extends MproEntityRelation
                 this.Subline = false;
                 this.FatherId = "0";			//ID DO PAI DE CONTEINER
                 this.ClassType = this.getClass().getName();
+                this.Script = "";
         }
         
         public void ClearObjectsCount()

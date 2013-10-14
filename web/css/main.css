@@ -658,7 +658,28 @@ img{
 {
         position: absolute;
         top: 70px;
-        left: 40px;
+        left: 10px;
+}
+
+#comboEfeito
+{
+        position: absolute;
+        top: 70px;
+        left: 210px;
+}
+
+#colorPicker1
+{
+        position: absolute;
+        top: 140px;
+        left: 10px;
+}
+
+#fileBack1
+{
+        position: absolute;
+        top: 140px;
+        left: 210px;
 }
 
 #okLAyout

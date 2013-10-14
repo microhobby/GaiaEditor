@@ -18,6 +18,7 @@
         if(isLoged)
         {
                 session.setAttribute("isLoged", isLoged);
+                session.setAttribute("userObject", Login.LogedUser);
         }
         else if(session.getAttribute("isLoged") != null && (Boolean)session.getAttribute("isLoged"))
         {
@@ -62,6 +63,8 @@
                               <link href="../dist/css/bootstrap.css" rel="stylesheet">
                               <!-- Bootstrap theme -->
                               <link href="../dist/css/bootstrap-theme.min.css" rel="stylesheet">
+                              <link href="../css/colorpicker.css" rel="stylesheet">
+                              <link rel="stylesheet" href="../css/jquery.fileupload.css">
 
                               <!-- Custom styles for this template -->
                               <!--<link href="theme.css" rel="stylesheet">-->
@@ -92,6 +95,10 @@
                             <script src="../js/utils.js" type="text/javascript"> </script>
                             <script src="../dist/js/bootstrap.min.js"></script>
                             <script src="../assets/js/holder.js"></script>
+                            <script src="../js/bootstrap-colorpicker.js"></script>
+                            <script src="../js/jquery.ui.widget.js"></script>
+                            <script src="../js/jquery.iframe-transport.js"></script>
+                            <script src="../js/jquery.fileupload.js"></script>
                             
                             <!-- MODEL -->
                             <script src="../js/gaiaModel/User.js" type="text/javascript"> </script>
@@ -113,12 +120,15 @@
                             <script src="../js/gaiaView/ItemModel.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/List.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/Combobox.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/ColorPicker.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/FileUpload.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/main.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/EntitysCmds.js" type="text/javascript"> </script>
                             
                             <script type="text/javascript">
                                     LogedUser = $.parseJSON('<% out.print(Login.UserToJson()); %>');
                                     LogedUser = $.extend(new User(), LogedUser);
+                                    LogedUser.cast();
                                     //LogedUser = new User(LogedUser);
                             </script>
                             
@@ -284,21 +294,39 @@
                                                 <h3 class="panel-title">Layout</h3>
                                         </div>
                                       <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/project.png" />
+                                        <span style="position: absolute; top: 50px; left: 10px; color:  #333333; font-size: 11px">Tipo de Layout:</span>
                                       <div id="comboLayout" class="btn-group">
-                                              <button type="button" class="btn btn-default dropdown-toggle" style="width: 320px;" data-toggle="dropdown">
+                                              <button type="button" class="btn btn-default dropdown-toggle" style="width: 180px;" data-toggle="dropdown">
                                                         Escolha o Layout <span class="caret"></span>
                                                 </button>
-                                              <ul class="dropdown-menu" style="width: 320px;" role="menu">
-                                                        <li><a href="#">Action</a></li>
-                                                        <li><a href="#">Another action</a></li>
-                                                        <li><a href="#">Something else here</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="#">Separated link</a></li>
+                                                <ul class="dropdown-menu" style="width: 180px;" role="menu">          
                                                 </ul>
                                       </div>
+                                        <span style="position: absolute; top: 50px; left: 210px; color:  #333333; font-size: 11px">Efeito de Transição:</span>
+                                        <div id="comboEfeito" class="btn-group">
+                                              <button type="button" class="btn btn-default dropdown-toggle" style="width: 180px;" data-toggle="dropdown">
+                                                        Escolha Efeito<span class="caret"></span>
+                                                </button>
+                                              <ul class="dropdown-menu" style="width: 180px;" role="menu">
+                                              </ul>
+                                      </div>
+                                        <span style="position: absolute; top: 120px; left: 10px; color:  #333333; font-size: 11px">Cor de Fundo:</span>
+                                        <div id="colorPicker1" class="input-group input-append color" data-color="#fff" data-color-format="hex">
+                                                <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
+                                                <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
+                                        </div>
+                                        <span style="position: absolute; top: 120px; left: 210px; color:  #333333; font-size: 11px">Imagem de Fundo:</span>
+                                        <span id="fileBack1" class="btn btn-default fileinput-button" style="width: 180px;">
+                                                <i class="glyphicon "><img src="../img/img.png" /></i>
+                                                <span class="fileDesc">Selecione Imagem ...</span>
+                                                <input id="fileupload" class="fileUpload" type="file" name="files[]" multiple>
+                                                <div class="progress progress-striped active" style="display: none; margin-bottom: 0px;">
+                                                        <div class="progress-bar"></div>
+                                                </div>
+                                        </span>
                                       <button id="okLAyout" class="btn btn-default">
-                                                  &nbsp;&nbsp;&nbsp;&nbsp;Ok
-                                                  <img id="iconConfig" style="position: absolute; top: 7px; left: 7px;" src="../img/ok.png" />
+                                                <i class="glyphicon "><img src="../img/ok.png" /></i>
+                                                  Ok
                                         </button>
                               </div>
                         </div>

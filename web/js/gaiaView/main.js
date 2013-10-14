@@ -6,8 +6,12 @@
 var LogedUser = null;
 var listProj = new List();
 var comboLayouts = new Combobox();
+var comboEfeitos = new Combobox();
+var colorPick1 = new ColorPicker();
+var fileUp1 = new FileUpload();
 var modelProj = new ItemModel();
 var modelLayouts = new ItemModel();
+var modelEfeitos = new ItemModel();
 var slice_url = "http://localhost:8084/GaiaEditor/system/server.jsp";
 
 $(document).ready(function()
@@ -30,12 +34,33 @@ $(document).ready(function()
         comboLayouts.setElement("#comboLayout");
         comboLayouts.setModel(modelLayouts);
         
-        modelLayouts.add(new Item("BOOK", null));
-        modelLayouts.add(new Item("EAD", null));
-        modelLayouts.add(new Item("SMARTPHONE", null));
-        modelLayouts.add(new Item("SMARTPHONEAPP", null));
-        modelLayouts.add(new Item("WEB", null));
-        modelLayouts.add(new Item("WEBAPP", null));
+        modelLayouts.add(new Item("BOOK", 1));
+        modelLayouts.add(new Item("EAD", 2));
+        modelLayouts.add(new Item("SMARTPHONE", 3));
+        modelLayouts.add(new Item("SMARTPHONEAPP", 4));
+        modelLayouts.add(new Item("WEB", 5));
+        modelLayouts.add(new Item("WEBAPP", 6));
+        
+        /**
+         * SETA EFEITOS
+         */
+        comboEfeitos.setElement("#comboEfeito");
+        comboEfeitos.setModel(modelEfeitos);
+        
+        modelEfeitos.add(new Item("NENHUM", 0));
+        modelEfeitos.add(new Item("PÁGINA", 1));
+        modelEfeitos.add(new Item("ZOOM", 2));
+        
+        /**
+         * SETA COLOR PICKERS
+         */
+        colorPick1.setElement("#colorPicker1");
+        
+        /**
+         * SETA FILE UPLOAD
+         */
+        fileUp1.setUrl("http://localhost:8084/GaiaEditor/system/upload.jsp");
+        fileUp1.setElement("#fileBack1");
         
         /**
          *  REDIMENSIONAMENTO DAS TOOLS
