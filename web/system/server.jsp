@@ -11,7 +11,13 @@
 <%
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Content-Type", "text/html");
-            response.setHeader("Cache-Control", "no-cache");
+            /**
+        * CACHE
+        */
+       HttpServletResponse httpResponse = (HttpServletResponse) response;
+       httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+       httpResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0
+       httpResponse.setDateHeader("Expires", 0); // Proxies.
 
             //MproEntity.setBasePath("c:\\MproEntity\\");
             MproEntity.setBasePath("/home/matheus");

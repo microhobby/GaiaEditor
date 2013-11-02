@@ -8,12 +8,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" import="Gaia.controller.*, Gaia.model.*, mpro.MproEntity.*"%>
 
 <%
+        /**
+         * CACHE
+         */
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        httpResponse.setHeader("Pragma", "No-cache"); // HTTP 1.0
+        httpResponse.setDateHeader("Expires", 0); // Proxies.
+        
         //MproEntity.setBasePath("c:\\MproEntity\\");
         MproEntity.setBasePath("/home/matheus");
         MproEntity.setProjectName("GaiaEditor");
         String usu = request.getParameter("usu");
         String key = request.getParameter("key");
         boolean isLoged = Login.canLog(usu, key);
+        session.setMaxInactiveInterval(-1);
         
         if(isLoged)
         {
@@ -43,6 +52,9 @@
                                 name="viewport"
                                 content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
                             />
+                            <meta http-equiv="Pragma" content="no-cache">
+                            <meta http-equiv="Cache-Control" content="no-cache">
+                            <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
 
                             <!-- FAVICON -->
                             <link rel="shortcut icon" href="../gaia.ico" type="image/x-icon" />
@@ -58,6 +70,7 @@
                             <!--<![endif]-->
                             <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
                             <link rel="stylesheet" href="../css/aulas.css" type="text/css" />
+                            <link rel="stylesheet" type="text/css" href="../js/css/smoothness/jqueryUIcss.css"/>
                             <!--<link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />-->
                               <!-- Bootstrap core CSS -->
                               <link href="../dist/css/bootstrap.css" rel="stylesheet">
@@ -81,6 +94,7 @@
                             <!-- <script src="../js/swipe.js" type="text/javascript"> </script> -->
                             <!-- <script type="text/javascript" src="../js/biscoito.js"> </script> -->
                             <script src="../js/jqueryUI.js" type="text/javascript"> </script>
+                            <script src="../js/ui.multidraggable.js" type="text/javascript"> </script>
                             <script src="../js/jQueryRotate.js" type="text/javascript"> </script>
                             <!--<script src="../js/jqueryWheel.js" type="text/javascript"> </script>-->
                             <script src="../js/Anima.js" type="text/javascript"> </script>
@@ -96,9 +110,7 @@
                             <script src="../dist/js/bootstrap.min.js"></script>
                             <script src="../assets/js/holder.js"></script>
                             <script src="../js/bootstrap-colorpicker.js"></script>
-                            <script src="../js/jquery.ui.widget.js"></script>
-                            <script src="../js/jquery.iframe-transport.js"></script>
-                            <script src="../js/jquery.fileupload.js"></script>
+                            
                             
                             <!-- MODEL -->
                             <script src="../js/gaiaModel/User.js" type="text/javascript"> </script>
@@ -111,10 +123,14 @@
 
                             
                             <!-- CONTROLLER -->
+                            <script src="../js/gaiaController/Thread.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/server.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GText.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GDiv.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GImage.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->
+                            <script src="../js/gaiaView/Ajax.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/Lista.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/Item.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/ItemModel.js" type="text/javascript"> </script>
@@ -122,6 +138,8 @@
                             <script src="../js/gaiaView/Combobox.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/ColorPicker.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/FileUpload.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/KeyBoardUtils.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/StackUndo.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/main.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/EntitysCmds.js" type="text/javascript"> </script>
                             
@@ -135,7 +153,7 @@
                 </head>
 
                 <!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->
-                <body style="margin: 0; background-color:#444; display: none;" onload="">
+                <body style="margin: 0; background-color:#444; display: none;" onload="" onunload="">
                         <!-- STACK.JS -->
                         <div class="page">
                         <!-- DIV CONTAINER -->
@@ -145,7 +163,7 @@
                         <!--CONTENT-->
                         <div id="content" class="content">
                                 <!-- Style Override -->
-                                <style> .pg_sub { position: absolute; width: 600px; height: 500px; background-color: #EAEAEA; }</style>
+                                <style id="pgDinamic"> .pg_sub { position: absolute; width: 600px; height: 500px; background-color: #EAEAEA; } </style>
                                 <script type="text/javascript">
                                           $(document).ready(function() {
                                                     $("button").bind("touchstart touchend", function(e) {
@@ -195,9 +213,89 @@
                                         </div>
                                         <img id="iconConfig" style="position: absolute; top: 5px; left:  200px;" src="../img/project.png" />
                                         <div id="tool1Things" class="things">
-                                        <%
-                                                
-                                        %>
+                                                <!-- nome -->
+                                                <span style="color:  #333333; font-size: 11px;">Nome:<br>
+                                                        <span id="projName" style="color:  #333333; font-size: 12px;">Nenhum Projeto Selecionado</span>
+                                                </span>
+                                                <br>
+                                                <center>
+                                                        <button id="closeProject" class="btn btn-default" title="Fecha Projeto">
+                                                                <i class="glyphicon "><img src="../img/sai.png" /></i>
+                                                                Fecha
+                                                        </button>
+                                                </center>
+                                                <!-- Paginas -->
+                                                <span style="color:  #333333; font-size: 11px;">Páginas:</span>
+                                                <div id="projPaginas" class="btn-group dropup">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Páginas <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <button id="addPage" class="btn btn-default" title="Adicionar Página ao Projeto">
+                                                        <i class="glyphicon "><img src="../img/+.png" /></i>
+                                                </button>
+                                                <button id="remPage" class="btn btn-default" title="Remover Página Selecionada">
+                                                        <i class="glyphicon "><img src="../img/verifica_false.png" /></i>
+                                                </button>
+                                                <br>
+                                                <!-- altura -->
+                                                <span style="color:  #333333; font-size: 11px;">Altura Páginas:</span>
+                                                <input id="projAltura" type="text" class="form-control" style="height: 25px; padding: 5px;" placeholder="Altura" disabled>  
+                                                <!-- largura -->
+                                                <span style="color:  #333333; font-size: 11px;">Largura Páginas:</span>
+                                                <input id="projLargura" type="text" class="form-control" style="height: 25px; padding: 5px;" placeholder="Largura" disabled>  
+                                                <!-- layouts -->
+                                                <span style="color:  #333333; font-size: 11px;">Layout:</span>
+                                                <div id="projLayout" class="btn-group dropup">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Layout <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <!-- efeitos -->
+                                                <span style="color:  #333333; font-size: 11px;">Efeito:</span>
+                                                <div id="projEfeito" class="btn-group dropup">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown" disabled>
+                                                                Efeito <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <!-- cor de fundo -->
+                                                <span style="color:  #333333; font-size: 11px">Cor Fundo:</span>
+                                                <div id="colorPicker2" class="input-group input-append color" data-color="#fff" data-color-format="hex">
+                                                        <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
+                                                        <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
+                                                </div>
+                                                <!-- Recurso -->
+                                                <span style="color:  #333333; font-size: 11px;">Recursos:</span>
+                                                <div id="projRecurso" class="btn-group dropup">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Recursos <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <button id="addRecurso" class="btn btn-default" title="Adicionar Página ao Projeto">
+                                                        <i class="glyphicon "><img src="../img/+.png" /></i>
+                                                </button>
+                                                <button id="remRecurso" class="btn btn-default" title="Remover Página Selecionada">
+                                                        <i class="glyphicon "><img src="../img/verifica_false.png" /></i>
+                                                </button>
+                                                <br>
+                                                <!-- imagem de fundo -->
+                                                <span style="color:  #333333; font-size: 11px">Imagem:</span>
+                                                <span id="fileBack2" class="btn btn-default fileinput-button" style="width: 180px;">
+                                                        <i class="glyphicon "><img src="../img/img.png" /></i>
+                                                        <span class="fileDesc">Selecione Imagem ...</span>
+                                                        <input id="fileupload" class="fileUpload" type="file" name="files[]" multiple>
+                                                        <div class="progress progress-striped active" style="display: none; margin-bottom: 0px;">
+                                                                <div class="progress-bar"></div>
+                                                        </div>
+                                                </span>
                                         </div>
                                 </div>
                         </div>
@@ -210,9 +308,10 @@
                                         </div>
                                         <img id="iconConfig" style="position: absolute; top: 5px; left:  200px;" src="../img/set.png" />
                                         <div id="tool2Things" class="things">
-                                        <%
-                                               
-                                        %>
+                                                <!-- LISTA DE OBJETOS -->
+                                                <div id="toolObjects" class="list-group">
+                                                         <!-- CARREGA AQUI UMA LISTA -->
+                                                </div>
                                         </div>
                                 </div>
                         </div>
@@ -220,13 +319,75 @@
                         <!-- MENU TOOL 3 -->
                         <div id="tool3" class="panel panel-default tool">
                                 <div class="panel-heading">
-                                        <h3 class="panel-title">&nbsp;&nbsp;&nbsp;&nbsp;Propiedades</h3>
+                                        <h3 class="panel-title">&nbsp;&nbsp;&nbsp;&nbsp;Propriedades</h3>
                                 </div>
                                 <img id="iconConfig" style="position: absolute; top: 5px; left:  5px;" src="../img/properties.png" />
                                 <div id="tool3Things" class="things">
-                                        <%
-                                               
-                                        %>
+                                        <!-- Objeto selecionado -->
+                                        <span style="color:  #333333; font-size: 11px;">Id:<br>
+                                                <center>
+                                                        <span id="idSelected" style="color:  #333333; font-size: 15px;"></span>
+                                                </center>
+                                        </span>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <!-- Altura -->
+                                        <span style="color:  #333333; font-size: 11px;">Altura: <br> </span>
+                                        <input id="objAltura" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Altura" method="setHeight">
+                                        <!-- Largura -->
+                                        <span style="color:  #333333; font-size: 11px;">Largura: <br> </span>
+                                        <input id="objLargura" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Largura" method="setWidth">
+                                        <!-- Topo -->
+                                        <span style="color:  #333333; font-size: 11px;">Topo: <br> </span>
+                                        <input id="objTopo" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Topo" method="setTop">
+                                        <!-- Esquerda -->
+                                        <span style="color:  #333333; font-size: 11px;">Esquerda: <br> </span>
+                                        <input id="objEsquerda" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Esquerda" method="setLeft">
+                                        <!-- Padding -->
+                                        <span style="color:  #333333; font-size: 11px;">Padding: <br> </span>
+                                        <input id="objPadding" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Padding" method="setPadding">
+                                        <!-- Cor de fundo -->
+                                        <span style="color:  #333333; font-size: 11px">Cor Fundo:</span>
+                                        <div id="objCorFundo" class="input-group input-append color" data-color="#fff" data-color-format="hex">
+                                                <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
+                                                <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
+                                        </div>
+                                        <!-- Border Radius -->
+                                        <span style="color:  #333333; font-size: 11px;">Border Radius: <br> </span>
+                                        <input id="objRadius" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Radius" method="setRadius">
+                                        <!-- Sombra -->
+                                        <span style="color:  #333333; font-size: 11px;">Sombra: <br> </span>
+                                        <input id="objSombra" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Sombra" method="setShadow">
+                                        <!-- Cor da Sombra -->
+                                        <span style="color:  #333333; font-size: 11px">Cor Sombra:</span>
+                                        <div id="objCorSombra" class="input-group input-append color" data-color="#fff" data-color-format="hex">
+                                                <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
+                                                <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
+                                        </div>
+                                        <!-- Pririoridade de visão -->
+                                        <span style="color:  #333333; font-size: 11px;">Pririoridade Visão: <br> </span>
+                                        <input id="objZindex" type="number" step="1" min="0" max="900" class="form-control objNumber" style="height: 25px; padding: 0px;" placeholder="Pririoridade Visão" method="setZindex">
+                                        <!-- Borda -->
+                                        <span style="color:  #333333; font-size: 11px;">Borda: <br> </span>
+                                        <input id="objBorda" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Borda" method="setBorder">
+                                        <!-- Cor da Borda -->
+                                        <span style="color:  #333333; font-size: 11px">Cor Borda:</span>
+                                        <div id="objCorBorda" class="input-group input-append color" data-color="#fff" data-color-format="hex">
+                                                <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
+                                                <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
+                                        </div>
+                                        <!-- Opacidade -->
+                                        <span style="color:  #333333; font-size: 11px;">Opacidade: <br> </span>
+                                        <input id="objOpacity" type="number" step="1" min="0" max="100" class="form-control objNumber" style="height: 25px; padding: 0px;" placeholder="Opacidade" method="setOpacity"><br>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <!-- Recurso -->
+                                        <span style="color:  #333333; font-size: 11px;">Mídia:</span>
+                                        <div id="objRecurso" class="btn-group dropup">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Recursos <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                        </div>
                                 </div>
                         </div>
                          
@@ -329,6 +490,11 @@
                                                   Ok
                                         </button>
                               </div>
+                        </div>
+                        
+                        <!-- LABEL FLUTUANTE -->
+                        <div id="superLabel" class="borda10shadow">
+                                #LabelID
                         </div>
                         
                         <!-- SAFIRA TESTE -->

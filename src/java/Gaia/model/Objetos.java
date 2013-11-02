@@ -24,6 +24,7 @@ public class Objetos extends MproEntityRelation
         public double R;
         public double S;
         public String Cb;
+        public String Cbb;
         public String Cs;
         public String Font;
         public int FontId;
@@ -41,6 +42,7 @@ public class Objetos extends MproEntityRelation
         public String FatherId;
         public List<Eventos> eventos = new ArrayList();
         public String ClassType;
+        public String Name;
         private Recursos _recurso;
         
         public Objetos(){}
@@ -62,6 +64,7 @@ public class Objetos extends MproEntityRelation
                 this.R = 0;
                 this.S = -100;
                 this.Cb = "transparent";
+                this.Cbb = "#211620";
                 this.Cs = "#211620";
                 //strings
                 this.Text = "Seu texto aqui!";
@@ -75,6 +78,7 @@ public class Objetos extends MproEntityRelation
                 this.Subline = false;
                 this.FatherId = "0";			//ID DO PAI DE CONTEINER
                 this.ClassType = this.getClass().getName();
+                this.Name = "";
                 this.Script = "";
         }
         

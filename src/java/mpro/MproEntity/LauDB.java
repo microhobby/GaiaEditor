@@ -87,7 +87,7 @@ public class LauDB
         }
         catch (SQLException ex)
         {
-            System.err.println(ex.getMessage());
+            System.err.println(ex.getMessage() + "\n| " + cmd);
             this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
             this.Err = false;
         }
@@ -133,7 +133,7 @@ public class LauDB
                  } 
                 catch (SQLException ex)
                 {
-                        System.err.println(ex.getMessage()); 
+                        System.err.println(ex.getMessage() + "\n| " + cmd); 
                         this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
                         this.Err = false;
                 }
@@ -203,7 +203,7 @@ public class LauDB
         }
         catch (SQLException ex)
         {
-                System.err.println(ex.getMessage()); 
+                System.err.println(ex.getMessage() + "\n| " + cmd); 
                 this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
                 this.Err = false;
         }

@@ -17,6 +17,7 @@ function Combobox()
          * @type $ 
          */
         var _elem = null;
+        var _ix = 0;
         
         /**
          * @type Item
@@ -33,9 +34,10 @@ function Combobox()
                          _elem.find(".dropdown-menu").html( _elem.find(".dropdown-menu").html() + '<li><a href="#" id="' + i + '" class="' + 
                                  _model.ObjectId + '">' + tmpElem.string + '</a></li>');
                 }
-                $("." + _model.ObjectId).click(function()
+                _elem.find("." + _model.ObjectId).click(function()
                 {
                         var retObj = _model.get(parseInt($(this).attr('id')));
+                        _ix = parseInt($(this).attr('id'));
                         _selected = retObj;
                         _elem.find("button").html(_selected.string + ' <span class="caret"></span>');
                 });
@@ -62,6 +64,20 @@ function Combobox()
                         arrange();
                 });
                 //arrange();
+        };
+        
+        /**
+         * Seta indice de item selecionado e dispara change
+         * @param {Integer} ind
+         */
+        this.setSelectIndex = function(ind)
+        {
+                _elem.find("#" + ind).click();
+        };
+        
+        this.getSelectIndex = function()
+        {
+                return _ix;
         };
         
         /**

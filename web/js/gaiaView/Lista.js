@@ -35,6 +35,12 @@ function Lista()
                     }
           };
 
+          this.clear = function()
+          {
+                        this.tam = 0;
+                        this.lista_ = new Array();
+          };
+
           this.array = function()
           {
                     return this.lista_;

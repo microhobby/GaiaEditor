@@ -1,16 +1,15 @@
 
 /**
- * Classe que retorna HTML de texto
- * @returns {GText}
+ * Classe que retorna
+ * @returns {GDiv}
  */
-
-function GText(largura, altura, topo, esquerda, visivel)
+function GDiv(largura, altura, topo, esquerda, visivel)
 {
         this.init(largura, altura, topo, esquerda, visivel);
 
-        this.ClassType = "GText";
-        this.JqueryId = "#text" + this.Id;
-        this.Text = "Seu Texto aqui...";
+        this.ClassType = "GDiv";
+        this.JqueryId = "#div" + this.Id;
+        this.Cb = "#6666cc";
         
         this.returnCode = function(flag, isPreview)
         {
@@ -21,46 +20,35 @@ function GText(largura, altura, topo, esquerda, visivel)
                 
                 var code;
                 var display = "none";
-                var italico = "italic";
-                var negrito = "bold";
-                var subline = "underline";
-
-                if(!flag)
+                
+                  if(!flag)
                 {
                         if(this.Visible)
                                 display = "block";
                 }
                 else
                         display = "block";
-
-                if(!this.Italico)
-                        italico = "normal";
-                if(!this.Negrito)
-                        negrito = "normal";
-                if(!this.Subline)
-                        subline = "normal";
                 
-                code =	'\n<div id="text' + this.Id + '"\n' +
+                code =	'\n<div id="div' + this.Id + '"\n' +
                                                 ' style="display:' + display + '; position: absolute; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
                                                 ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
-                                                ' border-radius: ' + this.R + 'px; opacity: ' + (this.Opacity / 100) + ';\n' +
-                                                ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
+                                                ' border-radius: ' + this.R + 'px;\n' +
                                                 'box-sizing: initial; \n' +
+                                                ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -moz-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -o-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
-                                                ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; z-index: '+this.Zindex+';\n' +
-                                                ' color: ' + this.Cf + '; font-size: ' + this.SizeFont + 'px; font-family: ' + this.Font + ';\n' +
-                                                ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + '">\n' +
-                                                        this.Text +
-                                        '\n</div>\n';
+                                                ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; opacity: ' + (this.Opacity / 100) + ';' +
+                                                ' z-index: '+this.Zindex+';">\n' +
+                                                        //vai ser o conteudo aqui
+                                                '\n</div>\n';
 			
                 return code;
         };
 }
 
 // Herança
-GText.prototype = new Objetos();
+GDiv.prototype = new Objetos();

@@ -30,7 +30,8 @@ function List()
                 for(var i = 0; i < _model.getTam(); i++)
                 {
                         var tmpElem = _model.get(i);
-                        _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' + tmpElem.string + '</a>');
+                        _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
+                                + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" /></i>  ' : "") + tmpElem.string + '</a>');
                 }
                 $("." + _model.ObjectId).click(function()
                 {

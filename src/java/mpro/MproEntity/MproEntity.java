@@ -491,7 +491,7 @@ public abstract class MproEntity
                     }    
                     else
                     {
-                                this.namesRelation.clear();
+                              this.namesRelation.clear();
                               // verifica os campos
                               for(int j = 0; j < this._class.getFields().length; j++)
                               {
@@ -505,9 +505,11 @@ public abstract class MproEntity
                                                  }
                                                  else
                                                  {
+                                                           isEqual = true;
                                                            this.joined = true;
                                                            this.nameRelation = this._class.getFields()[j].getName();
                                                            this.namesRelation.add(this._class.getFields()[j].getName());
+                                                           break;
                                                  }
                                         } 
                                         // se tem campo q nao tem temos q alterar
@@ -534,10 +536,11 @@ public abstract class MproEntity
                                         containField cf = new containField(tableInfo[w][1], tableInfo[w][2], false);
                                         for(int q = 0; q < this._class.getFields().length; q++)
                                         {
-                                                  cf.isDB = this._class.getFields()[q].getName().equals(cf.name) ? true : false;
-                                                  if(cf.isDB)
-                                                            break;
+                                                cf.isDB = this._class.getFields()[q].getName().equals(cf.name) ? true : false;
+                                                if(cf.isDB)
+                                                          break;
                                         }
+                                        
                                         if(cf.isDB)
                                                   changesTable.add(cf);
                                         else
@@ -669,17 +672,30 @@ public abstract class MproEntity
           private String getValuesUpdate()
           {
                     String parts = "";
+                    this.namesRelation.clear();
                     for(int i = 0; i < this._class.getFields().length; i++)
                     {
                               try {
-                                        if(this._class.getFields()[i].getType() == boolean.class)
-                                                            parts += this._class.getFields()[i].getName() + " = " + ((Boolean)this._class.getFields()[i].get(this) == true ? "1, " : "0, ");
-                                        if(i < this._class.getFields().length -1)
-                                                  parts += this._class.getFields()[i].getName() + " = " + (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
-                                                            + (this._class.getFields()[i].getType() == String.class ? "', " : ", ");
-                                        else
-                                                  parts += this._class.getFields()[i].getName() + " = " + (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
-                                                            + (this._class.getFields()[i].getType() == String.class ? "'" : "");
+                                      if((this._class.getFields()[i].getType() != ArrayList.class) && (this._class.getFields()[i].getType() != List.class))
+                                      {
+                                                if(this._class.getFields()[i].getType() == boolean.class)
+                                                        if(i < this._class.getFields().length -1)
+                                                                    parts += this._class.getFields()[i].getName() + " = " + ((Boolean)this._class.getFields()[i].get(this) == true ? "1, " : "0, ");
+                                                        else
+                                                                parts += this._class.getFields()[i].getName() + " = " + ((Boolean)this._class.getFields()[i].get(this) == true ? "1 " : "0 ");
+                                                else if(i < this._class.getFields().length -1)
+                                                          parts += this._class.getFields()[i].getName() + " = " + (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
+                                                                    + (this._class.getFields()[i].getType() == String.class ? "', " : ", ");
+                                                else
+                                                          parts += this._class.getFields()[i].getName() + " = " + (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
+                                                                    + (this._class.getFields()[i].getType() == String.class ? "'" : "");
+                                      }
+                                      else
+                                        {
+                                                  this.joined = true;
+                                                  this.nameRelation = this._class.getFields()[i].getName();
+                                                  this.namesRelation.add(this._class.getFields()[i].getName());
+                                        }
                               } catch (IllegalArgumentException ex) {
                                         Logger.getLogger(MproEntity.class.getName()).log(Level.SEVERE, null, ex);
                               } catch (IllegalAccessException ex) {

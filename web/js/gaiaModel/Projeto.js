@@ -26,6 +26,7 @@ function Projeto(nome, altura, largura, obs)
                 for(i = 0; i < this.paginas.length; i++)
                 {
                         this.paginas[i] = $.extend(new Paginas(), this.paginas[i]);
+                        this.paginas[i].cast();
                 }
                 
                 for(i = 0; i < this.recursos.length; i++)

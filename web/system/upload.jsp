@@ -16,13 +16,22 @@
 
 <%
 
+        /**
+         * CACHE
+         */
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        httpResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        httpResponse.setDateHeader("Expires", 0); // Proxies.
+        
         if(session.getAttribute("isLoged") != null && (Boolean)session.getAttribute("isLoged"))
         {
                 User u = (User) session.getAttribute("userObject");
                 File file ;
                 int maxFileSize = 5000 * 1024;
                 int maxMemSize = 5000 * 1024;
-                String filePath = "/home/matheus/gaiaData/User_" + u.UserName + "_" + u.cod + "/";
+                //String filePath = "/home/matheus/gaiaData/User_" + u.UserName + "_" + u.cod + "/";
+                String filePath = getServletContext().getRealPath("/") + u.UserName + "_" + u.cod + "/";
                 new File(filePath).mkdir();
                 String retJSON = "{\"files\":[";
 
@@ -77,14 +86,14 @@
                         }
                         catch(Exception ex) 
                         {
-                                retJSON += "{\"name\":\"0.Erro no servidor!\", \"size\":\"1024\", \"type\": \"multipart form-data;\", \"error\":\"" + ex.getMessage() + "\"}";
+                                retJSON += "{\"name\":\"0.Erro no servidor!. \", \"size\":\"1024\", \"type\": \"multipart form-data;\", \"error\":\"" + ex.getMessage() + "\"}";
                                 retJSON += "]}";
                                 out.println(retJSON);
                         }
                 }
                 else
                 {
-                        retJSON += "{\"name\":\"0.Erro no servidor!\", \"size\":\"1024\", \"type\": \"multipart form-data;\", \"error\":\"abort\"}";
+                        retJSON += "{\"name\":\"0.Erro no servidor!. \", \"size\":\"1024\", \"type\": \"multipart form-data;\", \"error\":\"abort\"}";
                         retJSON += "]}";
                         out.println(retJSON);
                 }

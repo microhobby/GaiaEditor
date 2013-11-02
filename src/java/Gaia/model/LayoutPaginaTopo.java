@@ -12,15 +12,17 @@ import mpro.MproEntity.MproEntityRelation;
 public class LayoutPaginaTopo extends MproEntityRelation
 {
         public String ScriptGeral;
-        public int Indice;
+        public double Altura;
+        public double Largura;
         public List<LayoutObjetosTopo> Elementos = new ArrayList();
     
         public LayoutPaginaTopo(){}
         
-        public LayoutPaginaTopo(String script, int indice)
+        public LayoutPaginaTopo(String script, double h, double w)
         {
                 this.ScriptGeral = script;
-                this.Indice = indice;
+                this.Altura = h;
+                this.Largura = w;
         }
 }
 

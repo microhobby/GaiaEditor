@@ -56,6 +56,18 @@ function ItemModel()
                 }
                 return obj;
         };
+        
+        /**
+         * Limpa os elementos
+         */
+        this.clear = function()
+        {
+                ItemModel.prototype.clear.call(this);
+                for(var i = 0; i < _eventLista.getTam(); i++)
+                {
+                        _eventLista.get(i)();
+                }
+        };
 }
 
 // Herança

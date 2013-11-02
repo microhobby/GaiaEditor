@@ -11,19 +11,19 @@ import mpro.MproEntity.MproEntityRelation;
  */
 public class Layout extends MproEntityRelation
 {
-        public static final int SMARTPHONE = 1;
-        public static final int WEB = 2;
-        public static final int EAD = 3;
-        public static final int WEBAPP = 4;
-        public static final int SMARTPHONEAPP = 5;
-        public static final int BOOK = 6;
-        public static final int PAGINA = 1;
-        public static final int ZOOM = 2;
-        public static final int NENHUM = 0;
+        private static final int SMARTPHONE = 3;
+        private static final int WEB = 5;
+        private static final int EAD = 2;
+        private static final int WEBAPP = 6;
+        private static final int SMARTPHONEAPP = 4;
+        private static final int BOOK = 1;
+        private static final int PAGINA = 1;
+        private static final int ZOOM = 2;
+        private static final int NENHUM = 0;
         public int Efeito;
         public int Tipo;
-        public String BackgroundImage = "";
-        public String BackgroundColor = "";
+        public String BackgroundImage;
+        public String BackgroundColor;
         public List<LayoutPaginaTopo> Topo = new ArrayList();
         public List<LayoutPaginaRodape> Rodape = new ArrayList();
         public boolean hasFooterTop;
@@ -34,11 +34,18 @@ public class Layout extends MproEntityRelation
         {
                 this.Efeito = efeito;
                 this.Tipo = tipo;
-                
-                switch(tipo)
+        }
+        
+        public void resolveHeaderFooter()
+        {
+                switch(Tipo)
                 {
-                        case 3:
+                        case Layout.EAD:
                                 this.hasFooterTop = true;
+                                LayoutPaginaTopo tp = new LayoutPaginaTopo("", 101.0, 800.0);
+                                this.Topo.add(tp);
+                                LayoutPaginaRodape rp = new LayoutPaginaRodape("", 50.0, 800.0);
+                                this.Rodape.add(rp);
                         break;
                         default:
                                 this.hasFooterTop = false;
