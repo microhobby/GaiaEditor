@@ -9,8 +9,8 @@ public class LayoutEventosRodape extends Eventos
 {
         public LayoutEventosRodape(){}
         
-        public LayoutEventosRodape(int id)
+        public LayoutEventosRodape(int id, String target , int action)
         {
-                super(id);
+                super(id, target, action);
         }
 }

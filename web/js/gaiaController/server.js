@@ -18,6 +18,30 @@ function getUser(fun)
         ajax.execute();
 }
 
+function makeProject()
+{
+        winRef = window.open("");
+        var srcPages = new FileFactory();
+        var ret = srcPages.makeStrign();
+        ajax.setData({user: LogedUser.cod, filesSrc: JSON.stringify(ret), projectCod: ptrProject.cod, method: "makeProject"});
+        ajax.onSucces(function(data)
+        {
+                var objData = JSON.parse(data);
+                winRef.location = objData.data.url;
+                var int = setInterval(function()
+                {
+                        if(winRef.onerror === null)
+                        {
+                               winRef.onerror =  setErrorList;
+                               winRef.onbeforeunload = closeDebug;
+                        }
+                        else
+                                clearInterval(int);
+                }, 0);
+        });
+        ajax.execute();
+}
+
 function newProject()
 {
         // Testa a integridade das informações
@@ -49,6 +73,41 @@ function newProject()
         }
         else
                 alert("Todos os campos devem ser preenchidos!");
+}
+
+function newResource(rec)
+{
+        ajax.setData({user: LogedUser.cod, resource: JSON.stringify(rec), projectCod: ptrProject.cod, method: "newRecurso"});
+        ajax.onSucces(function(data)
+        {
+                var objData = JSON.parse(data);
+                rec.cod = objData.data.cod;
+                rec.superCod = objData.data.superCod;
+                ptrProject.recursos.push(rec);
+                fileUp3.clear("Selecione Midia...");
+                if((rec.Arquivo.indexOf(".jpg") !== -1) || (rec.Arquivo.indexOf(".png") !== -1) || (rec.Arquivo.indexOf(".jpeg") !== -1) || (rec.Arquivo.indexOf(".gif") !== -1))
+                        modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
+                else
+                        modelRecursos.add(new Item(rec.Nome, rec, "../img/clipping_sound.png", 120));
+                $("#recursoNome").val("");
+        });
+        ajax.execute();
+}
+
+function newPage()
+{
+        ajax.setData({user: LogedUser.cod, proCod: ptrProject.cod, method: "newPage"});
+        ajax.onSucces(function(data)
+        {
+                var objData = JSON.parse(data);
+                var page = new Paginas("", ptrProject.paginas.length + 1);
+                page.cod = objData.data.cod;
+                page.superCod = objData.data.superCod;
+                ptrProject.paginas.push(page);
+                modelPaginas.add(new Item("Página " + (page.Indice -2), page));
+                openPage(page.Indice -3);
+        });
+        ajax.execute();
 }
 
 function newLayout()
@@ -84,6 +143,19 @@ function newObjeto(obj)
                 var objData = JSON.parse(data);
                 obj.cod = objData.data.cod;
                 obj.superCod = objData.data.superCod;
+        });
+        ajax.execute();
+}
+
+function newEvento(obj)
+{
+        ajax.setData({user: LogedUser.cod, objCod: ptrObject.cod, projectCod: ptrProject.cod, pageCod: ptrPage.cod, evento: JSON.stringify(obj), method: "newEvento"});
+        ajax.onSucces(function(data)
+        {
+                var objData = JSON.parse(data);
+                obj.cod = objData.data.cod;
+                obj.superCod = objData.data.superCod;
+                ptrObject.eventos.push(obj);
         });
         ajax.execute();
 }

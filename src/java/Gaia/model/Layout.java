@@ -36,20 +36,24 @@ public class Layout extends MproEntityRelation
                 this.Tipo = tipo;
         }
         
-        public void resolveHeaderFooter()
+        public List<Paginas> resolveHeaderFooter(Projeto p)
         {
+                List<Paginas> projsLayout = new ArrayList();
                 switch(Tipo)
                 {
                         case Layout.EAD:
                                 this.hasFooterTop = true;
-                                LayoutPaginaTopo tp = new LayoutPaginaTopo("", 101.0, 800.0);
+                                LayoutPaginaTopo tp = new LayoutPaginaTopo("", 100, p.LarguraPaginas);
                                 this.Topo.add(tp);
-                                LayoutPaginaRodape rp = new LayoutPaginaRodape("", 50.0, 800.0);
+                                LayoutPaginaRodape rp = new LayoutPaginaRodape("", 50, p.LarguraPaginas);
                                 this.Rodape.add(rp);
+                                projsLayout.add(new Paginas("", 0));
+                                projsLayout.add(new Paginas("", 1));
                         break;
                         default:
                                 this.hasFooterTop = false;
                         break;
                 }
+                return projsLayout;
         }
 }

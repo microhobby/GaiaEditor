@@ -27,7 +27,7 @@
             {
                     if(request.getParameter("user") != null)
                     {
-                            GaiaController gaiaEditor = new GaiaController(request.getParameter("user"), request, out);
+                            GaiaController gaiaEditor = new GaiaController(request.getParameter("user"), request, out, getServletContext());
                     }
                     else
                             throw new Exception("SAIA DAQUI VOCÊ NÃO SABE O QUE ESTÁ FAZENDO!");

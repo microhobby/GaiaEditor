@@ -91,7 +91,7 @@ function changeC2(jqueryID, str)
 //troca o caminho da imagem 
 function changePath(id, str) 
 { 
-        $("#img"+id).attr("src", str); 
+        $("#cont_img"+id).attr("src", str); 
 } 
 
 //troca a fonte 

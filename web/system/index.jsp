@@ -2,7 +2,7 @@
     Document   : index
     Created on  : 04/09/2013, 20:52:33
     Author          : Matheus de Barros Castello  
---%>
+--%> 
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" import="Gaia.controller.*, Gaia.model.*, mpro.MproEntity.*"%>
@@ -69,6 +69,13 @@
                             <link rel="stylesheet" href="../css/exMain.css" type="text/css" />
                             <!--<![endif]-->
                             <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=Creepster' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=Fondamento' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=Oleo Script' rel='stylesheet' type='text/css' />
+                            <link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />
                             <link rel="stylesheet" href="../css/aulas.css" type="text/css" />
                             <link rel="stylesheet" type="text/css" href="../js/css/smoothness/jqueryUIcss.css"/>
                             <!--<link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />-->
@@ -125,9 +132,13 @@
                             <!-- CONTROLLER -->
                             <script src="../js/gaiaController/Thread.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/server.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/FileFactory.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/ProjectSources.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GText.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GDiv.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GImage.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GButton.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GAudioHide.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->
                             <script src="../js/gaiaView/Ajax.js" type="text/javascript"> </script>
@@ -140,13 +151,14 @@
                             <script src="../js/gaiaView/FileUpload.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/KeyBoardUtils.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/StackUndo.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/ScriptError.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/main.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/EntitysCmds.js" type="text/javascript"> </script>
                             
                             <script type="text/javascript">
-                                    LogedUser = $.parseJSON('<% out.print(Login.UserToJson()); %>');
-                                    LogedUser = $.extend(new User(), LogedUser);
-                                    LogedUser.cast();
+                                    LogedUser = new User();
+                                    LogedUser.cod = <% out.print(Login.LogedUser.cod); %>
+                                    //LogedUser.cast();
                                     //LogedUser = new User(LogedUser);
                             </script>
                             
@@ -226,7 +238,7 @@
                                                 </center>
                                                 <!-- Paginas -->
                                                 <span style="color:  #333333; font-size: 11px;">Páginas:</span>
-                                                <div id="projPaginas" class="btn-group dropup">
+                                                <div id="projPaginas" class="btn-group">
                                                         <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
                                                                 Páginas <span class="caret"></span>
                                                         </button>
@@ -238,6 +250,9 @@
                                                 </button>
                                                 <button id="remPage" class="btn btn-default" title="Remover Página Selecionada">
                                                         <i class="glyphicon "><img src="../img/verifica_false.png" /></i>
+                                                </button>
+                                                <button id="debugPage" class="btn btn-default" title="Testar página">
+                                                        <i class="glyphicon "><img src="../img/bug.png" /></i>
                                                 </button>
                                                 <br>
                                                 <!-- altura -->
@@ -272,7 +287,7 @@
                                                 </div>
                                                 <!-- Recurso -->
                                                 <span style="color:  #333333; font-size: 11px;">Recursos:</span>
-                                                <div id="projRecurso" class="btn-group dropup">
+                                                <div id="projRecurso" class="btn-group">
                                                         <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
                                                                 Recursos <span class="caret"></span>
                                                         </button>
@@ -322,6 +337,55 @@
                                         <h3 class="panel-title">&nbsp;&nbsp;&nbsp;&nbsp;Propriedades</h3>
                                 </div>
                                 <img id="iconConfig" style="position: absolute; top: 5px; left:  5px;" src="../img/properties.png" />
+                                <div class="btn-group" style="padding: 5px; margin: 5px;">
+                                        <button id="showProps" type="button" class="btn btn-default">Propiedades</button>
+                                        <button id="showEvents" type="button" class="btn btn-default">Eventos</button>
+                                </div>
+                                <div id="tool4Things" class="things">
+                                        <!-- Objeto selecionado -->
+                                        <span style="color:  #333333; font-size: 11px;">Id:<br>
+                                                <center>
+                                                        <span id="idSelected1" style="color:  #333333; font-size: 15px;"></span>
+                                                </center>
+                                        </span>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <!-- Combo com os eventos-->
+                                        <span style="color:  #333333; font-size: 11px;">Eventos:</span>
+                                        <div id="objEventosTipo" class="btn-group">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Tipos <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                        </div>
+                                        <br><br>
+                                        <!-- Combo target -->
+                                        <span style="color:  #333333; font-size: 11px;">Alvo:</span>
+                                        <div id="objEventosTarget" class="btn-group">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Alvo <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                        </div>
+                                        <br><br>
+                                        <!-- Combo action -->
+                                        <span style="color:  #333333; font-size: 11px;">Ações:</span>
+                                        <div id="objEventosAction" class="btn-group">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Ação <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                        </div>
+                                        <br><br>
+                                        <!-- Botão de script -->
+                                        <span style="color:  #333333; font-size: 11px;">Script:</span><br>
+                                        <button id="objEventoScript" class="btn btn-default" style="width: 190px;" title="Adicione script personalizado">
+                                                <i class="glyphicon "><img src="../img/script.png" /></i>
+                                                Incluir Código
+                                        </button>
+                                </div>
                                 <div id="tool3Things" class="things">
                                         <!-- Objeto selecionado -->
                                         <span style="color:  #333333; font-size: 11px;">Id:<br>
@@ -381,12 +445,52 @@
                                         <hr style="margin-top:  0px; margin-bottom: 0px;">
                                         <!-- Recurso -->
                                         <span style="color:  #333333; font-size: 11px;">Mídia:</span>
-                                        <div id="objRecurso" class="btn-group dropup">
+                                        <div id="objRecurso" class="btn-group ">
                                                 <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
                                                         Recursos <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu" style="width: 190px;" role="menu">          
                                                 </ul>
+                                        </div>
+                                        <br><br>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <!-- Fontes -->
+                                        <span style="color:  #333333; font-size: 11px;">Tipo da Fonte: <br> </span>
+                                        <div id="objFonte" class="btn-group dropup">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Fontes <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                        </div>
+                                        <span style="color:  #333333; font-size: 11px;">Tamanho da Fonte: <br> </span>
+                                        <input id="objFonteTam" type="number" step="1" min="0" max="100" class="form-control objNumber" style="height: 25px; padding: 0px;" placeholder="Tamanho Fonte" method="setSizeFont">
+                                        <!-- Cor da fonte -->
+                                        <span style="color:  #333333; font-size: 11px">Cor Fonte:</span>
+                                        <div id="objCorFonte" class="input-group input-append color" data-color="#fff" data-color-format="hex">
+                                                <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
+                                                <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
+                                        </div>
+                                        <!-- sublinhado e afins -->
+                                        <span style="color:  #333333; font-size: 11px">Estados da Fonte:</span>
+                                        <div id="objFonteNegrito" class="checkbox">
+                                                <label>
+                                                        <input type="checkbox" class="objBoolean" method="setNegrito"> Negrito
+                                                </label>
+                                        </div>
+                                        <div id="objFonteItalico" class="checkbox">
+                                                <label>
+                                                        <input type="checkbox" class="objBoolean" method="setItalico"> Italico
+                                                </label>
+                                        </div>
+                                        <div id="objFonteSublinhado" class="checkbox">
+                                                <label>
+                                                        <input type="checkbox" class="objBoolean" method="setSubline"> Sublinhado
+                                                </label>
+                                        </div>
+                                        <span style="color:  #333333; font-size: 11px">Texto:</span>
+                                        <div>
+                                                <textarea id="objTexto" class="form-control objText" rows="5" placeholder="Seu texto aqui..." method="setText">Seu texto aqui...</textarea>
                                         </div>
                                 </div>
                         </div>
@@ -489,6 +593,149 @@
                                                 <i class="glyphicon "><img src="../img/ok.png" /></i>
                                                   Ok
                                         </button>
+                              </div>
+                        </div>
+                        
+                        <!-- JANELA DE RESOURCES -->
+                        <div id="windowResources" class="tool">
+                              <div id="containerWindowResources" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Recursos</h3>
+                                        </div>
+                                      <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/compact.png" />
+                                      <div style="padding: 7px;">
+                                                <span id="fileBack3" class="btn btn-default fileinput-button" style="width: 180px;">
+                                                          <i class="glyphicon "><img src="../img/img.png" /></i>
+                                                          <span class="fileDesc">Selecione Midia ...</span>
+                                                          <input id="fileupload" class="fileUpload" type="file" name="files[]" multiple>
+                                                          <div class="progress progress-striped active" style="display: none; margin-bottom: 0px;">
+                                                                  <div class="progress-bar"></div>
+                                                          </div>
+                                                </span>
+                                                <br><br>
+                                                <input id="recursoNome" type="text" class="form-control" placeholder="Nome" style="height: 25px; padding: 5px;
+                                               width: 100%;">
+                                                <br>
+                                                <div style="float: right;">
+                                                        <button id="addRecursoRec" class="btn btn-default" title="Registra">
+                                                                          <i class="glyphicon "><img src="../img/+.png" /></i>
+                                                        </button>
+                                                        <button id="okResource" class="btn btn-default">
+                                                                  <i class="glyphicon "><img src="../img/ok.png" /></i>
+                                                                    Ok
+                                                        </button>
+                                                </div>
+                                                <input id="recursoFiltro" type="text" class="form-control" placeholder="Busque" style="height: 25px; padding: 5px; width: 220px; margin-top: 0px;">
+                                                <br>
+                                      </div>
+                                      <div id="meusRecursos" class="list-group">
+                                                <!-- CARREGA AQUI UMA LISTA -->
+                                      </div>
+                              </div>
+                        </div>
+                        
+                        <!-- JANELA DE DEBUG -->
+                        <div id="windowDebug" class="tool">
+                                <div id="containerWindowDebug" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Debug</h3>
+                                        </div>
+                                        <img id="iconConfig" style="position: absolute; top: 10px; left:  255px;" src="../img/bug.png" />
+                                        <div id="debugTools">
+                                                <div id="debugErros" class="list-group">
+                                                        <!-- CARREGA AQUI UMA LISTA -->
+                                                </div>
+                                        </div>
+                                        <input id="debugLog" type="text" step="1" min="0" max="100" class="form-control objNumber" style="height: 25px; padding: 0px;" placeholder="Log"
+                                               onkeypress="debugLogEnter(event)">
+                                </div>
+                        </div>
+                        
+                        <!-- JANELA DE SCRIPT -->
+                        <div id="windowScript" class="tool">
+                              <div id="containerWindowScript" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Script</h3>
+                                        </div>
+                                      <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/script.png" />
+                                      <!-- frame -->
+                                      <iframe id="IDE" src="IDE.htm"></iframe>
+                                      <!-- MAIS COISAS -->
+                                      <div id="scriptTools">
+                                      <div style="margin-left: 15px;">
+                                                <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                                <!-- Elemento alvo -->
+                                                <span style="color:  #333333; font-size: 11px;">Alvo: <br> </span>
+                                                <div id="scriptTarget" class="btn-group ">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Alvo <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <br><br>
+                                                <span style="color:  #333333; font-size: 11px;">Ação: <br> </span>
+                                                <div id="scriptAction" class="btn-group ">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Ação <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <br><br>
+                                                <button id="scriptInsert" class="btn btn-default" style="width: 190px;">
+                                                        <i class="glyphicon "><img src="../img/esquerda16x16.png" /></i>
+                                                          Insere
+                                                </button>
+                                                <br><br>
+                                                 <hr style="margin-top:  0px; margin-bottom: 0px; margin-left: -2px; width: 190px;">
+                                                <!-- Elemento alvo -->
+                                                <span style="color:  #333333; font-size: 11px;">Automático: <br> </span>
+                                                <div id="scriptAuto" class="btn-group ">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Auto <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <br><br>
+                                                 <hr style="margin-top:  0px; margin-bottom: 0px; margin-left: -2px; width: 190px;">
+                                                <!-- Elemento alvo -->
+                                                <span style="color:  #333333; font-size: 11px;">Alvo: <br> </span>
+                                                <div id="scriptTarget1" class="btn-group ">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Alvo <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <br><br>
+                                                <span style="color:  #333333; font-size: 11px;">Evento: <br> </span>
+                                                <div id="scriptAction1" class="btn-group ">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                                Evento <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                        </ul>
+                                                </div>
+                                                <br><br>
+                                                <button id="scriptInsert1" class="btn btn-default" style="width: 190px;">
+                                                        <i class="glyphicon "><img src="../img/esquerda16x16.png" /></i>
+                                                          Insere
+                                                </button>
+                                                <br><br>
+                                                 <hr style="margin-top:  0px; margin-bottom: 0px; margin-left: -2px; width: 190px;">
+                                      </div>
+                                      </div>
+                                      <br>
+                                      <button id="scriptSave" class="btn btn-default" style="width: 190px;">
+                                              <i class="glyphicon "><img src="../img/grava.png" /></i>
+                                                Salva
+                                      </button>
+                                      <button id="scriptCancel" class="btn btn-default" style="width: 190px;">
+                                              <i class="glyphicon "><img src="../img/verifica_false.png" /></i>
+                                                Cancela
+                                      </button>
                               </div>
                         </div>
                         

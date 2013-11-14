@@ -1,15 +1,18 @@
 
 package Gaia.controller;
 
+import Gaia.model.Eventos;
 import Gaia.model.Layout;
 import Gaia.model.Objetos;
 import Gaia.model.Paginas;
 import Gaia.model.Projeto;
+import Gaia.model.Recursos;
 import Gaia.model.User;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import mpro.MproEntity.MproEntity;
@@ -23,11 +26,13 @@ public class GaiaController
         User userContext;
         HttpServletRequest request;
         JspWriter out;
+        ServletContext context;
         
-        public GaiaController(String userCod, HttpServletRequest _request, JspWriter _out)
+        public GaiaController(String userCod, HttpServletRequest _request, JspWriter _out, ServletContext _context)
         {
                 this.request = _request;
                 this.out = _out;
+                this.context = _context;
                 User tmpU = new User();
                 tmpU.cod = Integer.parseInt(userCod);
                 ArrayList<User> users = MproEntity.getWhere(tmpU);
@@ -60,6 +65,17 @@ public class GaiaController
                 writeStream("UserReturn", userContext.toJson(), false);
         }
         
+        public void makeProject()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                ProjectSources proSrc = MproEntity.fromJson(this.request.getParameter("filesSrc"), ProjectSources.class);
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                proSrc.setProjeto(ptrProjeto);
+                String sandBox = this.context.getRealPath("/") + this.userContext.UserName + "_" + this.userContext.cod + "/";
+                FileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.context.getRealPath("/"));
+                writeStream("Sucesso", "{\"url\": \"" + ("../" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/html/index.htm") + "\"}", false);
+        }
+        
         public void newProject() 
         {
                 Projeto newPro = MproEntity.fromJson(this.request.getParameter("project"), Projeto.class);
@@ -68,15 +84,34 @@ public class GaiaController
                 writeStream("Projeto retornado", this.userContext.Projetos.get(this.userContext.Projetos.size() -1).toJson(), false);
         }
         
+        public void newRecurso()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                Recursos resource = MproEntity.fromJson(this.request.getParameter("resource"), Recursos.class);
+                ptrProjeto.recursos.add(resource);
+                ptrProjeto.Save();
+                writeStream("Codigo do recurso", "{\"cod\": " + resource.cod + ", \"superCod\": " + ptrProjeto.cod + "}", false);
+        }
+        
         public void newLayout()
         {
                 Layout newLayout = MproEntity.fromJson(this.request.getParameter("layout"), Layout.class);
-                newLayout.resolveHeaderFooter();
                 Projeto proPtr = this.filterProjeto(Integer.parseInt(this.request.getParameter("proCod")));
+                proPtr.paginas = newLayout.resolveHeaderFooter(proPtr);
                 proPtr.layout.add(newLayout);
-                proPtr.paginas.add(new Paginas("", 0));
+                proPtr.paginas.add(new Paginas("", 2));
                 this.userContext.Save();
                 writeStream("Projeto retornado", this.filterProjeto(Integer.parseInt(this.request.getParameter("proCod"))).toJson(), false);
+        }
+        
+        public void newPage()
+        {
+                Projeto proPtr = this.filterProjeto(Integer.parseInt(this.request.getParameter("proCod")));
+                Paginas ptrPage = new Paginas("", proPtr.paginas.size() -1);
+                proPtr.paginas.add(ptrPage);
+                this.userContext.Save();
+                writeStream("Sucesso", "{\"cod\": " + ptrPage.cod + ", \"superCod\": " + ptrPage.superCod + "}", true);
         }
         
         public void newObjeto()
@@ -112,6 +147,18 @@ public class GaiaController
                 replacePagina(ptrProjeto, ptrPaginas);
                 this.userContext.Save();
                 this.writeStream("Pagina salva", "", false);
+        }
+        
+        public void newEvento()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                int paginaCod = Integer.parseInt(this.request.getParameter("pageCod"));
+                int objectCod = Integer.parseInt(this.request.getParameter("objCod"));
+                Objetos ptrElem = filterElemento(projectCod, paginaCod, objectCod);
+                Eventos evTmp = MproEntity.fromJson(this.request.getParameter("evento"), Eventos.class);
+                ptrElem.eventos.add(evTmp);
+                ptrElem.Save();
+                writeStream("Sucesso", "{\"cod\": " + evTmp.cod + ", \"superCod\": " + evTmp.superCod + "}", false);
         }
         
         private void replaceProjeto(Projeto candidate)
@@ -182,6 +229,17 @@ public class GaiaController
                 {
                         if(pag.cod == cd)
                                 return pag;
+                }
+                return null;
+        }
+        
+        private Objetos filterElemento(int pcd, int gcd, int ecd)
+        {
+                Paginas pageTmp = filterPagina(pcd, gcd);
+                for(Objetos o : pageTmp.Elementos)
+                {
+                        if(o.cod == ecd)
+                                return o;
                 }
                 return null;
         }

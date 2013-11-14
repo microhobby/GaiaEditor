@@ -1,0 +1,11 @@
+
+/* *
+ * Classe para conter as sources do projeto
+ * @return {ProjectSources}
+ */
+function ProjectSources()
+{
+        this.Paginas = new Array();
+        this.Rodape = "";
+        this.Topo = "";
+}

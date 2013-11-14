@@ -10,7 +10,8 @@ function GImage(largura, altura, topo, esquerda, visivel)
         
         this.ClassType = "GImage";
         this.JqueryId = "#img" + this.Id;
-        this.recursos.push(new Recursos("Padrão", "Imagem", "../img/question5.png"));
+        //this.recursos.push(new Recursos("Padrão", "Imagem", "../img/question5.png"));
+        //this.recurso = -1;
         
         this.returnCode = function(flag, isPreview)
         {
@@ -21,6 +22,7 @@ function GImage(largura, altura, topo, esquerda, visivel)
                 
                 var code;
                 var display = "none";
+                var recursoInt = this.recurso;
                 
                   if(!flag)
                 {
@@ -41,7 +43,12 @@ function GImage(largura, altura, topo, esquerda, visivel)
                                                 ' -o-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; z-index: '+this.Zindex+';"> \n'+
-                                                '<img id="cont_img' + this.Id + '" src="' + (this.recursos[0].Arquivo !== undefined ? this.recursos[0].Arquivo : "../img/question5.png") + '" \n' +
+                                                '<img id="cont_img' + this.Id + '" src="../' +
+                                                (this.recurso !== -1 ?  LogedUser.UserName + "_" + LogedUser.cod + "/" +
+                                                ptrProject.recursos.filter(function(element)
+                                                {
+                                                        return element.cod === recursoInt;
+                                                })[0].Arquivo : "img/question5.png") + '" \n' +
                                                 ' width="100%" height="100%" ' +
                                                 ' ondragstart="return false" onselectstart="return false" />\n' +
                                                 '</div>\n';

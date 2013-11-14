@@ -15,6 +15,7 @@ function Paginas(script, indice)
                 for(var i = 0; i < this.Elementos.length; i++)
                 {
                         this.Elementos[i] = $.extend(new window[this.Elementos[i].ClassType](), this.Elementos[i]);
+                        this.Elementos[i].cast();
                 }
         };
 }

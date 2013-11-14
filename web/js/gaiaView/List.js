@@ -29,14 +29,18 @@ function List()
                 _elem.html("");
                 for(var i = 0; i < _model.getTam(); i++)
                 {
+                        /** @type Item */
                         var tmpElem = _model.get(i);
                         _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
-                                + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" /></i>  ' : "") + tmpElem.string + '</a>');
+                                + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" '  +
+                                (tmpElem.size !== undefined ? 'width="' + tmpElem.size + '" height="' + tmpElem.size + '"' : "")
+                                +  ' /></i>  ' : "") + tmpElem.string + '</a>');
                 }
                 $("." + _model.ObjectId).click(function()
                 {
                         var retObj = _model.get(parseInt($(this).attr('id')));
-                        _funcMouseListener(retObj);
+                        if(_funcMouseListener)
+                                _funcMouseListener(retObj);
                 });
         }
         
@@ -50,13 +54,18 @@ function List()
                                 var tmpElem = _model.get(i);
                                 if(tmpElem.string.toUpperCase().indexOf(_input.val().toUpperCase()) !== -1)
                                 {
-                                        _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' + tmpElem.string + '</a>');
+                                        //_elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' + tmpElem.string + '</a>');
+                                        _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
+                                                + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" '  +
+                                                (tmpElem.size !== undefined ? 'width="' + tmpElem.size + '" height="' + tmpElem.size + '"' : "")
+                                                +  ' /></i>  ' : "") + tmpElem.string + '</a>');
                                 }
                         }
                         $("." + _model.ObjectId).click(function()
                         {
                                 var retObj = _model.get(parseInt($(this).attr('id')));
-                                _funcMouseListener(retObj);
+                                if(_funcMouseListener)
+                                        _funcMouseListener(retObj);
                         });
                 }
                 else

@@ -28,8 +28,8 @@
         {
                 User u = (User) session.getAttribute("userObject");
                 File file ;
-                int maxFileSize = 5000 * 1024;
-                int maxMemSize = 5000 * 1024;
+                int maxFileSize = 50000 * 1024;
+                int maxMemSize = 50000 * 1024;
                 //String filePath = "/home/matheus/gaiaData/User_" + u.UserName + "_" + u.cod + "/";
                 String filePath = getServletContext().getRealPath("/") + u.UserName + "_" + u.cod + "/";
                 new File(filePath).mkdir();
@@ -66,19 +66,23 @@
                                                 // Get the uploaded file parameters
                                                 String fieldName = fi.getFieldName();
                                                 String fileName = fi.getName();
+                                                String finalName = "";
                                                 boolean isInMemory = fi.isInMemory();
                                                 long sizeInBytes = fi.getSize();
+                                                
+                                                
                                                 // Write the file
                                                 if( fileName.lastIndexOf("\\") >= 0 )
                                                 {
-                                                        file = new File( filePath + System.currentTimeMillis() + "." + fileName.substring( fileName.lastIndexOf("\\"))) ;
+                                                        finalName = System.currentTimeMillis() + "." + fileName.substring( fileName.lastIndexOf("\\"));
                                                 }
                                                 else
                                                 {
-                                                        file = new File( filePath + System.currentTimeMillis() + "." + fileName.substring(fileName.lastIndexOf("\\")+1)) ;
+                                                        finalName = System.currentTimeMillis() + "." + fileName.substring(fileName.lastIndexOf("\\")+1);
                                                 }
+                                                file = new File(filePath + finalName);
                                                 fi.write( file ) ;
-                                                retJSON += "{\"name\":\""  + System.currentTimeMillis() + "." + fileName + "\", \"size\":\"" + fi.getSize() + "\", \"type\": \"multipart form-data;\"}";
+                                                retJSON += "{\"name\":\""  + finalName + "\", \"size\":\"" + fi.getSize() + "\", \"type\": \"multipart form-data;\"}";
                                         }
                                 }
                                 retJSON += "]}";

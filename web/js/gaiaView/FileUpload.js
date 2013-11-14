@@ -173,6 +173,12 @@ function FileUpload()
                 return _file;
         };
         
+        this.clear = function(msg)
+        {
+                $("#" + _elem.attr('id') + ' .fileDesc').html(msg);
+                _file = "";
+        };
+        
         /**
          * Seta função para ser disparada ao completar o upload
          */

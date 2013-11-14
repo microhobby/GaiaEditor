@@ -36,10 +36,11 @@ public class Objetos extends MproEntityRelation
         public boolean Visible;
         public int Zindex;
         public double Opacity;
-        public String Script;
+        //public String Script;
         public int recurso;
         public String Text;
         public String FatherId;
+        public double Vss;
         public List<Eventos> eventos = new ArrayList();
         public String ClassType;
         public String Name;
@@ -79,7 +80,7 @@ public class Objetos extends MproEntityRelation
                 this.FatherId = "0";			//ID DO PAI DE CONTEINER
                 this.ClassType = this.getClass().getName();
                 this.Name = "";
-                this.Script = "";
+                //this.Script = "";
         }
         
         public void ClearObjectsCount()

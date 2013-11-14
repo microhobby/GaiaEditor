@@ -21,7 +21,7 @@ function Objetos()
                 this.Cbb = "#211620";                                   // Color border
                 this.Cs = "#211620";
                 this.Font = "Arial";
-                this.FontId = 68;
+                this.FontId = 0;
                 this.Cf = "#000000";
                 this.SizeFont = 11;
                 this.Negrito = false;
@@ -30,15 +30,26 @@ function Objetos()
                 this.Visible = visivel;
                 this.Zindex = 1;
                 this.Opacity = 100;
-                this.Script = "";
+                //this.Script = "";
                 this.Text = "";
                 this.FatherId = 0;
-                this.recursos = new Array();
+                //this.recursos = new Array();
+                this.recurso = -1;
                 this.eventos = new Array();
                 this.ClassType = "Objetos";
                 this.Name = "";
+                this.Vss = 0.0;
+                this.returned = false;
                 this.cod = 2147483647;
                 this.superCod = 2147483647;
+        };
+        
+        this.cast = function()
+        {
+                for(var i = 0; i < this.eventos.length; i++)
+                {
+                        this.eventos[i] = $.extend(new Eventos(), this.eventos[i]);
+                }
         };
         
         this.setWidth = function(num)
@@ -121,12 +132,53 @@ function Objetos()
                 $(this.JqueryId).css("opacity", this.Opacity / 100);
         };
         
+        this.setSizeFont = function(num)
+        {
+                this.SizeFont = num;
+                changeSizeFont(this.JqueryId, num);
+        };
+        
+        this.setFontColor = function(cor)
+        {
+                this.Cf = cor;
+                changeColorFont(this.JqueryId, cor);
+        };
+        
+        this.setNegrito = function(val)
+        {
+                this.Negrito = val;
+                changeFontN(this.JqueryId, (this.Negrito ? "bold" : "normal"));
+        };
+        
+        this.setItalico = function(val)
+        {
+                this.Italico = val;
+                changeFontI(this.JqueryId, (this.Italico ? "italic" : "normal"));
+        };
+        
+        this.setSubline = function(val)
+        {
+                this.Subline = val;
+                changeFontS(this.JqueryId, (this.Subline ? "underline" : "initial"));
+        };
+        
+        this.setText = function(val)
+        {
+                this.Text = val;
+                if(this.JqueryId.indexOf("bt") === -1)
+                        changeT(this.JqueryId, val);
+                else
+                {
+                        $("#bt" + this.Id).html(val);
+                }
+        };
+        
         /**
          * Implementa rotinas de eventos dos elementos
          */
         this.implementGaiaEvents = function()
         {
-                $(this.JqueryId).multidraggable();
+                $(this.JqueryId).multidraggable({cancel:false});
                 $(this.JqueryId).resizable();
                 // mostra label com o id do objeto
                 $(this.JqueryId).mouseover(function(evt)
@@ -141,8 +193,9 @@ function Objetos()
                 });
                 // seleciona o cara
                 var me = this;
-                $(this.JqueryId).bind("mousedown",function()
+                $(this.JqueryId).bind("mousedown",function(event)
                 {
+                        //event.preventDefault();
                         if(Objetos.grid)
                         {
                                 $(".gaiaFocused").removeClass("gaiaFocused");

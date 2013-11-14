@@ -39,8 +39,8 @@ public class LauDB
     {
         try 
         {
-            Class.forName("org.sqlite.JDBC");
-            //Class.forName("com.mysql.jdbc.Driver");
+            //Class.forName("org.sqlite.JDBC");
+            Class.forName("com.mysql.jdbc.Driver");
         }
         catch (ClassNotFoundException ex)
         {
@@ -52,11 +52,11 @@ public class LauDB
         // cria a conexão com o banco
         try
         {
-            connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-            //connection = DriverManager.getConnection("jdbc:mysql://mysql5.hostingzone.com.br:3307/", "mpro3", "");
+            //connection = DriverManager.getConnection("jdbc:sqlite:" + file);
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia?user=root&password=vertrigo");
             statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timer out para 30 segundos
-            statement.execute("PRAGMA synchronous=OFF");
+            //statement.execute("PRAGMA synchronous=OFF");
             this.Err = true;
         }
         catch(SQLException e)

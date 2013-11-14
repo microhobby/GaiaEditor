@@ -9,8 +9,8 @@ public class LayoutEventosTopo extends Eventos
 {
         public LayoutEventosTopo(){}
         
-        public LayoutEventosTopo(int id)
+        public LayoutEventosTopo(int id, String target, int action)
         {
-                super(id);
+                super(id, target, action);
         }
 }

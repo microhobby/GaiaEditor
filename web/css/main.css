@@ -37,6 +37,20 @@ div
         border:2px solid #000;
 }
 
+.buttonOk
+{
+        display: block;
+        /*width: 67px;
+        height: 28px;*/
+        border-style: none;
+        background-color: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        width: inherit;
+        height: inherit;
+        color: white;
+}
+
 .buttonOk a
 {
         display: block;
@@ -135,19 +149,6 @@ img{
 .centralizar{
     margin-left: 10%;
     margin-right: 10%;
-}
-
-#page{
-    width: 800px;
-        height: 698px;
-        position: absolute;
-    /*margin:10px auto;*/
-/*    padding: 10px;
-    padding-top:0px;*/
-    /*text-align:left; /* "remédio" para o hack do IE */
-    /*border: 1px solid #333;*/
-        background-color: transparent;
-        /*overflow-x: hidden;*/
 }
 
 #zoomO
@@ -495,6 +496,101 @@ img{
         height: 245px;
 }
 
+#windowResources
+{
+       position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 400px;
+        height: 245px; 
+}
+
+#windowScript
+{
+       position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 400px;
+        height: 245px; 
+}
+
+#windowDebug
+{
+       position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 280px;
+        height: 330px;
+        z-index: 999;
+}
+
+#containerWindowDebug
+{
+        position: absolute;
+        width: 280px;
+        height: 330px;
+}
+
+#debugTools
+{
+        position: absolute;
+        overflow-y: auto;
+        top: 40px;
+        width: 280px;
+        height: 260px;
+        /*border: 2px solid #000;*/
+}
+
+#debugLog
+{
+        position: absolute;
+        top: 300px;
+}
+
+#containerWindowResources
+{
+        position: absolute;
+        width: 400px;
+        height: 245px;
+}
+
+#containerWindowScript
+{
+        position: absolute;
+        width: 400px;
+        height: 245px;
+}
+
+#scriptTools
+{
+        position: absolute;
+        overflow-y: auto;
+        width: 220px;
+        height: calc(100% - 120px);
+        left: calc(100% - 220px);
+        /*border: 2px solid #000;*/
+}
+
+#scriptSave
+{
+        position: absolute;
+        top: calc(100% - 80px);
+        left: calc(100% - 205px);
+}
+
+#scriptCancel
+{
+        position: absolute;
+        top: calc(100% - 40px);
+        left: calc(100% - 205px);
+}
+
+#IDE
+{
+        border: 1px solid #aaaaaa;
+        position: absolute;
+}
+
 #tool1base
 {
         position: absolute;
@@ -562,10 +658,20 @@ img{
 #tool3Things
 {
         position: absolute;
-        top:  40px;
+        top:  90px;
         left:  5px;
         width: 212px;
         height: 200px;
+}
+
+#tool4Things
+{
+        position: absolute;
+        top:  90px;
+        left:  5px;
+        width: 212px;
+        height: 200px;
+        display: none;
 }
 
 #safiraInputContainer
@@ -575,6 +681,7 @@ img{
         left: 50px;
         height: 100%;
         width: 100%;
+        z-index: 100;
 }
 
 #searchProject
@@ -657,6 +764,15 @@ img{
         left: 5px;
         width: 388px;
         height: 115px;
+        overflow-y: auto;
+        box-shadow:  0 0 2px rgba(0, 0, 0, 0.54);
+}
+
+#meusRecursos
+{
+        margin-left: 7px;
+        width: calc(100% - 14px);
+        height: calc(100% - 200px);
         overflow-y: auto;
         box-shadow:  0 0 2px rgba(0, 0, 0, 0.54);
 }

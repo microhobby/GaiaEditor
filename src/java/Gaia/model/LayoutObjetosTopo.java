@@ -17,7 +17,7 @@ public class LayoutObjetosTopo extends Objetos
         
         public LayoutObjetosTopo(int id, String jqueryId, double w, double h, double t, double l, double b, double p,
                 double r, double s, String cb, String cs, String font, int fontid, String cf, int sizefont, boolean  negrito,
-                boolean italico, boolean subline, boolean visible, int zindex, double opacity, String script, String text, String fatherId)
+                boolean italico, boolean subline, boolean visible, int zindex, double opacity, String text, String fatherId)
         {
                 this.Id = id;
                 this.JqueryId = jqueryId;
@@ -41,7 +41,7 @@ public class LayoutObjetosTopo extends Objetos
                 this.Visible = visible;
                 this.Zindex = zindex;
                 this.Opacity = opacity;
-                this.Script = script;
+                //this.Script = script;
                 this.Text = text;
                 this.FatherId = fatherId;
         }

@@ -3,7 +3,6 @@
  * Classe que retorna HTML de texto
  * @returns {GText}
  */
-
 function GText(largura, altura, topo, esquerda, visivel)
 {
         this.init(largura, altura, topo, esquerda, visivel);

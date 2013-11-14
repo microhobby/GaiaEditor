@@ -24,6 +24,7 @@ function Combobox()
          */
         var _selected = null;
         var _funcMouseListener = null;
+        var _propagate = true;
         
         function arrange()
         {
@@ -40,6 +41,9 @@ function Combobox()
                         _ix = parseInt($(this).attr('id'));
                         _selected = retObj;
                         _elem.find("button").html(_selected.string + ' <span class="caret"></span>');
+                        if(_funcMouseListener && _propagate)
+                                _funcMouseListener(retObj);
+                        _propagate = true;
                 });
         }
         
@@ -70,8 +74,10 @@ function Combobox()
          * Seta indice de item selecionado e dispara change
          * @param {Integer} ind
          */
-        this.setSelectIndex = function(ind)
+        this.setSelectIndex = function(ind, propagate)
         {
+                if(propagate !== undefined)
+                        _propagate = propagate;
                 _elem.find("#" + ind).click();
         };
         
@@ -86,5 +92,10 @@ function Combobox()
         this.getSelectedItem = function()
         {
                 return _selected;
+        };
+        
+        this.addMouseActionListener = function(func)
+        {
+                _funcMouseListener = func;
         };
 }
