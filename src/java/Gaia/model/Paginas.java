@@ -22,4 +22,12 @@ public class Paginas extends MproEntityRelation
                 this.ScriptGeral = script;
                 this.Indice = indice;
         }
+        
+        public void deleteDeleteds()
+          {
+                  for(int i =0; i < this.Elementos.size(); i++)
+                  {
+                          this.Elementos.get(i).deleteDeleteds();
+                  }
+          }
 }

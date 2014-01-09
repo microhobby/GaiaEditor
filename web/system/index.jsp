@@ -17,17 +17,18 @@
         httpResponse.setDateHeader("Expires", 0); // Proxies.
         
         //MproEntity.setBasePath("c:\\MproEntity\\");
+        Login login = new Login();
         MproEntity.setBasePath("/home/matheus");
         MproEntity.setProjectName("GaiaEditor");
         String usu = request.getParameter("usu");
         String key = request.getParameter("key");
-        boolean isLoged = Login.canLog(usu, key);
+        boolean isLoged = login.canLog(usu, key);
         session.setMaxInactiveInterval(-1);
         
         if(isLoged)
         {
                 session.setAttribute("isLoged", isLoged);
-                session.setAttribute("userObject", Login.LogedUser);
+                session.setAttribute("userObject", login.LogedUser);
         }
         else if(session.getAttribute("isLoged") != null && (Boolean)session.getAttribute("isLoged"))
         {
@@ -52,9 +53,12 @@
                                 name="viewport"
                                 content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
                             />
-                            <meta http-equiv="Pragma" content="no-cache">
-                            <meta http-equiv="Cache-Control" content="no-cache">
-                            <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
+                            <meta http-equiv="cache-control" content="max-age=0" />
+                        <meta http-equiv="cache-control" content="no-cache" />
+                        <meta http-equiv="cache-control" content="no-store">
+                        <meta http-equiv="expires" content="-1" />
+                        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+                        <meta http-equiv="pragma" content="no-cache" />
 
                             <!-- FAVICON -->
                             <link rel="shortcut icon" href="../gaia.ico" type="image/x-icon" />
@@ -136,9 +140,13 @@
                             <script src="../js/gaiaController/ProjectSources.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GText.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GDiv.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GDivStatic.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GImage.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GButton.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GAudioHide.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/FonteDados.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GList.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GInput.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->
                             <script src="../js/gaiaView/Ajax.js" type="text/javascript"> </script>
@@ -157,7 +165,7 @@
                             
                             <script type="text/javascript">
                                     LogedUser = new User();
-                                    LogedUser.cod = <% out.print(Login.LogedUser.cod); %>
+                                    LogedUser.cod = <% out.print(login.LogedUser.cod); %>
                                     //LogedUser.cast();
                                     //LogedUser = new User(LogedUser);
                             </script>
@@ -178,12 +186,12 @@
                                 <style id="pgDinamic"> .pg_sub { position: absolute; width: 600px; height: 500px; background-color: #EAEAEA; } </style>
                                 <script type="text/javascript">
                                           $(document).ready(function() {
-                                                    $("button").bind("touchstart touchend", function(e) {
+                                                    /*$("button").bind("touchstart touchend", function(e) {
                                                               $(this).animate({});
                                                               $(this).toggleClass("hover_effect");
                                                               /*if(e.type == "touchend")
                                                                         $(this).click();*/
-                                                    });
+                                                    //});
                                                     $(".scrolls").mousedown(function(){
                                                               enableGest = false;
                                                     }).mouseup(function(){
@@ -230,12 +238,23 @@
                                                         <span id="projName" style="color:  #333333; font-size: 12px;">Nenhum Projeto Selecionado</span>
                                                 </span>
                                                 <br>
-                                                <center>
-                                                        <button id="closeProject" class="btn btn-default" title="Fecha Projeto">
-                                                                <i class="glyphicon "><img src="../img/sai.png" /></i>
-                                                                Fecha
-                                                        </button>
-                                                </center>
+                                                <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                                <br>
+                                                <button id="closeProject" class="btn btn-default" title="Fecha Projeto" style="width: 190px;">
+                                                        <i class="glyphicon "><img src="../img/sai.png" /></i>
+                                                        Fecha
+                                                </button>
+                                                <br>
+                                                <button id="debugPage" class="btn btn-default" style="width: 190px;" title="Testar página">
+                                                        <i class="glyphicon "><img src="../img/bug.png" /></i>
+                                                        Debug
+                                                </button>
+                                                <br>
+                                                <button id="packagePage" class="btn btn-default" style="width: 190px;" title="Testar página">
+                                                        <i class="glyphicon "><img src="../img/script_binary.png" /></i>
+                                                        Empacota
+                                                </button>
+                                                <br>
                                                 <!-- Paginas -->
                                                 <span style="color:  #333333; font-size: 11px;">Páginas:</span>
                                                 <div id="projPaginas" class="btn-group">
@@ -251,9 +270,10 @@
                                                 <button id="remPage" class="btn btn-default" title="Remover Página Selecionada">
                                                         <i class="glyphicon "><img src="../img/verifica_false.png" /></i>
                                                 </button>
-                                                <button id="debugPage" class="btn btn-default" title="Testar página">
-                                                        <i class="glyphicon "><img src="../img/bug.png" /></i>
+                                                <button id="scriptPage" class="btn btn-default" title="Script Geral da Página Selecionada">
+                                                        <i class="glyphicon "><img src="../img/script.png" /></i>
                                                 </button>
+                                                
                                                 <br>
                                                 <!-- altura -->
                                                 <span style="color:  #333333; font-size: 11px;">Altura Páginas:</span>
@@ -285,6 +305,12 @@
                                                         <span class="input-group-addon" style="padding: 3px;"><i style="background-color: #fff"></i></span>
                                                         <input type="text" class="form-control" style="height: 25px; width: 155px;" value="#fff" >
                                                 </div>
+                                                <!-- Entidades -->
+                                                <span style="color:  #333333; font-size: 11px;">Persistência:</span>
+                                                <button id="addEntities" class="btn btn-default" title="Entidades" style="width: 190px;">
+                                                        <i class="glyphicon "><img src="../img/db_blank16.png" /></i>
+                                                        Entidades
+                                                </button>
                                                 <!-- Recurso -->
                                                 <span style="color:  #333333; font-size: 11px;">Recursos:</span>
                                                 <div id="projRecurso" class="btn-group">
@@ -395,6 +421,16 @@
                                         </span>
                                         <hr style="margin-top:  0px; margin-bottom: 0px;">
                                         <!-- Altura -->
+                                        <span style="color:  #333333; font-size: 11px;">Nome Var: <br> </span>
+                                        <input id="objVar" type="text" class="form-control objText" style="height: 25px; padding: 5px;" placeholder="Variavel" method="setVar">
+                                        <br>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <div id="objVisible" class="checkbox">
+                                                <label>
+                                                        <input type="checkbox" class="objBoolean" method="setVisible"> Visível
+                                                </label>
+                                        </div>
+                                        <!-- Altura -->
                                         <span style="color:  #333333; font-size: 11px;">Altura: <br> </span>
                                         <input id="objAltura" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Altura" method="setHeight">
                                         <!-- Largura -->
@@ -406,6 +442,9 @@
                                         <!-- Esquerda -->
                                         <span style="color:  #333333; font-size: 11px;">Esquerda: <br> </span>
                                         <input id="objEsquerda" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Esquerda" method="setLeft">
+                                        <!-- Angulo -->
+                                        <span style="color:  #333333; font-size: 11px;">Angulo: <br> </span>
+                                        <input id="objAngulo" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Angulo" method="setAngle">
                                         <!-- Padding -->
                                         <span style="color:  #333333; font-size: 11px;">Padding: <br> </span>
                                         <input id="objPadding" type="text" class="form-control objNumber" style="height: 25px; padding: 5px;" placeholder="Padding" method="setPadding">
@@ -492,6 +531,28 @@
                                         <div>
                                                 <textarea id="objTexto" class="form-control objText" rows="5" placeholder="Seu texto aqui..." method="setText">Seu texto aqui...</textarea>
                                         </div>
+                                        <br>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <!-- Botão de script -->
+                                        <span style="color:  #333333; font-size: 11px;">Animações:</span><br>
+                                        <div id="objAnimas" class="btn-group">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Estados <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                        </div>
+                                        <button id="addEstado" class="btn btn-default" title="Adicionar Página ao Projeto">
+                                                <i class="glyphicon "><img src="../img/+.png" /></i>
+                                        </button>
+                                        <button id="remEstado" class="btn btn-default" title="Remover Página Selecionada">
+                                                <i class="glyphicon "><img src="../img/verifica_false.png" /></i>
+                                        </button>
+                                        <!-- ATRIBUTOS ESPECIAIS DO OBJETO -->
+                                        <br><br>
+                                        <hr style="margin-top:  0px; margin-bottom: 0px;">
+                                        <br>
+                                        <div id="SpecialFields"></div>
                                 </div>
                         </div>
                          
@@ -634,6 +695,69 @@
                               </div>
                         </div>
                         
+                         <!-- JANELA DE ENTIDADES -->
+                        <div id="windowEntity" class="tool">
+                                <div id="containerWindowResources" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Entidades</h3>
+                                        </div>
+                                      <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/db_blank16.png" />
+                                      <br>
+                                      <div style="padding: 5px;">
+                                      <input id="entityNome" type="text" class="form-control" placeholder="Nome da Entidade" style="height: 25px; padding: 5px;
+                                               width: 90%; float: left;">
+                                      <button id="addEntity" class="btn btn-default" title="Adicionar Entidade" style="width:  10%;">
+                                                <i class="glyphicon "><img src="../img/+.png" /></i>
+                                      </button>
+                                      <!-- COMBO DE ENTIDADES -->
+                                      <span style="color:  #333333; font-size: 11px;">Entidades nesse projeto: <br> </span>
+                                      <div id="projEntities" class="btn-group ">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">
+                                                        Entidades <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: 190px;" role="menu">          
+                                                </ul>
+                                     </div>
+                                      <button id="okEntity" class="btn btn-default" style="float: right;">
+                                                <i class="glyphicon "><img src="../img/ok.png" /></i>
+                                                  Ok
+                                     </button>
+                                     <br><br>
+                                     <table id="entityTable" class="table table-hover" style="border-collapse:  initial; border-color: rgb(189, 189, 189); border-style:solid; border-width:1px; width: 100%; height: auto; border-radius: 4px; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.075); box-shadow: 0 1px 2px rgba(0,0,0,0.075);">
+                                     </table>
+                                     <br>
+                                     <input id="collEntityNome" type="text" class="form-control" placeholder="Nova Coluna" style="height: 25px; padding: 5px;
+                                               width: 70%; float: left;">
+                                     <div id="entityDataTypes" class="btn-group dropup" style="width: 20%; float: left;">
+                                                <button type="button" class="btn btn-default dropdown-toggle" style="width: auto;" data-toggle="dropdown">
+                                                        Tipo <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" style="width: auto;" role="menu">          
+                                                </ul>
+                                     </div>
+                                     <button id="addEntityColl" class="btn btn-default" title="Adicionar Coluna" style="width:  10%;">
+                                                <i class="glyphicon "><img src="../img/+.png" /></i>
+                                      </button>
+                                     </div>
+                              </div>
+                        </div>
+                        
+                         <!--  JANELA DE FIM DE PROCESSAMENTO -->
+                         <div id="windowCompleted" class="tool">
+                                <div id="containerWindowCompleted" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Construção Completa</h3>
+                                        </div>
+                                        <img id="iconConfig" style="position: absolute; top: 10px; left:  255px;" src="../img/ok.png" />
+                                        <center>
+                                        <button id="completeOpen" class="btn btn-default" style="width: 190px; margin-top: 25px;">
+                                                        <i class="glyphicon "><img src="../img/ok.png" /></i>
+                                                        Abra Página
+                                        </button>
+                                        </center>
+                                </div>
+                        </div>
+                         
                         <!-- JANELA DE DEBUG -->
                         <div id="windowDebug" class="tool">
                                 <div id="containerWindowDebug" class="panel panel-default">
@@ -744,14 +868,14 @@
                                 #LabelID
                         </div>
                         
-                        <!-- SAFIRA TESTE -->
+                        <!-- SAFIRA TESTE 
                         <div id="safiraInputContainer">
                                 <span class="androidInput">
                                         <input id="cmdSafira" type="text" class="form-control" placeholder="Safira" style="height: 25px; padding: 5px;
                                                width: 400px;" onkeypress="safiraEnter(event)">
                                 </span>
                         </div>
-                        </div>
+                        </div> -->
                         <!--<script src="../js/fries.min.js"></script>
                         <script src="../js/fingerblast.js"></script>-->
                 </body>
@@ -766,3 +890,5 @@
                 </script>
         </c:otherwise>
 </c:choose> 
+        <%
+        %>

@@ -38,10 +38,13 @@ function Ajax()
         /**
          * Executa a transação Ajax
          */
-        this.execute = function()
+        this.execute = function(_async)
         {
+                if(_async === undefined)
+                        _async = true;
+                
                 $.ajax({
-                            async: true,
+                            async: _async,
                             type:'post',
                             cache:false,
                             url: this.Url,
@@ -53,6 +56,7 @@ function Ajax()
                             } ,
                             error: function(data)
                             {
+                                    console.log(data);
                                     if(_funcE !== null)
                                             _funcE(data);
                             }

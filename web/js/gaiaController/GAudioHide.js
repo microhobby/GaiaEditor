@@ -8,6 +8,7 @@ function GAudioHide(largura, altura, topo, esquerda, visivel)
         this.init(largura, altura, topo, esquerda, visivel);
         
         this.ClassType = "GAudioHide";
+        this.Name = "Audio" + this.Id;
         this.JqueryId = "#Haudio" + this.Id;
         
         this.returnCode = function(flag, isPreview)
@@ -19,21 +20,29 @@ function GAudioHide(largura, altura, topo, esquerda, visivel)
                 var flash = "";
                 var recursoInt = this.recurso;
                 //desmembra nome do arquivo para wav
-                var fileTypes = (this.recurso !== -1 ?  "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" +
-                                                ptrProject.recursos.filter(function(element)
-                                                {
-                                                        return element.cod === recursoInt;
-                                                })[0].Arquivo : "../audio/gaia.mp3").split(".mp3");
+                var fileTypes = null;
+                
+                
+                if((this.recurso !== -1) && (this.GetFileResource(recursoInt).indexOf(".mp3") !== -1))
+                        fileTypes = (this.recurso !== -1 ?  
+                                                this.GetFileResource(recursoInt) : "../audio/gaia.mp3").split(".mp3");
+                else if((this.recurso !== -1) && (this.GetFileResource(recursoInt).indexOf(".ogg") !== -1))
+                        fileTypes = (this.recurso !== -1 ?  
+                                                this.GetFileResource(recursoInt) : "../audio/gaia.ogg").split(".ogg");
+                else
+                        fileTypes = (this.recurso !== -1 ?  
+                                                this.GetFileResource(recursoInt) : "../audio/gaia.mp3").split(".mp3");
                 
                 if(!flag)
                 {
-                        if(this._visible)
+                        if(this.Visible)
                                 display = "block";
-                                flash = 	'<object id="Haudio'+ this.id +'swf" type="application/x-shockwave-flash" data="../swf/HiddenPlay.swf" width="1" height="1">\n'+
+                                flash = 	'<script>var ____fuctionHaudio' + this.Id + ' = new Object(); ____fuctionHaudio' + this.Id + 
+                                        '.onUpdate = function(){ var clean = false; if(this.position == 0){ clean = true; if(____fuctionHaudio' + this.Id + '._eventsS){ for(var j = 0; j < ____fuctionHaudio' + this.Id + '._eventsS.length; j++){ if(____fuctionHaudio' + this.Id + '._eventsS[i]._runed){ ____fuctionHaudio' + this.Id + '._eventsS[i]._func(); ____fuctionHaudio' + this.Id + '._eventsS[i]._runed = true; }} }}else{ for(var j = 0; j < ____fuctionHaudio' + this.Id + '._eventsS.length; j++){ ____fuctionHaudio' + this.Id + '._eventsS[i]._runed = false; }} for(var i = 0; i < ____fuctionHaudio' + this.Id + '._events.length; i++){ if(clean){ ____fuctionHaudio' + this.Id + '._events[i]._runed = false; } if(____fuctionHaudio' + this.Id + '._events[i]._time <= (this.position * 1000)){ if(____fuctionHaudio' + this.Id + '._events[i]._func && !____fuctionHaudio' + this.Id + '._events[i]._runed){ ____fuctionHaudio' + this.Id + '._events[i]._func(); ____fuctionHaudio' + this.Id + '._events[i]._runed = true; }}} }</script>\n<object id="Haudio'+ this.Id +'swf" type="application/x-shockwave-flash" data="../swf/player_mp3_js.swf" width="1" height="1">\n'+
                                         '	<param name="allowScriptAccess" value="sameDomain">\n'+
                                         '	<param name="wmode" value="transparent">\n'+
                                         '	<param name="allowScriptAccess" value="sameDomain">\n'+
-                                        '	<param name="FlashVars" value="path=' + fileTypes[0] + '.mp3" />\n'+
+                                        '	<param name="FlashVars" value="listener=____fuctionHaudio' + this.Id + '&amp;interval=100&amp;mp3=' + fileTypes[0] + '.mp3" />\n'+
                                         '</object>\n';
                 }
                 else
@@ -46,7 +55,7 @@ function GAudioHide(largura, altura, topo, esquerda, visivel)
                 code =	'<div id="Haudio' + this.Id + '" style="width: 1px; height: 1px; \n' +
                                 'background-color:' + bgColor + '; display: block; position: absolute;\n' +
                                 'left: ' + this.L + 'px; top: ' + this.T + 'px; z-index: ' + this.Zindex + '; opacity: ' + (!flag ? "0.001" : "1") + ';">\n'+
-                                '<audio id="Haudio' + this.Id + 'aud" style="width: 1px; height:1px;">\n'+
+                                '<audio id="Haudio' + this.Id + 'aud" preload="auto" style="width: 1px; height:1px;">\n'+
                                         //sources para HTML5
                                 ' <source src="' + fileTypes[0] + '.mp3" />\n'+
                                 ' <source src="' + fileTypes[0] + '.ogg" />\n'+

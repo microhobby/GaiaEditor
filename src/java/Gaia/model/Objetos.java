@@ -19,6 +19,7 @@ public class Objetos extends MproEntityRelation
         public double H;
         public double T;
         public double L;
+        public double A;
         public double B;
         public double P;
         public double R;
@@ -42,8 +43,12 @@ public class Objetos extends MproEntityRelation
         public String FatherId;
         public double Vss;
         public List<Eventos> eventos = new ArrayList();
+        public List<Estados> estados = new ArrayList();
         public String ClassType;
         public String Name;
+        public boolean Deleted;
+        public String SpecialFields;
+        public boolean StaticPos;
         private Recursos _recurso;
         
         public Objetos(){}
@@ -56,6 +61,7 @@ public class Objetos extends MproEntityRelation
                 this.H = altura;
                 this.T = topo;
                 this.L = esquerda;
+                this.A = 0;
                 this.Visible = visivel;
                 this.Zindex = 1;
                 this.Opacity = 1.0;
@@ -80,6 +86,9 @@ public class Objetos extends MproEntityRelation
                 this.FatherId = "0";			//ID DO PAI DE CONTEINER
                 this.ClassType = this.getClass().getName();
                 this.Name = "";
+                this.Deleted = false;
+                this.SpecialFields = "";
+                this.StaticPos = false;
                 //this.Script = "";
         }
         
@@ -96,5 +105,21 @@ public class Objetos extends MproEntityRelation
                 
                 if(rTmp.size() > 0)
                     this._recurso = rTmp.get(0);
+        }
+        
+        public void deleteDeleteds()
+        {
+                if(this.Deleted)
+                        this.Delete();
+                        
+                for(int i =0; i < this.eventos.size(); i++)
+                {
+                        this.eventos.get(i).deleteDeleteds();
+                }
+                
+                for(int j = 0; j < this.estados.size(); j++)
+                {
+                        this.estados.get(j).deleteDeleteds();
+                }
         }
 }

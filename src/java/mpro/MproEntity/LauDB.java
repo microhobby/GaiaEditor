@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class LauDB
 {   
     private Connection connection;
-    private Statement statement;
+    //private Statement statement;
     private ResultSet sql;
     public boolean Err;
     public String Message;
@@ -53,9 +53,11 @@ public class LauDB
         try
         {
             //connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia?user=root&password=vertrigo");
-            statement = connection.createStatement();
-            statement.setQueryTimeout(30);  // set timer out para 30 segundos
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia", "root", "vertrigo");
+            //connection = DriverManager.getConnection("jdbc:mysql://mysql.mpro3.com.br:3307/gaia", "mpro3", "22032010laurate");
+            //connection = DriverManager.getConnection("jdbc:mysql://nut.unifenas.br:3306/Gaia", "root", "vertrigo");
+             //statement = connection.createStatement();
+            //statement.setQueryTimeout(30);  // set timer out para 30 segundos
             //statement.execute("PRAGMA synchronous=OFF");
             this.Err = true;
         }
@@ -76,6 +78,8 @@ public class LauDB
     {
         try
         {
+            ResultSet sql;   
+            Statement  statement = connection.createStatement();
             sql = statement.executeQuery(cmd);
             this.elems = this.fetchAll(sql);
             this.Err = true;
@@ -100,17 +104,25 @@ public class LauDB
     private String[][] fetchAll(ResultSet res) throws SQLException
     {
                 ResultSetMetaData rsmd = res.getMetaData();
-                this.numCollsI = rsmd.getColumnCount();
-                String[][] elemTmp = new String[1][this.numCollsI];
+                int nC = rsmd.getColumnCount();
+                this.numCollsI = nC;
+                String[][] elemTmp = new String[1][nC];
                 
                 int count = 0;
                 while(res.next())
                 {
                         elemTmp = Arrays.copyOf(elemTmp, count+1);
-                        elemTmp[count] = new String[this.numCollsI];
+                        elemTmp[count] = new String[nC];
                         for(int i = 0; i < rsmd.getColumnCount(); i++)
                         {
-                                elemTmp[count][i] = res.getString(i+1);
+                                try
+                                {
+                                        elemTmp[count][i] = res.getString(i+1);
+                                }
+                                catch(Exception e)
+                                {
+                                        System.err.println(e.getMessage());
+                                }
                         }
                         count++;
                 }
@@ -126,6 +138,7 @@ public class LauDB
                 boolean result = false;
                 try 
                 {
+                        Statement  statement = connection.createStatement();
                         sql = statement.executeQuery(cmd);
                         ResultSetMetaData rsmd = sql.getMetaData();
                         this.numCollsI = rsmd.getColumnCount();
@@ -159,7 +172,7 @@ public class LauDB
         * Implementa o fetch do objetos de dados </br>
         * É aconselhável que só se use esse método quando for implementa-lo em loop while
         */
-       public String[] prox()
+       /*public String[] prox()
        {
                this.elem = new String[this.numCollsI];
                 try 
@@ -178,7 +191,7 @@ public class LauDB
                         this.Err = false;
                 }
                 return null;
-       }
+       }*/
        
        /**
         * Retorna o objeto resgatado pelo prox() </br>
@@ -194,12 +207,19 @@ public class LauDB
         * cmd: String sql </br>
         * return: Verdadeiro caso haja sucesso no comando e falso caso não
         */
-    public boolean execute(String cmd)
+    public int execute(String cmd)
     {
-        boolean result = false;
+        int result = 0;
         try
         {
-            result = statement.execute(cmd);
+                Statement  statement = connection.createStatement();
+                result = statement.executeUpdate(cmd, Statement.RETURN_GENERATED_KEYS);
+                ResultSet rs = statement.getGeneratedKeys();
+                while(rs.next())
+                {
+                        result = rs.getInt(1);
+                }
+                //result = statement.execute(cmd);
         }
         catch (SQLException ex)
         {
@@ -220,13 +240,25 @@ public class LauDB
     
     public int get_last_insert_rowid()
     {
-              this.unQuery("SELECT last_insert_rowid();");
+              //this.unQuery("SELECT last_insert_rowid();");
+              this.unQuery("select last_insert_id();");
               try {
+                      if(this.sql != null && this.sql.next())
                         return this.sql.getInt(1);
               } catch (SQLException ex) {
                         Logger.getLogger(LauDB.class.getName()).log(Level.SEVERE, null, ex);
               }
               return 0;
+    }
+    
+    public boolean isClosed()
+    {
+            try {
+                    return this.connection.isClosed();
+            } catch (SQLException ex) {
+                    Logger.getLogger(LauDB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
     }
     
     /**

@@ -10,7 +10,13 @@ function GButton(largura, altura, topo, esquerda, visivel)
         this.ClassType = "GButton";
         this.JqueryId = "#cont_bt" + this.Id;
         this.Text = "Ok";
-        this.SizeFont = 11;
+        this.SizeFont = 15;
+        this.Cb = "#3276b1";
+        
+        this.calculeHexHUE = function()
+        {
+                return (parseInt(this.Cb.substr(1, this.Cb.length), 16) + 1186337).toString(16);
+        }
         
         this.returnCode = function(flag, isPreview)
         {
@@ -24,6 +30,7 @@ function GButton(largura, altura, topo, esquerda, visivel)
                 var italico = "italic";
                 var negrito = "bold";
                 var subline = "underline";
+                var recursoInt = this.recurso;
 
                 if(!flag)
                 {
@@ -45,18 +52,38 @@ function GButton(largura, altura, topo, esquerda, visivel)
                                 ' style="display: ' + display + '; position:absolute;\n' +
                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; ' +
                                 ' height: ' + this.H + 'px; width: ' + this.W + 'px; \n' +
-                                ' background-color: ' + this.Cb + '; padding: ' + this._p + "px; \n" +
+                                ' padding: ' + this._p + "px; \n" +
                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
-                                ' border-radius: ' + this.R + 'px; opacity: ' + this.Opacity + ';\n' +
+                                ' border-radius: ' + this.R + 'px; opacity: ' + (this.Opacity / 100) + ';\n' +
                                 ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                 ' -moz-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                 ' -o-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; z-index: '+this.Zindex+';' +
+                                ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
+                                ' -moz-transform: rotate(' + this.A + 'deg);\n' +
+                                ' -o-transform: rotate(' + this.A + 'deg);\n' +
+                                ' -ms-transform: rotate(' + this.A + 'deg);\n' +
+                                ' transform: rotate(' + this.A + 'deg);\n' +
                                 ' color: ' + this.Cf + '; font-size: ' + this.SizeFont + 'px; font-family: ' + this.Font + ';\n' +
                                 ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + ';\n' +
                                 '" class="">\n' +
-                                '	<button id="bt'+this.Id+'" class="btn btn-primary buttonOk">' + this.Text + '</button>\n' +
+                                '<style id="btDinamic' + this.Id + '"> #bt' + this.Id + '{\n' +
+                                'background-image: -webkit-gradient(linear, left 0%, left 100%, from(#' + this.calculeHexHUE() + '), to(' + this.Cb + '));\n'+
+                                'background-image: -webkit-linear-gradient(top, #' + this.calculeHexHUE() + ', 0%, ' + this.Cb + ', 100%);\n'+
+                                'background-image: -moz-linear-gradient(top, #' + this.calculeHexHUE() + ' 0%, ' + this.Cb + ' 100%);\n'+
+                                'background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); \n'+
+                                'background-repeat: repeat-x;\n' +
+                                'border-color: ' + this.Cb + ';\n' +
+                                'filter: progid:DXImageTransform.Microsoft.gradient(startColorstr= \'#ff'+  this.calculeHexHUE() + '\', endColorstr=\'#ff' + this.Cb.replace("#", "") + '\', GradientType=0);\n' +
+                                '} \n'+
+                                '#bt' + this.Id + ':active { background-color: ' + this.Cb + '; background-image: none;}' +
+                                '</style>' +
+                                '	<button id="bt'+this.Id+'" class="btn btn-primary buttonOk" style="'+
+                                'font-size: inherit; font-family: inherit; font-style: inherit; font-weight: inherit; text-decoration: inherit; ' +
+                                'color: inherit;"><i class="glyphicon "><img id="cont_img' + this.Id + '" src="' +
+                                                (this.recurso !== -1 ?  
+                                                this.GetFileResource(recursoInt) : "../img/blank.gif") + '" width="100%" height="100%" /></i><span>' + this.Text + '</span></button>\n' +
                                 '</div>\n\n';
 
                 return code;

@@ -1,9 +1,13 @@
 
 package Gaia.controller;
 
+import Gaia.model.Entities;
+import Gaia.model.Entity;
+import Gaia.model.Field;
 import Gaia.model.Projeto;
 import java.util.ArrayList;
 import java.util.List;
+import mpro.MproEntity.MproEntity;
 
 /**
  *
@@ -12,6 +16,7 @@ import java.util.List;
 public class ProjectSources 
 {
         public List<String> Paginas = new ArrayList();
+        public List<ProjectMidias> Midias = new ArrayList();
         public String Rodape = "";
         public String Topo = "";
         private Projeto projeto;
@@ -27,6 +32,246 @@ public class ProjectSources
         public void setProjeto(Projeto proj)
         {
                 this.projeto = proj;
+        }
+        
+        private String getTurnEffectProx()
+        {
+                String ret = "";
+                switch(projeto.layout.get(0).Efeito)
+                {
+                        case 1: // pagina
+                                ret = "$(\"#pg\" + id).animate(\n" +
+                                        "				{\n" +
+                                        "					opacity: 0.8,\n" +
+                                        "					left: (($('#header').offset().left) + parseInt($('#header').width()) / scale) * -1\n" +
+                                        "					//left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
+                                        "				}, 500, function() {\n" +
+                                        "					$(\"#pg\" + id).css(\"display\", \"none\");\n" +
+                                        "					garbCollect(id);\n" +
+                                        "				}\n" +
+                                        "			);\n";
+                        break;
+                        case 2: // zoom
+                                ret = "var auxid = pgInd;\n" +
+                                        "                    $(\"#pg\" + auxid).animate(\n" +
+                                        "                             {\n" +
+                                        "                                       opacity: 0.0,\n" +
+                                        "                                       left: 320,\n" +
+                                        "                                       //top: 480,\n" +
+                                        "                                       zoom: 0.2\n" +
+                                        "                                       //left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1\n" +
+                                        "                                       //left: (2*($(\"#page\").position().left + $(\"#page\").width() )) * -1\n" +
+                                        "                                       //left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
+                                        "                             }, 500, function() {\n" +
+                                        "                                       $(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
+                                        "                                       garbCollect(auxid);\n" +
+                                        "                                       //pgAnt = auxid;\n" +
+                                        "                                       //relloc();\n" +
+                                        "                             }\n" +
+                                        "                    );\n";
+                        break;
+                }
+                return ret;
+        }
+        
+        private String getTurnEffectAnt()
+        {
+                String ret = "";
+                switch(projeto.layout.get(0).Efeito)
+                {
+                        case 1: // pagina
+                                ret =       "$(\"#pg\" + id).animate(\n" +
+                                                "			{\n" +
+                                                "				opacity: 0.8,\n" +
+                                                "				left: (($('#header').offset().left) + parseInt($('#header').width()) / scale)\n" +
+                                                "			}, 500, function() {\n" +
+                                                "				$(\"#pg\" + id).css(\"display\", \"none\");\n" +
+                                                "				garbCollect(id);\n" +
+                                                "			}\n" +
+                                                "		);\n";
+                                                /*"$(\"#pg\" + id).animate(\n" +
+                                                "			{\n" +
+                                                "				opacity: 0.8,\n" +
+                                                "				left: (2*($('#header').offset().left) + parseInt($('#header').width()))\n" +
+                                                "			}, 500, function() {\n" +
+                                                "				$(\"#pg\" + id).css(\"display\", \"none\");\n" +
+                                                "				garbCollect(id);\n" +
+                                                "			}\n" +
+                                                "		);\n";*/
+                        break;
+                        case 2: // zoom
+                                ret = "var auxid = pgInd;\n" +
+                                        "                    $(\"#pg\" + auxid).animate(\n" +
+                                        "                             {\n" +
+                                        "                                       opacity: 0.0,\n" +
+                                        "                                       left: 320,\n" +
+                                        "                                       //top: 480,\n" +
+                                        "                                       zoom: 0.2\n" +
+                                        "                                       //left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1\n" +
+                                        "                                       //left: (2*($(\"#page\").position().left + $(\"#page\").width() )) * -1\n" +
+                                        "                                       //left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
+                                        "                             }, 500, function() {\n" +
+                                        "                                       $(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
+                                        "                                       garbCollect(auxid);\n" +
+                                        "                                       //pgAnt = auxid;\n" +
+                                        "                                       //relloc();\n" +
+                                        "                             }\n" +
+                                        "                    );\n";
+                        break;
+                }
+                return ret;
+        }
+        
+        private String getPageIn()
+        {
+                String ret = "";
+                
+                switch(projeto.layout.get(0).Efeito)
+                {
+                        case 1: // paginas
+                                ret = "	$(\"#pg\" + id).animate(\n" +
+                                                "		{\n" +
+                                                "			opacity: 1.0,\n" +
+                                                "			//left: $('#header').offset().left\n" +
+                                                "			left: 0\n" +
+                                                "		}, time, function() {\n" +
+                                                "			//complete\n" +
+                                                "			pageRefresh(id);\n" +
+                                                "		}\n" +
+                                                "	);\n";
+                        break;
+                        case 2: // zoom
+                                ret = "$(\"#pg\" + id).animate(\n" +
+                                        "                    {\n" +
+                                        "                              opacity: 1.0,\n" +
+                                        "                              //left: $('#header').offset().left\n" +
+                                        "                              left: 0,\n" +
+                                        "                              //top: 0,\n" +
+                                        "                              zoom: 1\n" +
+                                        "                    }, time, function() {\n" +
+                                        "			//complete\n" +
+                                        "			pageRefresh(id);\n" +
+                                        "                   });\n";
+                        break;
+                }
+                return ret;
+        }
+        
+        private String getPageGo()
+        {
+                String ret = "";
+                
+                switch(projeto.layout.get(0).Efeito)
+                {
+                        case 1: // paginas
+                                ret =        "if(id > pgInd)\n" +
+                                                "		 {\n" +
+                                                "			 var auxid = pgInd;\n" +
+                                                "			 $(\"#pg\" + auxid).animate(\n" +
+                                                "				{\n" +
+                                                "					opacity: 0.8,\n" +
+                                                "					//left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1\n" +
+                                                "					left: (2*($(\"#page\").position().left + $(\"#page\").width() )) * -1\n" +
+                                                "					//left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
+                                                "				}, 500, function() {\n" +
+                                                "					$(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
+                                                "					garbCollect(auxid);\n" +
+                                                "					\n" +
+                                                "					//relloc();\n" +
+                                                "				}\n" +
+                                                "			);\n" +
+                                                "			 \n" +
+                                                "			 pgInd = id;\n" +
+                                                "			 pageIn(pgInd);\n" +
+                                                "		 }\n" +
+                                                "		 else if(id < pgInd)\n" +
+                                                "		 {\n" +
+                                                "			 var auxid = pgInd;\n" +
+                                                "			 $(\"#pg\" + auxid).animate(\n" +
+                                                "				{\n" +
+                                                "					opacity: 0.8,\n" +
+                                                "					//left: (2*($('#header').offset().left) + parseInt($('#header').width()))\n" +
+                                                "					left: (2*($(\"#page\").position().left + $(\"#page\").width() ))\n" +
+                                                "				}, 500, function() {\n" +
+                                                "					$(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
+                                                "					garbCollect(auxid);\n" +
+                                                "					\n" +
+                                                "					//relloc();\n" +
+                                                "				}\n" +
+                                                "			);\n" +
+                                                "			 \n" +
+                                                "			 pgInd = id;\n" +
+                                                "			 pageIn(pgInd);\n" +
+                                                "		 }\n";
+                        break;
+                        case 2: // zoom
+                                ret = "var auxid = pgInd;\n" +
+                                        "                    $(\"#pg\" + auxid).animate(\n" +
+                                        "                             {\n" +
+                                        "                                       opacity: 0.0,\n" +
+                                        "                                       left: 320,\n" +
+                                        "                                       //top: 480,\n" +
+                                        "                                       zoom: 0.2\n" +
+                                        "                                       //left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1\n" +
+                                        "                                       //left: (2*($(\"#page\").position().left + $(\"#page\").width() )) * -1\n" +
+                                        "                                       //left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
+                                        "                             }, 500, function() {\n" +
+                                        "                                       $(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
+                                        "                                       garbCollect(auxid);\n" +
+                                        "                                       //pgAnt = auxid;\n" +
+                                        "                                       //relloc();\n" +
+                                        "                             }\n" +
+                                        "                    );\n" +
+                                        "\n" +
+                                        "                    pgInd = id;\n" +
+                                        "                    pageIn(pgInd);\n";
+                        break;
+                }
+                
+                return ret;
+        }
+        
+        private String getPageInis()
+        {
+                String ret = "";
+                
+                switch(projeto.layout.get(0).Efeito)
+                {
+                        case 2: // zoom
+                                ret = "zoom: 0.2;";
+                        break;
+                }
+                
+                return ret;
+        }
+        
+        private String getMidiaFiles()
+        {
+                String ret = "var __total___Events__ = " + Midias.size() + "; var ___catch__Event = 0;\n"+ 
+                        "function VERIFY__EVENTS__LOAD(){ if(__total___Events__ === ___catch__Event){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); } }\n"+
+                        "function ____incrementCatch(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); this.src = \"\"; }";
+                String calls = "";
+                int i;
+                for(i = 0 ; i < Midias.size(); i++)
+                {
+                        if(Midias.get(i).Type == 1)
+                        {
+                                calls += " ____loading" + i + ".src = '" + Midias.get(i).FileName + "';";
+                                ret += "var ____loading" + i + " = new Image(); ____loading" + i + ".onload = ____incrementCatch;\n";
+                        }
+                        else if(Midias.get(i).Type == 2)
+                        {
+                                calls += " ____loading" + i + ".src = '" + Midias.get(i).FileName + "';";
+                                ret += "var ____loading" + i + " = new Audio(); ____loading" + i + ".addEventListener('canplaythrough', ____incrementCatch);\n";
+                        }
+                }
+                
+                ret += "function ____loadMidias(){\n " + calls + "\n";
+                ret += 
+                                        "if(__total___Events__ !== 0)\n"+
+                                        "{ $(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);}\n";
+                
+                return ret + "\n}\n"; 
         }
         
         public String getAppJs()
@@ -56,6 +301,9 @@ public class ProjectSources
                         "    var preload = new Image();\n" +
                         "    preload.src = imagem_lista[i];\n" +
                         "}\n" +*/
+                        // carrega as midias
+                        getMidiaFiles()
+                        +
                         " \n" +
                         " //quando inicia vamos ajustar os slides\n" +
                         " function iniS(numP)\n" +
@@ -65,7 +313,11 @@ public class ProjectSources
                         "		 //prepara as paginas que virão\n" +
                         "		 for(var i = 1; i <= numP; i++)\n" +
                         "		 {\n" +
-                        "			 $(\"#content\").append(\"<div id='pg\" + i + \"' class='pg'><div id='load\" + i + \"' style='position: absolute; top: " + ((projeto.AlturaPaginas / 2) - (75 / 2)) + "px; left: " + ((projeto.LarguraPaginas / 2) - (110 / 2)) + "px;'><img src='../img/loader.gif'/></div></div>\");\n" +
+                        "			 $(\"#content\").append(\"<div id='pg\" + i + \"' style='"
+                                                                                        + getPageInis()+ "' class='pg'><div id='load\" + i + \"' style='position: absolute; top: " 
+                                                                                        + ((projeto.AlturaPaginas / 2) - (75 / 2)) + "px; left: " 
+                                                                                        + ((projeto.LarguraPaginas / 2) - (110 / 2)) + "px;"
+                                                                                        + "'><img src='../img/loader.gif'/></div></div>\");\n" +
                         "			 $(\"#pg\" + i).css(\"left\", (2*($('#header').offset().left) + $('#header').width()) + \"px\");\n" +
                         "		 }\n" +
                         "		 qtP = numP;\n" +
@@ -80,6 +332,7 @@ public class ProjectSources
                         "		 recalcScale();\n" +
                         "		 centra('page');\n" +
                         "		 blackHell();\n" +
+                        "                                          ____loadMidias();\n" +
                         "		 //se ie8\n" +
                         "		 if(ieHell())\n" +
                         "		 	$('#cont_zoom').empty();\n" +
@@ -158,6 +411,7 @@ public class ProjectSources
                         " function enableProx(bool)\n" +
                         " {\n" +
                         " 	enableHideProx = bool;\n" +
+                        "                   goProx = bool; \n" +
                         " }\n" +
                         " \n" +
                         " //função que implementa entrada do slide\n" +
@@ -169,16 +423,7 @@ public class ProjectSources
                         "	 //$('#avancar_pag').fadeOut();\n" +
                         "	 \n" +
                         "	$(\"#pg\" + id).css(\"display\", \"block\");\n" +
-                        "	$(\"#pg\" + id).animate(\n" +
-                        "		{\n" +
-                        "			opacity: 1.0,\n" +
-                        "			//left: $('#header').offset().left\n" +
-                        "			left: 0\n" +
-                        "		}, time, function() {\n" +
-                        "			//complete\n" +
-                        "			pageRefresh(id);\n" +
-                        "		}\n" +
-                        "	);\n" +
+                       getPageIn() +
                         " }\n" +
                         " \n" +
                         " function page2(id)\n" +
@@ -202,45 +447,7 @@ public class ProjectSources
                         " \n" +
                         "	 if(!(id < 1) && !(id > qtP))\n" +
                         "	 {\n" +
-                        "		 if(id > pgInd)\n" +
-                        "		 {\n" +
-                        "			 var auxid = pgInd;\n" +
-                        "			 $(\"#pg\" + auxid).animate(\n" +
-                        "				{\n" +
-                        "					opacity: 0.8,\n" +
-                        "					//left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1\n" +
-                        "					left: (2*($(\"#page\").position().left + $(\"#page\").width() )) * -1\n" +
-                        "					//left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
-                        "				}, 500, function() {\n" +
-                        "					$(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
-                        "					garbCollect(auxid);\n" +
-                        "					\n" +
-                        "					relloc();\n" +
-                        "				}\n" +
-                        "			);\n" +
-                        "			 \n" +
-                        "			 pgInd = id;\n" +
-                        "			 pageIn(pgInd);\n" +
-                        "		 }\n" +
-                        "		 else if(id < pgInd)\n" +
-                        "		 {\n" +
-                        "			 var auxid = pgInd;\n" +
-                        "			 $(\"#pg\" + auxid).animate(\n" +
-                        "				{\n" +
-                        "					opacity: 0.8,\n" +
-                        "					//left: (2*($('#header').offset().left) + parseInt($('#header').width()))\n" +
-                        "					left: (2*($(\"#page\").position().left + $(\"#page\").width() ))\n" +
-                        "				}, 500, function() {\n" +
-                        "					$(\"#pg\" + auxid).css(\"display\", \"none\");\n" +
-                        "					garbCollect(auxid);\n" +
-                        "					\n" +
-                        "					relloc();\n" +
-                        "				}\n" +
-                        "			);\n" +
-                        "			 \n" +
-                        "			 pgInd = id;\n" +
-                        "			 pageIn(pgInd);\n" +
-                        "		 }\n" +
+                                getPageGo() +
                         "	 }\n" +
                         " }\n" +
                         " \n" +
@@ -250,15 +457,7 @@ public class ProjectSources
                         " 	if(pgInd != 1)\n" +
                         " 	{\n" +
                         "		 var id = pgInd;\n" +
-                        "		$(\"#pg\" + id).animate(\n" +
-                        "			{\n" +
-                        "				opacity: 0.8,\n" +
-                        "				left: (2*($('#header').offset().left) + parseInt($('#header').width()))\n" +
-                        "			}, 500, function() {\n" +
-                        "				$(\"#pg\" + id).css(\"display\", \"none\");\n" +
-                        "				garbCollect(id);\n" +
-                        "			}\n" +
-                        "		);\n" +
+                                        getTurnEffectAnt() +
                         "		\n" +
                         "		//verifica se tem q voltar o botão de proximo automatico\n" +
                         "		if((!enableHideProx) && (qtP != 1))\n" +
@@ -285,16 +484,7 @@ public class ProjectSources
                         " 	if(pgInd < qtP)\n" +
                         " 	{\n" +
                         "		 	var id = pgInd;\n" +
-                        "			$(\"#pg\" + id).animate(\n" +
-                        "				{\n" +
-                        "					opacity: 0.8,\n" +
-                        "					left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1\n" +
-                        "					//left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)\n" +
-                        "				}, 500, function() {\n" +
-                        "					$(\"#pg\" + id).css(\"display\", \"none\");\n" +
-                        "					garbCollect(id);\n" +
-                        "				}\n" +
-                        "			);\n" +
+                                getTurnEffectProx() +
                         "		\n" +
                         "		pgInd++;\n" +
                         "		\n" +
@@ -390,7 +580,7 @@ public class ProjectSources
                         "function lazyScreen()\n" +
                         "{\n" +
                         "	recalcScale();\n" +
-                        "	centra('page');\n" +
+                        "	centra('page'); \n"+
                         "	blackHell();\n" +
                         "}\n" +
                         "\n" +
@@ -399,7 +589,14 @@ public class ProjectSources
                         "{\n" +
                         "	clearTimeout(timer);\n" +
                         "	timer = setTimeout(lazyScreen, 500);\n" +
-                        "}";
+                        "}\n"+
+                        "window.addEventListener(\"message\", receiveMessage, false);\n" +
+                        "function receiveMessage(event){ var str = eval(event.data);  if(window.opener.postMessage !== undefined){ "
+                        + "window.opener.postMessage(\"eval|\" + str, \"*\");} }\n" +
+                        "window.onerror = function(message, url, line){ if(window.opener.postMessage !== undefined){ "
+                        + "window.opener.postMessage(message + \"|\" + url + \"|\" + line, \"*\"); "
+                        + " } };\n"+
+                        "window.onbeforeunload = function(){ if(window.opener.postMessage !== undefined){ window.opener.postMessage(\"fechou\", \"*\");  } }";
                 
                 return js;
         }
@@ -458,13 +655,47 @@ public class ProjectSources
                 return css;
         }
         
+        public String getUserEntities()
+        {
+                boolean joined = false;
+                String js = "";
+                
+                Entities entities = MproEntity.fromJson(this.projeto.JsonEntities, Entities.class);
+                
+                for(Entity entity : entities.Entities)
+                {
+                        js += "\nfunction " + entity.Name + "(){\n";
+                        for(Field field : entity.Fields)
+                        {
+                                if((field.Type.equals("TEXT")) || (field.Type.equals("NUMERIC")))
+                                {
+                                        js += "this." + field.Name + " = " + (field.Type.equals("TEXT") ? "\"\"" : "2147483647") + ";\n";
+                                }
+                                else //relation
+                                {
+                                        joined = true;
+                                        js += "this.Entity" + field.Type + " = new Array();\n";
+                                        js += "this." + field.Name + " = " + "this.Entity" + field.Type + ";";
+                                }
+                        }
+                        js += "this.class = '" + entity.Name + "';\n";
+                        js += "MproEntity.call(this);\n";
+                        js += "}\n " + entity.Name + ".prototype = new MproEntity();\n";
+                        
+                        joined = false;
+                }
+                
+                return js;
+        }
+        
         public String getIndex()
         {
                 String html = "";
                 
                 if(projeto.layout.get(0).Tipo == 2) //EAD
                 {
-                        html += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n" +
+                        html += "<?php header('Access-Control-Allow-Origin: *'); ?>\n" +
+                                        "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n" +
                                         "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
                                         "\n" +
                                         "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
@@ -478,7 +709,11 @@ public class ProjectSources
                                         "    	name=\"viewport\"\n" +
                                         "    	content=\"width=device-width, initial-scale=1, maximum-scale=1\"\n" +
                                         "	/>\n" +
-                                        "    \n" +
+                                        "    \n<meta http-equiv=\"cache-control\" content=\"max-age=0\" />\n" +
+"<meta http-equiv=\"cache-control\" content=\"no-cache\" />\n" +
+"<meta http-equiv=\"expires\" content=\"-1\" />\n" +
+"<meta http-equiv=\"expires\" content=\"Tue, 01 Jan 1980 1:00:00 GMT\" />\n" +
+"<meta http-equiv=\"pragma\" content=\"no-cache\" /> <meta http-equiv=\"cache-control\" content=\"no-store\">" +
                                         "    <!-- FAVICON -->\n" +
                                         "    <link rel=\"shortcut icon\" href=\"../img/favicon.ico\" type=\"image/x-icon\" />\n" +
                                         "    \n" +
@@ -499,7 +734,7 @@ public class ProjectSources
                                         "<link href='http://fonts.googleapis.com/css?family=Oleo Script' rel='stylesheet' type='text/css' />\n" +
                                         "<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />" +
                                         "                               <!-- Bootstrap core CSS -->\n" +
-                                        "                              <link href=\"../dist/css/bootstrap.css\" rel=\"stylesheet\">\n" +
+                                        "                              <link href=\"../dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n" +
                                         "                              <!-- Bootstrap theme -->\n" +
                                         "                              <link href=\"../dist/css/bootstrap-theme.min.css\" rel=\"stylesheet\">" +
                                         "    <link rel=\"stylesheet\" href=\"../css/aulas.css\" type=\"text/css\" />\n" +
@@ -514,6 +749,16 @@ public class ProjectSources
                                         "    <script type=\"text/javascript\" src=\"../js/jquerycsstransform.js\"> </script>\n" +
                                         "	<script type=\"text/javascript\" src=\"../js/rotate3Di.js\"> </script>\n" +
                                         "    <script type=\"text/javascript\" src=\"../js/iscroll.js\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/Ajax.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaController/Thread.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaController/DBsource.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/MproEntity.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/MproEntityRelation.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/UserEntities.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/Lista.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/List.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../lib/app.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/utils.js\" type=\"text/javascript\"> </script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n" +
                                         "</head>\n" +

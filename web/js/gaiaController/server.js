@@ -2,6 +2,8 @@
  * Metodos AJAX
  */
 
+var GLOBALURL = null;
+
 function getUser(fun)
 {
         ajax.setData({user: LogedUser.cod, method: "getUser"});
@@ -18,26 +20,82 @@ function getUser(fun)
         ajax.execute();
 }
 
+function makePackage()
+{
+        //winRef = window.open("making.html");
+        var srcPages = new FileFactory();
+        var ret = srcPages.makeStrign();
+        ajax.setData({user: LogedUser.cod, filesSrc: JSON.stringify(ret), projectCod: ptrProject.cod, method: "makePackage"});
+        ajax.onSucces(function(data)
+        {
+                $("#debugPage").find("img").attr("src", "../img/script_binary.png");
+                var objData = JSON.parse(data);
+                
+                GLOBALURL = objData.data.url;
+                scalePanels("windowCompleted");
+                
+                /*var int2 = setInterval(function()
+                {
+                        if(window.onbeforeunload === null)
+                        {
+                                clearInterval(int2);
+                                winRef.location = objData.data.url;
+                                var int = setInterval(function()
+                                {
+                                        if(winRef.onerror === null)
+                                        {
+                                               winRef.onerror =  setErrorList;
+                                               winRef.onbeforeunload = closeDebug;
+                                        }
+                                        else
+                                                clearInterval(int);
+                                }, 0);
+                        }
+                }, 0);*/
+        });
+        ajax.execute();
+}
+
 function makeProject()
 {
-        winRef = window.open("");
+        //winRef = window.open("making.html");
         var srcPages = new FileFactory();
         var ret = srcPages.makeStrign();
         ajax.setData({user: LogedUser.cod, filesSrc: JSON.stringify(ret), projectCod: ptrProject.cod, method: "makeProject"});
         ajax.onSucces(function(data)
         {
+                $("#debugPage").find("img").attr("src", "../img/bug.png");
                 var objData = JSON.parse(data);
-                winRef.location = objData.data.url;
-                var int = setInterval(function()
+                
+                GLOBALURL = objData.data.url;
+                scalePanels("windowCompleted");
+                
+                //winRef = window.open(objData.data.url, "Gaia View");
+                
+                /*var int2 = setInterval(function()
                 {
-                        if(winRef.onerror === null)
+                        if(window.onbeforeunload === null)
                         {
-                               winRef.onerror =  setErrorList;
-                               winRef.onbeforeunload = closeDebug;
+                                clearInterval(int2);
+                                winRef.location = objData.data.url;
+                                var int = setInterval(function()
+                                {
+                                        /*if(winRef.onerror === null)
+                                        {
+                                               winRef.onerror =  setErrorList;
+                                               winRef.onbeforeunload = closeDebug;
+                                        }
+                                        else
+                                                clearInterval(int);*/
+                                        /*if(winRef.postMessage !== undefined)
+                                        {
+                                                winRef.postMessage(window.setErrorList, slice_url);
+                                        }
+                                        else
+                                                clearInterval(int);
+                                }, 0);
                         }
-                        else
-                                clearInterval(int);
-                }, 0);
+                }, 0);*/
         });
         ajax.execute();
 }
@@ -60,9 +118,11 @@ function newProject()
                         var objData = JSON.parse(data);
                         //var pro = new Projeto(objData.data);
                         var pro = $.extend(new Projeto(), objData.data);
+                        pro.cast();
                         LogedUser.Projetos.push(pro);
                         modelProj.add(new Item(pro.Nome, pro));
                         ptrProject = pro;
+                        ptrProject.ParseJsonEntities();
 
                         scalePanels("windowProjectsNew", true, function()
                         {
@@ -77,21 +137,24 @@ function newProject()
 
 function newResource(rec)
 {
-        ajax.setData({user: LogedUser.cod, resource: JSON.stringify(rec), projectCod: ptrProject.cod, method: "newRecurso"});
-        ajax.onSucces(function(data)
+        var ajaxR = new Ajax();
+        ajaxR.Url = slice_url + "server.jsp";
+        ajaxR.setData({user: LogedUser.cod, resource: JSON.stringify(rec), projectCod: ptrProject.cod, method: "newRecurso"});
+        ajaxR.onSucces(function(data)
         {
                 var objData = JSON.parse(data);
                 rec.cod = objData.data.cod;
                 rec.superCod = objData.data.superCod;
-                ptrProject.recursos.push(rec);
-                fileUp3.clear("Selecione Midia...");
-                if((rec.Arquivo.indexOf(".jpg") !== -1) || (rec.Arquivo.indexOf(".png") !== -1) || (rec.Arquivo.indexOf(".jpeg") !== -1) || (rec.Arquivo.indexOf(".gif") !== -1))
-                        modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
-                else
-                        modelRecursos.add(new Item(rec.Nome, rec, "../img/clipping_sound.png", 120));
-                $("#recursoNome").val("");
         });
-        ajax.execute();
+        ajaxR.execute();
+        // desbloqueia a ação
+        ptrProject.recursos.push(rec);
+        fileUp3.clear("Selecione Midia...");
+        if((rec.Arquivo.indexOf(".jpg") !== -1) || (rec.Arquivo.indexOf(".png") !== -1) || (rec.Arquivo.indexOf(".jpeg") !== -1) || (rec.Arquivo.indexOf(".gif") !== -1))
+                modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
+        else
+                modelRecursos.add(new Item(rec.Nome, rec, "../img/clipping_sound.png", 120));
+        $("#recursoNome").val("");
 }
 
 function newPage()
@@ -100,12 +163,12 @@ function newPage()
         ajax.onSucces(function(data)
         {
                 var objData = JSON.parse(data);
-                var page = new Paginas("", ptrProject.paginas.length + 1);
+                var page = new Paginas("", ptrProject.paginas.length);
                 page.cod = objData.data.cod;
                 page.superCod = objData.data.superCod;
                 ptrProject.paginas.push(page);
-                modelPaginas.add(new Item("Página " + (page.Indice -2), page));
-                openPage(page.Indice -3);
+                modelPaginas.add(new Item("Página " + (page.Indice -1), page));
+                openPage(page.Indice -2);
         });
         ajax.execute();
 }
@@ -127,6 +190,7 @@ function newLayout()
                         ptrProject = pro;
                         replaceProjeto(pro);
                         scalePanels("windowLayout", true);
+                        ptrProject.cast();
                         openProject(pro);
                 });
                 ajax.execute();
@@ -137,46 +201,191 @@ function newLayout()
 
 function newObjeto(obj)
 {
+        /*console.log("tentando: " + obj.JqueryId);
         ajax.setData({user: LogedUser.cod, objeto: JSON.stringify(obj), projectCod: ptrProject.cod, pageCod: ptrPage.cod, method: "newObjeto"});
         ajax.onSucces(function(data)
         {
+                console.log("recebendo: " + obj.JqueryId);
                 var objData = JSON.parse(data);
                 obj.cod = objData.data.cod;
                 obj.superCod = objData.data.superCod;
         });
-        ajax.execute();
+        ajax.onError(function(data)
+        {
+                console.log("errando: " + obj.JqueryId);
+        });
+        ajax.execute();*/
+        var newAjax = new Ajax();
+        newAjax.Url = slice_url + "server.jsp";
+        newAjax.setData({user: LogedUser.cod, objeto: JSON.stringify(obj), projectCod: ptrProject.cod, pageCod: ptrPage.cod, method: "newObjeto"});
+        newAjax.onSucces(function(data)
+        {
+                confirmados++;
+                var objData = JSON.parse(data);
+                console.log("recebendo: " + obj.JqueryId + " no cod: " + objData.data.cod);
+                obj.cod = objData.data.cod;
+                obj.superCod = objData.data.superCod;
+                stackObjs.actDeletedItemInZ(obj);
+                saveAfter();
+        });
+        newAjax.execute();
+        envios++;
 }
 
 function newEvento(obj)
 {
-        ajax.setData({user: LogedUser.cod, objCod: ptrObject.cod, projectCod: ptrProject.cod, pageCod: ptrPage.cod, evento: JSON.stringify(obj), method: "newEvento"});
-        ajax.onSucces(function(data)
+        ptrObject.eventos.push(obj);
+        var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        ajaxi.setData({user: LogedUser.cod, objCod: ptrObject.cod, projectCod: ptrProject.cod, pageCod: ptrPage.cod, evento: JSON.stringify(obj), method: "newEvento"});
+        ajaxi.onSucces(function(data)
         {
+                confirmados++;
                 var objData = JSON.parse(data);
                 obj.cod = objData.data.cod;
                 obj.superCod = objData.data.superCod;
-                ptrObject.eventos.push(obj);
+                verificaSaves();
         });
-        ajax.execute();
+        ajaxi.execute();
+        envios++;
+}
+
+function newState()
+{
+        /** @type Objetos */
+        var tmp = ptrObject.Clone();
+        //var tmp = modelEstados.get(0).obj.Clone();
+        tmp.Name = tmp.JqueryId.replace("#", "") + "Estado" + (modelEstados.getTam());
+        tmp.cod = 2147483647;
+        tmp.superCod = modelEstados.get(0).obj.cod;
+        // ajax
+        var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        ajaxi.setData({user: LogedUser.cod, objCod: modelEstados.get(0).obj.cod, projectCod: ptrProject.cod, pageCod: ptrPage.cod, estado: JSON.stringify(tmp), method: "newState"});
+        ajaxi.onSucces(function(data)
+        {
+                confirmados++;
+                var objData = JSON.parse(data);
+                tmp.cod = objData.data.cod;
+                saveAfter();
+        });
+        ajaxi.execute();
+        envios++;
+        // desbloqueia a ação
+        modelEstados.get(0).obj.estados.push(tmp);
+        modelEstados.add(new Item(tmp.Name, tmp));
+        objAnimas.setSelectIndex(modelEstados.getTam() -1);
 }
 
 function savePage(onSucesso)
 {
-        ajax.setData({user: LogedUser.cod, pagina: JSON.stringify(ptrPage), projectCod: ptrProject.cod, method: "savePagina"});
-        ajax.onSucces(onSucesso);
-        ajax.execute();
+        /** @type Paginas */
+        var ptrPageTmp = ptrPage.CloneWithoutZeroId();
+        ptrPageTmp.ParseObjectsSpecialFields();
+        var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        ajaxi.setData({user: LogedUser.cod, pagina: JSON.stringify(ptrPageTmp), projectCod: ptrProject.cod, method: "savePagina"});
+        ajaxi.onSucces(onSucesso);
+        ajaxi.execute();
+        envios++;
+}
+
+function saveEntity()
+{
+        ptrProject.EntitiesToJson();
+        var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        ajaxi.setData({user: LogedUser.cod, entities: ptrProject.JsonEntities, projectCod: ptrProject.cod, method: "saveEntity"});
+        ajaxi.onSucces(function()
+        {
+                confirmados++;
+        });
+        ajaxi.execute();
+        envios++;
 }
 
 function deleteObjeto()
 {
-        ajax.setData({user: LogedUser.cod, objeto: JSON.stringify(ptrObject), projectCod: ptrProject.cod, pageCod: ptrPage.cod, method: "deleteObjeto"});
-        ajax.onSucces(function(data)
+        /** @type Array */
+        var selecionados = _stack();
+        if(selecionados.length > 0)
+        {
+                for(var i = 0; i < ptrPage.Elementos.length; i++)
+                {
+                        /** @type Objetos */
+                        var obj = ptrPage.Elementos[i];
+                        for(var j = 0; j < selecionados.length; j++)
+                        {
+                                if(obj.JqueryId === selecionados[j])
+                                {
+                                        obj.Deleted = true;
+                                        //ptrPage.Elementos.splice(i, 1);
+                                        $(obj.JqueryId).off();
+                                        $(obj.JqueryId).empty();
+                                        $(obj.JqueryId).remove();
+
+                                        $("#idSelected").text("");
+                                        // seta forms
+                                        $("#objAltura").val("");
+                                        $("#objLargura").val("");
+                                        $("#objTopo").val("");
+                                        $("#objEsquerda").val("");
+                                        $("#objPadding").val("");
+                                        $("#objRadius").val("");
+                                        $("#objSombra").val("");
+                                        $("#objZindex").val("");
+                                        $("#objBorda").val("");
+                                        $("#objOpacity").val("");
+                                }
+                        }
+                }
+                ptrObject = null;
+                saveAfter(true);
+        }
+        else if(ptrObject !== null)
+        {
+                for(var i = 0; i < ptrPage.Elementos.length; i++)
+                {
+                        /** @type Objetos */
+                        var obj = ptrPage.Elementos[i];
+
+                        if(obj.cod === ptrObject.cod)
+                        {
+                                obj.Deleted = true;
+                                //ptrPage.Elementos.splice(i, 1);
+                                $(obj.JqueryId).off();
+                                $(obj.JqueryId).empty();
+                                $(obj.JqueryId).remove();
+
+                                $("#idSelected").text("");
+                                // seta forms
+                                $("#objAltura").val("");
+                                $("#objLargura").val("");
+                                $("#objTopo").val("");
+                                $("#objEsquerda").val("");
+                                $("#objPadding").val("");
+                                $("#objRadius").val("");
+                                $("#objSombra").val("");
+                                $("#objZindex").val("");
+                                $("#objBorda").val("");
+                                $("#objOpacity").val("");
+                        }
+                        
+                        saveAfter(true);
+                }
+                ptrObject = null;
+        }
+        
+        /*var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        ajaxi.setData({user: LogedUser.cod, objeto: JSON.stringify(ptrObject), projectCod: ptrProject.cod, pageCod: ptrPage.cod, method: "deleteObjeto"});
+        ajaxi.onSucces(function(data)
         {
                 var objData = JSON.parse(data);
                 for(var i = 0; i < ptrPage.Elementos.length; i++)
                 {
                         /** @type Objetos */
-                        var obj = ptrPage.Elementos[i];
+                        /*var obj = ptrPage.Elementos[i];
                         if(obj.cod === objData.data.cod)
                         {
                                 ptrPage.Elementos.splice(i, 1);
@@ -198,7 +407,7 @@ function deleteObjeto()
                 $("#objBorda").val("");
                 $("#objOpacity").val("");
         });
-        ajax.execute();
+        ajaxi.execute();*/
 }
 
 function replaceProjeto(proj)

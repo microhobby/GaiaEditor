@@ -23,6 +23,13 @@ public abstract class MproEntity
           private String nameRelation = "";
           private ArrayList<String> namesRelation = new ArrayList();
           
+          /*public static void Destruct()
+          {
+                  _conn.close();
+                  _conn = null;
+                  System.gc();
+          }*/
+          
           public static void setProjectName(String project)
           {
                 ProjectName = project;
@@ -50,7 +57,7 @@ public abstract class MproEntity
            */
           public static <T> ArrayList<T> getAll(Class<T> classe)
           {
-                    if(_conn == null)
+                    if((_conn == null) || (_conn.isClosed()))
                             _conn = new LauDB(BasePath + "/MproEntity"  + ProjectName +  ".lau");
               
                     ArrayList<T> list = new ArrayList();
@@ -132,7 +139,7 @@ public abstract class MproEntity
           
           public static <T> ArrayList<T> getSQL(Class<T> classe, String where)
           {
-                  if(_conn == null)
+                  if((_conn == null) || (_conn.isClosed()))
                             _conn = new LauDB(BasePath + "/MproEntity"  + ProjectName +  ".lau");
                   
                         ArrayList<T> list = new ArrayList();
@@ -212,7 +219,7 @@ public abstract class MproEntity
           
           public static <T> ArrayList<T> getWhere(T filterObj)
           {
-                    if(_conn == null)
+                    if((_conn == null) || (_conn.isClosed()))
                             _conn = new LauDB(BasePath + "/MproEntity"  + ProjectName +  ".lau");
               
                     return getWhere(filterObj, false);
@@ -338,7 +345,7 @@ public abstract class MproEntity
           
           public MproEntity()
           {
-                   if(_conn == null)
+                   if((_conn == null) || (_conn.isClosed()))
                             _conn = new LauDB(BasePath + "/MproEntity"  + ProjectName +  ".lau");
               
                     this.cod = 0;
@@ -354,8 +361,8 @@ public abstract class MproEntity
           {
                     if(this.cod == Integer.MAX_VALUE)
                     {
-                              _conn.execute("INSERT INTO " + this._class.getName().replace('.', '_') + " VALUES( " + this.getValues() + ");");
-                              this.cod = _conn.get_last_insert_rowid();
+                              this.cod = _conn.execute("INSERT INTO " + this._class.getName().replace('.', '_') + " VALUES( " + this.getValues() + ");");
+                              //this.cod = _conn.get_last_insert_rowid();
                               if(this.joined) // salva nossos amigos
                               {
                                         try 
@@ -479,7 +486,8 @@ public abstract class MproEntity
                     //pragma table_info(__teste__);
                     //pragma table_info(__testa);
                     boolean isEqual = false;
-                    String[][] tableInfo = _conn.query("PRAGMA table_info(" + this._class.getName().replace('.', '_') + ")");
+                    //String[][] tableInfo = _conn.query("PRAGMA table_info(" + this._class.getName().replace('.', '_') + ")");
+                    String[][] tableInfo = _conn.query("desc " + this._class.getName().replace('.', '_') + ";");
                     ArrayList<String> fieldNot = new ArrayList();
                     ArrayList<containField> changesTable = new ArrayList();
                     
@@ -499,7 +507,7 @@ public abstract class MproEntity
                                         {
                                                  if((this._class.getFields()[j].getType() != ArrayList.class) && (this._class.getFields()[j].getType() != List.class))
                                                  {
-                                                            isEqual = tableInfo[i][1].equals(this._class.getFields()[j].getName()) ? true : false;
+                                                            isEqual = tableInfo[i][0].equals(this._class.getFields()[j].getName()) ? true : false;
                                                             if(isEqual)
                                                                        break;
                                                  }
@@ -533,7 +541,7 @@ public abstract class MproEntity
                               isEqual = false;
                               for(int w = 0; w < tableInfo.length; w++)
                               {
-                                        containField cf = new containField(tableInfo[w][1], tableInfo[w][2], false);
+                                        containField cf = new containField(tableInfo[w][0], tableInfo[w][1], false);
                                         for(int q = 0; q < this._class.getFields().length; q++)
                                         {
                                                 cf.isDB = this._class.getFields()[q].getName().equals(cf.name) ? true : false;
@@ -565,9 +573,27 @@ public abstract class MproEntity
                               if((this._class.getFields()[i].getType() != ArrayList.class) && (this._class.getFields()[i].getType() != List.class))
                               {
                                         if(!"cod".equals(this._class.getFields()[i].getName()))
-                                                  parts += this._class.getFields()[i].getName() + " " + (this._class.getFields()[i].getType() == String.class ? "TEXT, " : "NUMERIC, ");
+                                        {
+                                                  if(this._class.getFields()[i].getType() == String.class)
+                                                  {
+                                                          parts += this._class.getFields()[i].getName() + " TEXT, ";
+                                                  }
+                                                  else if((this._class.getFields()[i].getType() == int.class) || (this._class.getFields()[i].getType() == long.class))
+                                                  {
+                                                          parts += this._class.getFields()[i].getName() + " INTEGER, ";
+                                                  }
+                                                  else if(this._class.getFields()[i].getType() == double.class)
+                                                  {
+                                                          parts += this._class.getFields()[i].getName() + " NUMERIC(10,3), ";
+                                                  }
+                                                  else if(this._class.getFields()[i].getType() == boolean.class)
+                                                  {
+                                                          parts += this._class.getFields()[i].getName() + " TINYINT(1), ";
+                                                  }
+                                                  //parts += this._class.getFields()[i].getName() + " " + (this._class.getFields()[i].getType() == String.class ? "TEXT, " : "NUMERIC(10, 3), ");
+                                        }
                                         else
-                                                  parts += this._class.getFields()[i].getName() + " INTEGER PRIMARY KEY";
+                                                  parts += this._class.getFields()[i].getName() + " INTEGER PRIMARY KEY AUTO_INCREMENT";
                               }
                               else
                               {

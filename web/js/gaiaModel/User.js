@@ -6,7 +6,7 @@ function User(username, key, nome, email, datanascimento)
 {
         this.Nome = nome;
         this.UserName = username;
-        this.Key = key;
+        this.Chave = key;
         this.Email = email;
         this.DataNascimento = datanascimento;
         this.Loged = false;

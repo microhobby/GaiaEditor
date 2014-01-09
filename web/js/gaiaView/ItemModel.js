@@ -24,9 +24,23 @@ function ItemModel()
          * Adiciona o item
          * @param {Item} item
          */
-        this.add = function(item)
+        this.add = function(item, disable)
         {
                 ItemModel.prototype.add.call(this, item);
+                if((disable === undefined) || (disable === false))
+                {
+                        for(var i = 0; i < _eventLista.getTam(); i++)
+                        {
+                                _eventLista.get(i)();
+                        }
+                }
+        };
+        
+        /**
+         * Dispacha o evento de fim
+         */
+        this.dispatchEvents = function()
+        {
                 for(var i = 0; i < _eventLista.getTam(); i++)
                 {
                         _eventLista.get(i)();

@@ -17,6 +17,7 @@ public class Layout extends MproEntityRelation
         private static final int WEBAPP = 6;
         private static final int SMARTPHONEAPP = 4;
         private static final int BOOK = 1;
+        private static final int DESKTOP = 7;
         private static final int PAGINA = 1;
         private static final int ZOOM = 2;
         private static final int NENHUM = 0;

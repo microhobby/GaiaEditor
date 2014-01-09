@@ -6,6 +6,7 @@
  */
 function FileFactory()
 {
+        /** @type ProjectSources */
         var _final = new ProjectSources();
         
         this.getProjectSource = function()
@@ -34,30 +35,14 @@ function FileFactory()
         
         /**
          * 
-         * @param {Array} pais
-         * @param {String} jqueryId
-         * @returns {Array}
-         */
-        function childs(pais, jqueryId)
-        {
-                var filhos = new Array();
-                for(var i = 0; i < pais.length; i++)
-                {
-                        /** @type Objetos */
-                        var objTmp = pais[i];
-                        if(objTmp.FatherId === jqueryId)
-                                filhos.push(objTmp);
-                }
-                return filhos;
-        }
-        
-        /**
-         * 
          * @param {Paginas} page
          */
         function makePage(page, altura, largura, pgSub)
         {
                 var java = "";
+                var vars = "";
+                var instructs = "";
+                var totalEv = 0;
                 var source =         '<!-- GaiaFrameWork 2013 -->\n'+
                                                 '\n\n' +
                                                 '<!-- Style Override -->\n' +
@@ -73,11 +58,11 @@ function FileFactory()
                                                 '</style>\n' +
                                                 '<script type="text/javascript">\n' +
                                                 '	$(document).ready(function() {\n' +
-                                                '		$("button").bind("touchstart touchend", function(e) {\n' +
+                                                '		/*$("button").bind("touchstart touchend", function(e) {\n' +
                                                 '			$(this).toggleClass("hover_effect");\n' +
                                                 '			if(e.type == "touchend")\n' +
                                                 '				$(this).click();\n' +
-                                                '		});\n' +
+                                                '		});*/\n' +
                                                 '		$(".scrolls").mousedown(function(){\n'+
                                                 '			enableGest = false;\n'+
                                                 '		}).mouseup(function(){\n'+
@@ -111,10 +96,11 @@ function FileFactory()
                 {
                         /** @type Objetos */
                         var objTmp = page.Elementos[i];
+                        var objEstadosArray = new Array();
                         
-                        if(!objTmp.returned)
+                        if((!objTmp.returned) && (!objTmp.Deleted))
                         {
-                                var filhos = childs(page.Elementos, objTmp.JqueryId);
+                                var filhos = FileFactory.childs(page.Elementos, objTmp.JqueryId);
 
                                 // verifica os filhos
                                 if(filhos.length > 0)
@@ -150,10 +136,10 @@ function FileFactory()
                                         else
                                                 source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 16);
 
-                                        for(j = 0; j < filhos.length; i++)
+                                        for(j = 0; j < filhos.length; j++)
                                         {
                                                 /** @type Objetos */
-                                                var objFilho = filhos[i];
+                                                var objFilho = filhos[j];
                                                 source += objFilho.returnCode();
                                                 if(objFilho.eventos.length > 0)
                                                 {
@@ -183,6 +169,51 @@ function FileFactory()
                                         source += objTmp.returnCode() + "\n";
                                 }
                                 
+                                // estados
+                                if(objTmp.estados.length > 0)
+                                {
+                                        java += '\n var ' + objTmp.JqueryId.replace("#", "") + 'Original = ' + JSON.stringify(objTmp) + '; \n';
+                                        objEstadosArray.push(objTmp.JqueryId.replace("#", "") + 'Original');
+                                        for(var s = 0; s < objTmp.estados.length; s++)
+                                        {
+                                                /** @type Objetos */
+                                                var objState = objTmp.estados[s];
+                                                java += '\n var ' + objState.Name + ' = ' + JSON.stringify(objState) + ' \n';
+                                                objEstadosArray.push(objState.Name);
+                                        }
+                                        java += '\n var ' + objTmp.JqueryId.replace("#", "") + 'States = ' + JSON.stringify(objEstadosArray) + ';\n';
+                                }
+                                
+                                
+                                // nome acessivel para o javascript
+                                if(objTmp.Name !== "")
+                                {
+                                        if(objTmp.canCreateVar())
+                                        {
+                                                java += "var " + objTmp.Name + " = $('" + objTmp.JqueryId + "');";
+                                                if(objTmp.ClassType === "GImage")
+                                                {
+                                                        totalEv++;
+                                                        _final.Midias.push({FileName: objTmp.GetFileResource(objTmp.recurso), 
+                                                                JqueyId: objTmp.JqueryId,
+                                                                CallBack: ('function(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); }\n'),
+                                                                Type: 1});
+                                                        //java += 'function ___func' + objTmp.Name + '(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); }\n';
+                                                        //java += "$('#cont_img" + objTmp.Id + "').bind('load', ___func" + objTmp.Name + ");\n";
+                                                }
+                                                else if(objTmp.ClassType === "GAudioHide")
+                                                {
+                                                        totalEv++;
+                                                        _final.Midias.push({FileName: objTmp.GetFileResource(objTmp.recurso), 
+                                                                JqueyId: objTmp.JqueryId,
+                                                                CallBack: ('function(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); }\n'),
+                                                                Type: 2});
+                                                        //java += 'function ___func' + objTmp.Name + '(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); }\n';
+                                                        //java += "$('#Haudio" + objTmp.Id + "aud').bind('canplaythrough', ___func" + objTmp.Name + ");\n";
+                                                }
+                                        }
+                                }
+                                
                                 if(objTmp.eventos.length > 0)
                                 {
                                         for(var e = 0; e < objTmp.eventos.length; e++)
@@ -200,6 +231,9 @@ function FileFactory()
                                         }
                                 }
                                 
+                                vars += objTmp.returnCodeVars();
+                                instructs += objTmp.returnCodeInstructs();
+                                
                         } // fim se não estiver retornado
                         else
                                 objTmp.returned = false;
@@ -208,9 +242,32 @@ function FileFactory()
                 source += "</div>\n";
                 source += '<!-- código -->\n' +
                                  '<script type="text/javascript">\n';
-                source += java + "\n";
+                /*source += 'var __total___Events__ = ' + totalEv + ';\n var ___catch__Event = 0; \n' +
+                                        'if(__total___Events__ !== 0)\n'+
+                                        '{ $("#pg" + pgInd).append(\'<div id="loadloading" style="display: none; background-color: white; position: absolute; top: ' + (ptrProject.AlturaPaginas / 2 - 110) + 'px; left: ' + (ptrProject.LarguraPaginas / 2 - 100) + 'px; width: 210px; height: 110px; z-index: 5000"><center><img style="" src="../img/loader.gif"></center><div id="msgloading"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $("#loadloading").fadeIn(500);}\n' +
+                                        'function VERIFY__EVENTS__LOAD(){ if(__total___Events__ === ___catch__Event){ $("#loadloading").fadeOut(500, function(){ $("#pg" + pgInd).find("#loadloading").remove(); }); escurece(false); } }\n';*/
+                source += vars + "\n" +  java + "\n" + page.ScriptGeral + "\n" + instructs + "\n";
                 source += "</script>";
                 
                 return source;
         }
 }
+
+/**
+* 
+* @param {Array} pais
+* @param {String} jqueryId
+* @returns {Array}
+*/
+FileFactory.childs = function(pais, jqueryId)
+{
+        var filhos = new Array();
+        for(var i = 0; i < pais.length; i++)
+        {
+                /** @type Objetos */
+                var objTmp = pais[i];
+                if(objTmp.FatherId === jqueryId)
+                        filhos.push(objTmp);
+        }
+        return filhos;
+};

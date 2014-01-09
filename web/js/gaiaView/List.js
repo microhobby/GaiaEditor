@@ -111,4 +111,6 @@ function List()
         {
                 _funcMouseListener = func;
         };
+        
+        this.click = this.addMouseActionListener;
 }

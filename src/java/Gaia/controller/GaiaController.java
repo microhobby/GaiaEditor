@@ -1,6 +1,7 @@
 
 package Gaia.controller;
 
+import Gaia.model.Estados;
 import Gaia.model.Eventos;
 import Gaia.model.Layout;
 import Gaia.model.Objetos;
@@ -23,6 +24,9 @@ import mpro.MproEntity.MproEntity;
  */
 public class GaiaController 
 {
+        public static String PHP_CONTEXT = "/var/www";
+        public static String PHP_URL = "http://localhost";
+        
         User userContext;
         HttpServletRequest request;
         JspWriter out;
@@ -62,7 +66,21 @@ public class GaiaController
         
         public void getUser()
         {
+                userContext.deleteDeleteds();
                 writeStream("UserReturn", userContext.toJson(), false);
+        }
+        
+        public void makePackage()
+        {
+                 int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                ProjectSources proSrc = MproEntity.fromJson(this.request.getParameter("filesSrc"), ProjectSources.class);
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                proSrc.setProjeto(ptrProjeto);
+                String sandBox = this.context.getRealPath("/") + this.userContext.UserName + "_" + this.userContext.cod + "/";
+                FileWriter fileWriter = new FileWriter();
+                fileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.context.getRealPath("/"));
+                fileWriter.FolderZip(ptrProjeto, this.userContext, sandBox, this.context.getRealPath("/"));
+                writeStream("Sucesso", "{\"url\": \"" + ("../" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/" + ptrProjeto.Nome + ".zip") + "\"}", false);
         }
         
         public void makeProject()
@@ -72,13 +90,16 @@ public class GaiaController
                 Projeto ptrProjeto = filterProjeto(projectCod);
                 proSrc.setProjeto(ptrProjeto);
                 String sandBox = this.context.getRealPath("/") + this.userContext.UserName + "_" + this.userContext.cod + "/";
-                FileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.context.getRealPath("/"));
-                writeStream("Sucesso", "{\"url\": \"" + ("../" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/html/index.htm") + "\"}", false);
+                FileWriter fileWriter = new FileWriter();
+                fileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.context.getRealPath("/"));
+                //writeStream("Sucesso", "{\"url\": \"" + ("../" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/html/index.htm") + "\"}", false);
+                writeStream("Sucesso", "{\"url\": \"" + (PHP_URL + "/" + this.userContext.UserName + "_" + this.userContext.cod + "/" + ptrProjeto.cod + "/html/index.php") + "\"}", false);
         }
         
         public void newProject() 
         {
                 Projeto newPro = MproEntity.fromJson(this.request.getParameter("project"), Projeto.class);
+                newPro.JsonEntities = "{\"Entities\": []}";
                 this.userContext.Projetos.add(newPro);
                 this.userContext.Save();
                 writeStream("Projeto retornado", this.userContext.Projetos.get(this.userContext.Projetos.size() -1).toJson(), false);
@@ -108,7 +129,7 @@ public class GaiaController
         public void newPage()
         {
                 Projeto proPtr = this.filterProjeto(Integer.parseInt(this.request.getParameter("proCod")));
-                Paginas ptrPage = new Paginas("", proPtr.paginas.size() -1);
+                Paginas ptrPage = new Paginas("", proPtr.paginas.size());
                 proPtr.paginas.add(ptrPage);
                 this.userContext.Save();
                 writeStream("Sucesso", "{\"cod\": " + ptrPage.cod + ", \"superCod\": " + ptrPage.superCod + "}", true);
@@ -149,6 +170,15 @@ public class GaiaController
                 this.writeStream("Pagina salva", "", false);
         }
         
+        public void saveEntity()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                ptrProjeto.JsonEntities = this.request.getParameter("entities");
+                this.userContext.Save();
+                this.writeStream("Entidades salvas", "", false);
+        }
+        
         public void newEvento()
         {
                 int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
@@ -159,6 +189,18 @@ public class GaiaController
                 ptrElem.eventos.add(evTmp);
                 ptrElem.Save();
                 writeStream("Sucesso", "{\"cod\": " + evTmp.cod + ", \"superCod\": " + evTmp.superCod + "}", false);
+        }
+        
+        public void newState()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                int paginaCod = Integer.parseInt(this.request.getParameter("pageCod"));
+                int objectCod = Integer.parseInt(this.request.getParameter("objCod"));
+                Objetos ptrElem = filterElemento(projectCod, paginaCod, objectCod);
+                Estados esTmp = MproEntity.fromJson(this.request.getParameter("estado"), Estados.class);
+                ptrElem.estados.add(esTmp);
+                ptrElem.Save();
+                writeStream("Sucesso", "{\"cod\": " + esTmp.cod + ", \"superCod\": " + esTmp.superCod + "}", false);
         }
         
         private void replaceProjeto(Projeto candidate)

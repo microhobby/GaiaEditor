@@ -4,6 +4,7 @@
 
 function Projeto(nome, altura, largura, obs)
 {
+        var projEntities = null;
         this.Nome = nome;
         this.AlturaPaginas = altura;
         this.LarguraPaginas = largura;
@@ -11,8 +12,24 @@ function Projeto(nome, altura, largura, obs)
         this.paginas = new Array();
         this.recursos = new Array();
         this.Obs = obs;
+        this.JsonEntities = "";
         this.cod = 2147483647;
         this.superCod = 2147483647;
+        
+        this.ParseJsonEntities = function()
+        {
+                projEntities = JSON.parse(this.JsonEntities);
+        };
+        
+        this.EntitiesToJson = function()
+        {
+                this.JsonEntities = JSON.stringify(projEntities);
+        };
+        
+        this.getEntities = function()
+        {
+                return projEntities;
+        };
         
         this.cast = function()
         {

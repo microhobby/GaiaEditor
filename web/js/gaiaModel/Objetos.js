@@ -5,14 +5,48 @@
  */
 function Objetos()
 {
+        //var privateAttrs;
+        
+        this.getPrivateAttrs = function()
+        {
+                return [];
+        };
+        
+        this.resolveSpecialFields = function()
+        {
+                //privateAttrs = JSON.parse(this.SpecialFields);
+        };
+        
+        this.parseSpecialFields = function()
+        {
+                //this.SpecialFields = JSON.stringify(privateAttrs);
+        };
+        
+        this.canCreateVar = function()
+        {
+                return true;
+        };
+        
+        this.returnCodeVars = function()
+        {
+                return "";
+        };
+        
+        this.returnCodeInstructs = function()
+        {
+                return "";
+        };
+        
         this.init = function(largura, altura, topo, esquerda, visivel)
         {
+                //privateAttrs = new Array();
                 this.Id = Objetos.counterId++;
                 this.JqueryId = "";
                 this.W = largura;
                 this.H = altura;
                 this.T = topo;
                 this.L = esquerda;
+                this.A = 0;
                 this.B = 0;
                 this.P = 7;
                 this.R = 0;
@@ -36,8 +70,12 @@ function Objetos()
                 //this.recursos = new Array();
                 this.recurso = -1;
                 this.eventos = new Array();
+                this.estados = new Array();
                 this.ClassType = "Objetos";
                 this.Name = "";
+                this.Deleted = false;
+                this.SpecialFields = "";
+                this.StaticPos = false;
                 this.Vss = 0.0;
                 this.returned = false;
                 this.cod = 2147483647;
@@ -49,6 +87,11 @@ function Objetos()
                 for(var i = 0; i < this.eventos.length; i++)
                 {
                         this.eventos[i] = $.extend(new Eventos(), this.eventos[i]);
+                }
+                
+                for(var i = 0; i < this.estados.length; i++)
+                {
+                        this.estados[i] = $.extend(new window[this.estados[i].ClassType], this.estados[i]);
                 }
         };
         
@@ -109,7 +152,12 @@ function Objetos()
         this.setBackgroundColor = function(hex)
         {
                 this.Cb = hex;
-                $(this.JqueryId).css("background-color", hex); 
+                if(this.ClassType !== "GButton")
+                        $(this.JqueryId).css("background-color", hex);
+                else
+                {
+                        $("#btDinamic" + this.Id).text('#bt' + this.Id + '{ background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); } #bt' + this.Id + ':active { background-color: ' + this.Cb + '; background-image: none;}');
+                }
         };
         
         this.setBorder = function(num)
@@ -169,8 +217,84 @@ function Objetos()
                         changeT(this.JqueryId, val);
                 else
                 {
-                        $("#bt" + this.Id).html(val);
+                        //$("#bt" + this.Id).html(val);
+                        $("#bt" + this.Id).find("span").html(val);
                 }
+        };
+        
+        this.setVisible = function(val)
+        {
+                this.Visible = val;
+        };
+        
+        this.setAngle = function(val)
+        {
+                this.A = val;
+                $(this.JqueryId).rotate({angle: val});
+        };
+        
+        this.setVar = function(vari)
+        {
+                this.Name = vari;
+        };
+        
+        this.Clone = function()
+        {
+                var obj = new window[this.ClassType]();
+                $.extend(true, obj, this);
+                return obj;
+        };
+        
+        this.GetFileResource = function(recursoInt)
+        {
+                return "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function(element)
+                {
+                        return element.cod === recursoInt;
+                })[0].Arquivo;
+        };
+        
+        this.copy = function()
+        {
+                /** @type Objetos */
+                this.parseSpecialFields();
+                var objRet = new window[this.ClassType]();
+                objRet.A = this.A;
+                objRet.B = this.B;
+                objRet.Cb = this.Cb;
+                objRet.Cbb = this.Cbb;
+                objRet.Cf = this.Cf;
+                objRet.ClassType = this.ClassType;
+                objRet.Cs = this.Cs;
+                objRet.Deleted = this.Deleted;
+                objRet.FatherId = this.FatherId;
+                objRet.Font = this.Font;
+                objRet.H = this.H;
+                objRet.Italico = this.Italico;
+                objRet.L = this.L;
+                objRet.Negrito = this.Negrito;
+                objRet.Opacity = this.Opacity;
+                objRet.P = this.P;
+                objRet.R = this.R;
+                objRet.S = this.S;
+                objRet.SizeFont = this.SizeFont;
+                objRet.SpecialFields = this.SpecialFields;
+                objRet.StaticPos = this.StaticPos;
+                objRet.Subline = this.Subline;
+                objRet.T = this.T;
+                objRet.Text = this.Text;
+                objRet.Visible = this.Visible;
+                objRet.Vss = this.Vss;
+                objRet.W = this.W;
+                objRet.Zindex = this.Zindex;
+                
+                // TODO copia field dos estados e eventos
+                /*objRet.estados = $.extend(true, [], this.estados);
+                objRet.eventos = $.extend(true, [], this.eventos);*/
+                
+                objRet.recurso = this.recurso;
+                objRet.resolveSpecialFields();
+                
+                return objRet;
         };
         
         /**
@@ -178,17 +302,21 @@ function Objetos()
          */
         this.implementGaiaEvents = function()
         {
-                $(this.JqueryId).multidraggable({cancel:false});
-                $(this.JqueryId).resizable();
+                if(!this.StaticPos)
+                {
+                        $(this.JqueryId).multidraggable({cancel:false});
+                        $(this.JqueryId).resizable();
+                }
+                
                 // mostra label com o id do objeto
                 $(this.JqueryId).mouseover(function(evt)
                 {
-                        //evt.stopPropagation();
+                        evt.stopPropagation();
                         $(Objetos.jqueryLabel).text("#" + $(this).attr("id"));
                         $(Objetos.jqueryLabel).show();
                 }).mouseout(function(evt)
                 {
-                        //evt.stopPropagation();
+                        evt.stopPropagation();
                         $(Objetos.jqueryLabel).hide();
                 });
                 // seleciona o cara
@@ -196,6 +324,7 @@ function Objetos()
                 $(this.JqueryId).bind("mousedown",function(event)
                 {
                         //event.preventDefault();
+                        event.stopPropagation();
                         if(Objetos.grid)
                         {
                                 $(".gaiaFocused").removeClass("gaiaFocused");
@@ -205,20 +334,32 @@ function Objetos()
                                 $(".gaiaFocused").removeClass("gaiaFocused")
                         }
                         $(this).addClass("gaiaFocused");
-                        for(var i = 0; i < Objetos.selectAssigns.length; i++)
+                        /*for(var i = 0; i < Objetos.selectAssigns.length; i++)
                         {
                                 Objetos.selectAssigns[i](me);
-                        }
-                }).bind("mouseup", function()
+                        }*/
+                }).bind("mouseup", function(event)
                 {
+                        //event.stopPropagation();
+                        //event.preventDefault();
                         for(var i = 0; i < Objetos.selectAssigns.length; i++)
                         {
                                 Objetos.selectAssigns[i](me);
                         }
+                        /*$(me.JqueryId).multidraggable("destroy");
+                        $(me.JqueryId).multidraggable({cancel:false});*/
                 });
         };
 }
 
+function SpecialAttrs(name, type, method, data, model)
+{
+        this.Name = name;
+        this.Type = type;
+        this.Method = method;
+        this.Data = data;
+        this.Model = model;
+}
 
 // Estaticos
 Objetos.counterId = 0;

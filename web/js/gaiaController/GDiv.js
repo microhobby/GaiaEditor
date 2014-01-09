@@ -36,6 +36,11 @@ function GDiv(largura, altura, topo, esquerda, visivel)
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px;\n' +
+                                                ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' -moz-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' -o-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' -ms-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' transform: rotate(' + this.A + 'deg);\n' +
                                                 'box-sizing: initial; \n' +
                                                 ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -moz-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +

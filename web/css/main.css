@@ -505,6 +505,15 @@ img{
         height: 245px; 
 }
 
+#windowEntity
+{
+       position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 400px;
+        height: 245px; 
+}
+
 #windowScript
 {
        position: absolute;
@@ -529,6 +538,23 @@ img{
         position: absolute;
         width: 280px;
         height: 330px;
+}
+
+#windowCompleted
+{
+       position: absolute;
+        top:  20px;
+        left:  20px;
+        width: 280px;
+        height: 120px;
+        z-index: 1000;
+}
+
+#containerWindowCompleted
+{
+        position: absolute;
+        width: 280px;
+        height: 120px;
 }
 
 #debugTools

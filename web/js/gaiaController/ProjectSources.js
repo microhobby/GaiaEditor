@@ -6,6 +6,7 @@
 function ProjectSources()
 {
         this.Paginas = new Array();
+        this.Midias = new Array();
         this.Rodape = "";
         this.Topo = "";
 }

@@ -13,13 +13,17 @@
  var enableGest = true;
  var timer = null;
 
-//carrega as imagens que precisam de carregamento imediato
-imagem_lista = Array('../img/exclamation5.png', '../img/btB.png', '../img/btC.png', '../img/btD.png');
-imagem_qtd = imagem_lista.length;
-for (var i = 0; i < imagem_qtd; i++) 
-{
-    var preload = new Image();
-    preload.src = imagem_lista[i];
+var __total___Events__ = 4; var ___catch__Event = 0;
+function VERIFY__EVENTS__LOAD(){ if(__total___Events__ === ___catch__Event){ $("#loadloading").fadeOut(500, function(){ $("#main").find("#loadloading").remove(); }); escurece(false); } }
+function ____incrementCatch(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); this.src = ""; }var ____loading0 = new Image(); ____loading0.onload = ____incrementCatch;
+var ____loading1 = new Audio(); ____loading1.addEventListener('canplaythrough', ____incrementCatch);
+var ____loading2 = new Image(); ____loading2.onload = ____incrementCatch;
+var ____loading3 = new Image(); ____loading3.onload = ____incrementCatch;
+function ____loadMidias(){
+  ____loading0.src = '../matheus_1/1385594555317.choosewisely.jpg'; ____loading1.src = '../matheus_1/1385598139980.Eric Johnson - Trail of Tears.mp3'; ____loading2.src = '../matheus_1/1385612402594.feel-like-a-sir.gif'; ____loading3.src = '../matheus_1/1385616486909.OompaLoompa3.jpg';
+if(__total___Events__ !== 0)
+{ $("#main").append('<div id="loadloading" style="display: none; background-color: white; position: absolute; top: 140.0px; left: 250.0px; width: 210px; height: 110px; z-index: 5000"><center><img style="" src="../img/loader.gif"></center><div id="msgloading"><center>Carregando Mídias...</center></div></div>'); escurece(true); $("#loadloading").fadeIn(500);}
+
 }
  
  //quando inicia vamos ajustar os slides
@@ -30,7 +34,7 @@ for (var i = 0; i < imagem_qtd; i++)
 		 //prepara as paginas que virão
 		 for(var i = 1; i <= numP; i++)
 		 {
-			 $("#content").append("<div id='pg" + i + "' class='pg'><div id='load" + i + "' style='position: absolute; top: 210px; left: 340px;'><img src='../img/loader.gif'/></div></div>");
+			 $("#content").append("<div id='pg" + i + "' style='' class='pg'><div id='load" + i + "' style='position: absolute; top: 213.0px; left: 295.0px;'><img src='../img/loader.gif'/></div></div>");
 			 $("#pg" + i).css("left", (2*($('#header').offset().left) + $('#header').width()) + "px");
 		 }
 		 qtP = numP;
@@ -45,6 +49,7 @@ for (var i = 0; i < imagem_qtd; i++)
 		 recalcScale();
 		 centra('page');
 		 blackHell();
+                                          ____loadMidias();
 		 //se ie8
 		 if(ieHell())
 		 	$('#cont_zoom').empty();
@@ -70,37 +75,16 @@ for (var i = 0; i < imagem_qtd; i++)
  {
 	 markZero();
 	 //verifica tamanho da tela para aplicar escala
-	 if((document.documentElement.clientWidth < 800) && (document.documentElement.clientHeight < 698))
-	 {//testa as duas coordenadas
 		 if(document.documentElement.clientWidth < document.documentElement.clientHeight)
 		 {
-			 scale = (document.documentElement.clientWidth) / 800;
-			 $('#page').css("transform", "scale(" + (scale + uScale) + ")");
-		 }
-		 else
-		 {
-			 scale = document.documentElement.clientHeight / 698;
-			 $('#page').css("transform", "scale(" + (scale + uScale) + ")");
-		 }
-	 }
-	 else if(document.documentElement.clientWidth < 800)
-	 {
-		scale = (document.documentElement.clientWidth) / 800;
-		$('#page').css("transform", "scale(" + (scale + uScale) + ")");
-	 }
-	 else if(document.documentElement.clientHeight < 698)
-	 {
-		 scale = document.documentElement.clientHeight / 698;
-		 $('#page').css("transform", "scale(" + (scale + uScale) + ")");
-	 }
-	 else
-	 {
-		 if(scale < 1)
-		 {
-		 	scale = 1;
+		 	scale = (document.documentElement.clientWidth) / 700.0;
 		 	$('#page').css("transform", "scale(" + (scale + uScale) + ")");
-		 }
-	 }
+ 		 }
+	 	 else
+	 	 {
+	 	 	scale = (document.documentElement.clientHeight) / 680.0;
+		 	$('#page').css("transform", "scale(" + (scale + uScale) + ")");
+	 	 }
  }
  
  //função que aplica zoom
@@ -144,6 +128,8 @@ for (var i = 0; i < imagem_qtd; i++)
  function enableProx(bool)
  {
  	enableHideProx = bool;
+                      goProx = bool;
+                      
  }
  
  //função que implementa entrada do slide
@@ -188,7 +174,7 @@ for (var i = 0; i < imagem_qtd; i++)
  
 	 if(!(id < 1) && !(id > qtP))
 	 {
-		 if(id > pgInd)
+if(id > pgInd)
 		 {
 			 var auxid = pgInd;
 			 $("#pg" + auxid).animate(
@@ -201,7 +187,7 @@ for (var i = 0; i < imagem_qtd; i++)
 					$("#pg" + auxid).css("display", "none");
 					garbCollect(auxid);
 					
-					relloc();
+					//relloc();
 				}
 			);
 			 
@@ -220,7 +206,7 @@ for (var i = 0; i < imagem_qtd; i++)
 					$("#pg" + auxid).css("display", "none");
 					garbCollect(auxid);
 					
-					relloc();
+					//relloc();
 				}
 			);
 			 
@@ -236,10 +222,10 @@ for (var i = 0; i < imagem_qtd; i++)
  	if(pgInd != 1)
  	{
 		 var id = pgInd;
-		$("#pg" + id).animate(
+$("#pg" + id).animate(
 			{
 				opacity: 0.8,
-				left: (2*($('#header').offset().left) + parseInt($('#header').width()))
+				left: (($('#header').offset().left) + parseInt($('#header').width()) / scale)
 			}, 500, function() {
 				$("#pg" + id).css("display", "none");
 				garbCollect(id);
@@ -271,10 +257,10 @@ for (var i = 0; i < imagem_qtd; i++)
  	if(pgInd < qtP)
  	{
 		 	var id = pgInd;
-			$("#pg" + id).animate(
+$("#pg" + id).animate(
 				{
 					opacity: 0.8,
-					left: (2*($('#header').offset().left) + parseInt($('#header').width())) * -1
+					left: (($('#header').offset().left) + parseInt($('#header').width()) / scale) * -1
 					//left: ($('#header').offset().left - parseInt($('#header').width()) - $('#header').offset().left)
 				}, 500, function() {
 					$("#pg" + id).css("display", "none");
@@ -332,7 +318,7 @@ $("#content").live('swiperight',function(event){
  //função que apaga lixo
  function garbCollect(id)
  {
-	 document.getElementById("pg" + id).innerHTML = "<div id='load" + id + "' style='position: absolute; top: 210px; left: 340px;'><img src='../img/loader.gif'/>";
+	 document.getElementById("pg" + id).innerHTML = "<div id='load" + id + "' style='position: absolute; top: 213.0px; left: 295.0px;'><img src='../img/loader.gif'/>";
  }
  
  //função que tenta carregar de novo
@@ -376,7 +362,7 @@ document.onkeydown = function(event)
 function lazyScreen()
 {
 	recalcScale();
-	centra('page');
+	centra('page'); 
 	blackHell();
 }
 

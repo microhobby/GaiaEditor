@@ -10,6 +10,10 @@ var ptrProject = null;                                                          
 var ptrPage = null;
 /** @type Objetos */
 var ptrObject = null;
+/** @type Objetos */
+var ptrState = null;
+var ptrEntity = null;
+var ptrEntityIx = -1;
 var listProj = new List();
 var listObjects = new List();
 var listRecursos = new List();
@@ -30,6 +34,9 @@ var objScriptAction = new Combobox();
 var objScriptAuto = new Combobox();
 var objScriptAction1 = new Combobox();
 var objScriptTarget1 = new Combobox();
+var objAnimas = new Combobox();
+var projEntities = new Combobox();
+var comboTypes = new Combobox();
 var colorPick1 = new ColorPicker();
 var colorPick2 = new ColorPicker();
 var objCorFundo = new ColorPicker();
@@ -49,9 +56,14 @@ var modelRecursos = new ItemModel();
 var modelFonts = new ItemModel();
 var modelEventos = new ItemModel();
 var modelActions = new ItemModel();
+var modelEstados = new ItemModel();
+var modelEntities = new ItemModel();
+var modelTypes = new ItemModel();
 var objs = new ItemModel();
 var verifica = null;
 var slice_url = "http://localhost:8084/GaiaEditor/system/";
+//var slice_url = "http://nut.unifenas.br:8080/GaiaEditor/system/";
+//var slice_url = "http://mpro3.com.br:8080/GaiaEditor/system/";
 var ajax = new Ajax();
 var thread = null;
 var canSetTimeout = true;
@@ -60,10 +72,33 @@ var stackObjs = new StackUndo();
 var novo = true;
 /** @type Eventos */
 var eventChange = null;
+var eventGeral = false;
 var IDE;
 var errList = new ItemModel();
+var lastJquerySelected = "";
+var isState = false;
+var envios = 0;
+var confirmados = 0;
 /*var errList = new Lista();
 errList.init();*/
+
+window.addEventListener("message", receiveMessage, false);
+
+function receiveMessage(event)
+{
+        if(event.data.indexOf("eval") !== -1)
+        {
+                errList.add(new Item(event.data.replace("eval|", ""), null, "../img/ok.png"));
+                $("#debugTools").animate({ scrollTop: $('#debugTools')[0].scrollHeight}, 1000);
+        }
+        else if(event.data !== "fechou")
+        {
+                var parts = event.data.split("|");
+                setErrorList(parts[0], parts[1], parts[2]);
+        }
+        else
+                scalePanels("windowDebug", true);
+}
 
 $(document).ready(function()
 {  
@@ -109,6 +144,7 @@ $(document).ready(function()
         modelLayouts.add(new Item("SMARTPHONEAPP", 4));
         modelLayouts.add(new Item("WEB", 5));
         modelLayouts.add(new Item("WEBAPP", 6));
+        modelLayouts.add(new Item("DESKTOP", 7));
         
         /**
          * SETA EFEITOS
@@ -121,6 +157,45 @@ $(document).ready(function()
         modelEfeitos.add(new Item("NENHUM", 0));
         modelEfeitos.add(new Item("PÁGINA", 1));
         modelEfeitos.add(new Item("ZOOM", 2));
+        
+        /**
+         * SETA ENTITIES
+         */
+        projEntities.setElement("#projEntities");
+        projEntities.setModel(modelEntities);
+        comboTypes.setElement("#entityDataTypes");
+        comboTypes.setModel(modelTypes);
+        
+        modelTypes.add(new Item("TEXT", "TEXT"));
+        modelTypes.add(new Item("NUMERIC", "NUMERIC"));
+        
+        projEntities.addMouseActionListener(function(obj)
+        {
+                ptrEntity = obj.obj;
+                ptrEntityIx = projEntities.getSelectIndex();
+                /** @type $ */
+                var myTable = $("#entityTable");
+                
+                myTable.html("");
+                myTable.append("<thead><tr><th><b>Coluna</b></th><th><b>Tipo</b></th><th><b>Remove</b></th></tr></thead><tbody></tbody>");
+                
+                // passa pelas entidades
+                for(var j = 0; j < ptrEntity.Fields.length; j++)
+                {
+                        myTable.find("tbody").append("<tr></tr>");
+                        myTable.find("tbody").find("tr:last").append("<td>" + ptrEntity.Fields[j].Name + "</td>");
+                        myTable.find("tbody").find("tr:last").append("<td>" + ptrEntity.Fields[j].Type + "</td>");
+                        myTable.find("tbody").find("tr:last").append('<td width="10%"><center><button id="' + j + '" class="btn btn-default remEnti" title="Remover" style="width:  100%;"><i class="glyphicon "><img src="../img/error.png" /></i></button></center></td>');
+                }
+                
+                $(".remEnti").click(function()
+                {
+                        var field = $(this).attr("id");
+                        $(this).parent().parent().parent().remove();
+                        ptrEntity.Fields.splice(field, 1);
+                        saveEntity();
+                });
+        });
         
         /**
          * SETA COLOR PICKERS
@@ -162,9 +237,13 @@ $(document).ready(function()
         
         modelObjects.add(new Item("Texto", function(){ return new GText(153, 52, 0, 0, true); }, "../img/ui_labels.png"));
         modelObjects.add(new Item("Container", function(){ return new GDiv(153, 52, 0, 0, true); }, "../img/div.png"));
+        modelObjects.add(new Item("Container Dinamico", function(){ return new GDivStatic(153, 52, 0, 0, true); }, "../img/div.png"));
+        modelObjects.add(new Item("Lista", function(){ return new GList(153, 183, 0, 0, true); }, "../img/list.png"));
         modelObjects.add(new Item("Imagem", function(){ return new GImage(64, 64, 0, 0, true); }, "../img/img.png"));
         modelObjects.add(new Item("Botão", function(){ return new GButton(67, 28, 0, 0, true); }, "../img/button.png"));
+        modelObjects.add(new Item("Input", function(){ return new GInput(153, 52, 0, 0, true); }, "../img/input.png"));
         modelObjects.add(new Item("HAudio", function(){ return new GAudioHide(16, 16, -20, -20, true); }, "../img/ui-audio.png"));
+        modelObjects.add(new Item("FonteDados", function(){ return new FonteDados(1, 1, -20, -20, true); }, "../img/db_blank16.png"));
         
         comboTool1Recurso.setElement("#projRecurso");
         objRecurso.setElement("#objRecurso");
@@ -189,7 +268,17 @@ $(document).ready(function()
         objScriptAction1.setElement("#scriptAction1");
         objScriptAction1.setModel(modelEventos);
         
-        
+        objAnimas.setElement("#objAnimas");
+        objAnimas.setModel(modelEstados);
+        objAnimas.addMouseActionListener(function(obj)
+        {
+                ptrObject = obj.obj;
+                $(obj.obj.JqueryId).click();
+                $(obj.obj.JqueryId).remove();
+                newElem(obj.obj.returnCode(true, false));
+                obj.obj.implementGaiaEvents();
+                $(obj.obj.JqueryId).mousedown();
+        });
         
         modelEventos.add(new Item("Evento"));
         modelEventos.add(new Item("Click", function(id, code)
@@ -524,9 +613,15 @@ $(document).ready(function()
         {
                         return '$("' + id + '").rotate3Di("flip", 1000, {opacity: 0}); \n';
         }));			//37
-        modelActions.add(new Item("Play Audio", function(id)
+        modelActions.add(new Item("Play Audio", function(id, show)
         {
-                return 'PlayAudio("' + id + '"); \n';
+                if(show)
+                {
+                        setTimeout(function(){ StopAudio(id); }, 10000);
+                        return 'PlayAudio("' + id + '"); \n';
+                }
+                else
+                        return 'PlayAudio("' + id + '"); \n';
         }));			//38
         modelActions.add(new Item("Stop Audio", function(id)
         {
@@ -542,6 +637,7 @@ $(document).ready(function()
         
         
         $("#windowDebug").multidraggable({cancel:false});
+        $("#windowCompleted").multidraggable({cancel:false});
         
         /**
          *  REDIMENSIONAMENTO DAS TOOLS
@@ -576,14 +672,16 @@ $(document).ready(function()
                 $("#windowLayout").css("top", (document.documentElement.clientHeight / 2) - (245 / 2));
                 $("#windowLayout").css("left", (document.documentElement.clientWidth / 2) - (400 / 2));
                 
-                $("#windowResources, #windowScript").css("width", (document.documentElement.clientWidth / 2));
-                $("#windowResources, #windowScript").css("height", document.documentElement.clientHeight - 80);
-                $("#windowResources, #windowScript").css("left", ((document.documentElement.clientWidth / 2) / 2) - 65);
+                $("#windowResources, #windowScript, #windowEntity").css("width", (document.documentElement.clientWidth / 2));
+                $("#windowResources, #windowScript, #windowEntity").css("height", document.documentElement.clientHeight - 80);
+                $("#windowResources, #windowScript, #windowEntity").css("left", ((document.documentElement.clientWidth / 2) / 2) - 65);
                 $("#containerWindowResources, #containerWindowScript").css("width", (document.documentElement.clientWidth / 2));
                 $("#containerWindowResources, #containerWindowScript").css("height", document.documentElement.clientHeight - 80);
                 $("#containerWindowResources, #containerWindowScript").children("#iconConfig").css("left", (document.documentElement.clientWidth / 2) - 30);
                 $("#IDE").width($("#containerWindowScript").width() - 220);
                 $("#IDE").height($("#containerWindowScript").height() - 50);
+                /*$("#entityTable").width();*/
+                $("#entityTable").height($("#windowResources").height() - 255);
                 
                 goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
         }
@@ -615,7 +713,9 @@ $(document).ready(function()
        $("#windowLayout").css("transform", "scale(0)").css("opacity", "0");
        $("#windowResources").css("transform", "scale(0)").css("opacity", "0");
        $("#windowScript").css("transform", "scale(0)").css("opacity", "0");
+       $("#windowEntity").css("transform", "scale(0)").css("opacity", "0");
        $("#windowDebug").css("transform", "scale(0)").css("opacity", "0");
+       $("#windowCompleted").css("transform", "scale(0)").css("opacity", "0");
 
         getUser(function()
         {
@@ -654,18 +754,91 @@ $(document).ready(function()
                 if(strTmp !== "")
                 {
                         objTmp.FatherId = strTmp;
+                        if(objTmp.FatherId.indexOf("divStatic") !== -1)
+                        {
+                                objTmp.StaticPos = true;
+                                $(objTmp.JqueryId).remove();
+                                newElem(objTmp.returnCode(true, false));
+                        }
                 }
                 objTmp.implementGaiaEvents();
+                
+                stackObjs.makeMomentumZ(ptrPage.Elementos);
                 ptrPage.Elementos.push(objTmp);
+                
                 // salva
+                window.onbeforeunload = onBefore;
                 newObjeto(objTmp);
+                // seleciona
+                ptrObject = objTmp;
+                $(objTmp.JqueryId).mousedown();
         });
         
         /**
          * Assina evento de troca
+         * @argument {Objetos} obj description
          */
         Objetos.addSelectListener(function(obj)
         {
+                if($(obj.JqueryId).hasClass("gaiaFocused"))
+                {
+                if(lastJquerySelected !== obj.JqueryId)
+                {
+                        if(ptrObject !== null)
+                        {
+                                // retorna o estado original
+                                if(modelEstados.get(0) && (!modelEstados.get(0).obj.Deleted))
+                                {
+                                        var blMult = false;
+                                        if($(lastJquerySelected).hasClass("ui-multidraggable"))
+                                                blMult = true;
+                                        
+                                        $(lastJquerySelected).remove();
+                                        
+                                        if(modelEstados.get(0).obj.FatherId === "0")
+                                        {
+                                                newElem(modelEstados.get(0).obj.returnCode(true, false));
+                                        }
+                                        else
+                                        {
+                                                newElemD(modelEstados.get(0).obj.FatherId, modelEstados.get(0).obj.returnCode(true, false));
+                                        }
+                                        
+                                        var filhos = FileFactory.childs(ptrPage.Elementos, lastJquerySelected);
+                                        for(var f = 0; f < filhos.length; f++)
+                                        {
+                                                newElemD(lastJquerySelected, filhos[f].returnCode(true, false));
+                                                filhos[f].implementGaiaEvents();
+                                        }
+                                        
+                                        modelEstados.get(0).obj.implementGaiaEvents();
+                                        
+                                        if(blMult)
+                                        {
+                                                $(lastJquerySelected).addClass("ui-multidraggable");
+                                        }
+                                }
+
+                                // carrega a lista de estados
+                                modelEstados.clear();
+                                modelEstados.add(new Item("Estado Primario", obj));
+                                for(var i = 0; i < obj.estados.length; i++)
+                                {
+                                        /** @type Objetos */
+                                        var tmpState = obj.estados[i];
+                                        modelEstados.add(new Item(tmpState.Name, tmpState));
+                                }
+                                objAnimas.setSelectIndex(0, false);
+                        }
+                }
+                else
+                {
+                        if(ptrObject !== null)
+                                obj = ptrObject;
+                }
+                
+                lastJquerySelected = obj.JqueryId;
+                
                 $("#idSelected").text(obj.JqueryId);
                 $("#idSelected1").text(obj.JqueryId);
                 ptrObject = obj;
@@ -674,10 +847,12 @@ $(document).ready(function()
                 objEventosTarget.setSelectIndex(0, false);
                 objEventosActions.setSelectIndex(0, false);
                 novo = true;
+                $("#objVar").val(ptrObject.Name);
                 $("#objAltura").val(ptrObject.H);
                 $("#objLargura").val(ptrObject.W);
                 $("#objTopo").val(ptrObject.T);
                 $("#objEsquerda").val(ptrObject.L);
+                $("#objAngulo").val(ptrObject.A);
                 $("#objPadding").val(ptrObject.P);
                 objCorFundo.setColor(ptrObject.Cb);
                 $("#objRadius").val(ptrObject.R);
@@ -687,8 +862,8 @@ $(document).ready(function()
                 $("#objBorda").val(ptrObject.B);
                 objCorBorda.setColor(ptrObject.Cbb);
                 $("#objOpacity").val(ptrObject.Opacity);
-                
-                if((ptrObject.ClassType === "GImage") || (ptrObject.ClassType === "GAudioHide"))
+
+                if((ptrObject.ClassType === "GImage") || (ptrObject.ClassType === "GAudioHide") || (ptrObject.ClassType === "GButton"))
                 {
                         $("#objRecurso").find("button").prop("disabled", false);
                         var ixSelectRecurso = 0;
@@ -710,14 +885,88 @@ $(document).ready(function()
                         $("#objRecurso").find("button").prop("disabled", true);
                         objRecurso.setSelectIndex(0, false);
                 }
-                
+
                 objFont.setSelectIndex(ptrObject.FontId);
                 $("#objFonteTam").val(ptrObject.SizeFont);
                 objCorFonte.setColor(ptrObject.Cf);
                 $("#objTexto").val(ptrObject.Text);
+
+                // estados checks
+                $("#objVisible").find("input").attr('checked', (ptrObject.Visible ? true: false));
+                $("#objFonteNegrito").find("input").attr('checked', (ptrObject.Negrito ? true: false));
+                $("#objFonteItalico").find("input").attr('checked', (ptrObject.Italico ? true: false));
+                $("#objFonteSublinhado").find("input").attr('checked', (ptrObject.Subline ? true: false));
+                
+                // vamos agora colocar os novos fields
+                $("#SpecialFields").html("");
+                
+                for(var i = 0; i < ptrObject.getPrivateAttrs().length; i++)
+                {      
+                        switch (ptrObject.getPrivateAttrs()[i].Type)
+                        {
+                                case "objCombo":
+                                        $("#SpecialFields").append(
+                                                '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + '</span><br>\n' +
+                                                '<div id="objCombo' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" class="btn-group">\n'+
+                                                '<button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">\n'+
+                                                '        ' + (ptrObject.getPrivateAttrs()[i].Data === null ? ptrObject.getPrivateAttrs()[i].Name : ptrObject.getPrivateAttrs()[i].Data) + ' <span class="caret"></span>\n' +
+                                                '</button>\n' +
+                                                '<ul class="dropdown-menu" style="width: 190px;" role="menu">\n' +     
+                                                '</ul>\n'+
+                                        '</div>');
+                                        var tmpCombo = new Combobox();
+                                        tmpCombo.setElement('#objCombo' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method);
+                                        tmpCombo.setModel(window[ptrObject.getPrivateAttrs()[i].Model]);
+                                        var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
+                                        tmpCombo.addMouseActionListener(function(ptr, method)
+                                        {
+                                                return function(obj)
+                                                {
+                                                        method.call(ptr, obj.string);
+                                                };
+                                        }(ptrObject, method));
+                                break;
+                                case "objText":
+                                        $("#SpecialFields").append(
+                                                '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + ': <br> </span>\n'+
+                                                '<input id="objText' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" type="text" class="form-control" style="height: 25px; padding: 0px;" placeholder="'
+                                                + ptrObject.getPrivateAttrs()[i].Name +'" value="' + ptrObject.getPrivateAttrs()[i].Data + '">'
+                                        );
+                                        var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
+                                        $('#objText' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method).change(function(ptr, method)
+                                        {
+                                                return function(obj)
+                                                {
+                                                        method.call(ptr, $(obj.target).val());
+                                                };
+                                        }(ptrObject, method));
+                                break;
+                                case "objNumber":
+                                        $("#SpecialFields").append(
+                                                '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + ': <br> </span>\n'+
+                                                '<input id="objNumber' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" type="text" class="form-control" style="height: 25px; padding: 0px;" placeholder="'
+                                                + ptrObject.getPrivateAttrs()[i].Name +'" value="' + ptrObject.getPrivateAttrs()[i].Data + '">'
+                                        );
+                                        var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
+                                        $('#objNumber' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method).change(function(ptr, method)
+                                        {
+                                                return function(obj)
+                                                {
+                                                        method.call(ptr, parseFloat($(obj.target).val()));
+                                                };
+                                        }(ptrObject, method));
+                                break;
+                                case "objBoolean":
+                                        
+                                break;
+                        }
+                }
+                
+                stackObjs.makeMomentumZ(ptrPage.Elementos);
                 
                 // salva
-                saveAfter();
+                saveAfter(true);
+                }
         });
         
         /**
@@ -748,6 +997,18 @@ $(document).ready(function()
                 ptrObject.Font = obj.obj;
                 // salva
                 saveAfter();
+        });
+        
+        /* FECHA PROJETO ATUAL */
+        $("#closeProject").click(function()
+        {
+                $("#main").html("");
+                $("#pgDinamic").text(".pg_sub { position: absolute; width: " + 0 + 
+                "px; height: " + 0 + "px; background-color: #EAEAEA; }");
+                 scalePanels("windowProjects");
+                 ptrObject = null;
+                 ptrPage = null;
+                 //ptrProject = null;
         });
         
            /* CHAMA JANELA DE NOVO PROJETO */
@@ -785,6 +1046,11 @@ $(document).ready(function()
                   scalePanels("windowResources");
           });
           
+          $("#addEntities").click(function()
+          {
+                  scalePanels("windowEntity");
+          });
+          
           $("#addRecursoRec").click(function()
           {
                   if($("#recursoNome").val() !== "")
@@ -805,8 +1071,14 @@ $(document).ready(function()
                   scalePanels("windowResources", true);
           });
           
+          $("#okEntity").click(function()
+          {
+                  scalePanels("windowEntity", true);
+          });
+          
           $("#objEventoScript").click(function()
           {
+                IDE.setText("");
                 scalePanels("windowScript");
                 eventChange = null;
                 for(var i = 0; i < ptrObject.eventos.length; i++)
@@ -824,14 +1096,29 @@ $(document).ready(function()
                 }
           });
           
+          $("#scriptPage").click(function()
+          {
+                  IDE.setText("");
+                  scalePanels("windowScript");
+                  IDE.setText(ptrPage.ScriptGeral);
+                  eventGeral = true;
+          });
+          
           $("#scriptCancel").click(function()
           {
                   scalePanels("windowScript", true);
+                  eventGeral = false;
           });
           
           $("#scriptSave").click(function()
           {
-                if(eventChange !== null)
+                if(eventGeral)
+                {
+                        ptrPage.ScriptGeral = IDE.getText();
+                        saveAfter();
+                        eventGeral = false;
+                }
+                else if(eventChange !== null)
                 {
                          eventChange.Script = IDE.getText();
                          saveAfter();
@@ -840,6 +1127,7 @@ $(document).ready(function()
                 {
                         var evento = new Eventos(objEventosTipo.getSelectIndex(), "", 0);
                         evento.Script = IDE.getText();
+                        window.onbeforeunload = onBefore;
                         newEvento(evento);
                 }
                 scalePanels("windowScript", true);
@@ -861,10 +1149,23 @@ $(document).ready(function()
                   }
           });
           
+          $("#completeOpen").click(function()
+          {
+                  scalePanels("windowCompleted", true);
+                  winRef = window.open(GLOBALURL, "_blank");
+                  scalePanels("windowDebug");
+          });
+          
           $("#debugPage").click(function()
           {
+                  $("#debugPage").find("img").attr("src", "../img/loading.gif");
                   makeProject();
-                  scalePanels("windowDebug");
+          });
+          
+          $("#packagePage").click(function()
+          {
+                  $("#packagePage").find("img").attr("src", "../img/loading.gif");
+                  makePackage();
           });
           
           $("#addPage").click(function()
@@ -872,6 +1173,43 @@ $(document).ready(function()
                   newPage();
           });
           
+          $("#remPage").click(function()
+          {
+                  
+          });
+
+          $("#addEstado").click(function()
+          {
+                  window.onbeforeunload = onBefore;
+                  newState();
+          });
+
+          $("#addEntityColl").click(function()
+          {
+                  ptrEntity.Fields.push(
+                  {
+                          Name: $("#collEntityNome").val(),
+                          Type: comboTypes.getSelectedItem().string
+                  });
+                  
+                  projEntities.setSelectIndex(ptrEntityIx, true);
+                  saveEntity();
+          });
+
+          $("#addEntity").click(function()
+          {
+                  ptrProject.getEntities().Entities.push(
+                  {
+                          Name: $("#entityNome").val(),
+                          Fields: []
+                  });
+                  modelEntities.add(new Item($("#entityNome").val(), ptrProject.getEntities().Entities[ptrProject.getEntities().Entities.length -1]));
+                  modelTypes.add(new Item($("#entityNome").val(), ptrProject.getEntities().Entities[ptrProject.getEntities().Entities.length -1]));
+                  projEntities.setSelectIndex(ptrProject.getEntities().Entities.length -1, true);
+                  saveEntity();
+                  $("#entityNome").val("");
+          });
+
           /**
            * TIRA SELEÇÃO MULTIPLA
            */
@@ -912,9 +1250,24 @@ $(document).ready(function()
                 if(ptrObject !== null)
                 {
                         // verifica se tem multidrag
-                        if($(".ui-multidraggable").length > 0)
+                        if(_stack().length > 0)
                         {
-                                // ae vc se ferrou
+                                for(var i = 0; i < _stack().length; i++)
+                                {
+                                        for(var j = 0; j < ptrPage.Elementos.length; j++)
+                                        {
+                                              if(ptrPage.Elementos[j].JqueryId === _stack()[i])
+                                              {
+                                                        /** @type $ */
+                                                        var objTmp = $(ptrPage.Elementos[j].JqueryId);
+                                                        
+                                                        ptrPage.Elementos[j].W = objTmp.width();
+                                                        ptrPage.Elementos[j].H = objTmp.height();
+                                                        ptrPage.Elementos[j].T = parseFloat(objTmp.css("top"));
+                                                        ptrPage.Elementos[j].L = parseFloat(objTmp.css("left"));
+                                              }
+                                        }
+                                }
                         }
                         else if(ptrObject !== null)
                         {
@@ -946,38 +1299,140 @@ $(document).ready(function()
           
           keyboard.onLeftPressed(function()
           {
-                  changeL(ptrObject.JqueryId, ptrObject.L -1);
+                  if(_stack().length === 0)
+                        changeL(ptrObject.JqueryId, ptrObject.L -1);
+                  else
+                  {
+                          for(var i = 0; i < _stack().length; i++)
+                          {
+                                  for(var j = 0; j < ptrPage.Elementos.length; j++)
+                                  {
+                                        if(ptrPage.Elementos[j].JqueryId === _stack()[i])
+                                        {
+                                                changeL(ptrPage.Elementos[j].JqueryId, ptrPage.Elementos[j].L -1);
+                                        }
+                                  }
+                          }
+                  }
                   saveAfter();
           });
           
           keyboard.onRightPressed(function()
           {
-                  changeL(ptrObject.JqueryId, ptrObject.L +1);
+                  if(_stack().length === 0)
+                        changeL(ptrObject.JqueryId, ptrObject.L +1);
+                  else
+                  {
+                          for(var i = 0; i < _stack().length; i++)
+                          {
+                                  for(var j = 0; j < ptrPage.Elementos.length; j++)
+                                  {
+                                        if(ptrPage.Elementos[j].JqueryId === _stack()[i])
+                                        {
+                                                changeL(ptrPage.Elementos[j].JqueryId, ptrPage.Elementos[j].L +1);
+                                        }
+                                  }
+                          }
+                  }
                   saveAfter();
           });
           
           keyboard.onDownPressed(function()
           {
-                  changeTop(ptrObject.JqueryId, ptrObject.T +1);
+                  if(_stack().length === 0)
+                        changeTop(ptrObject.JqueryId, ptrObject.T +1);
+                  else
+                  {
+                          for(var i = 0; i < _stack().length; i++)
+                          {
+                                  for(var j = 0; j < ptrPage.Elementos.length; j++)
+                                  {
+                                        if(ptrPage.Elementos[j].JqueryId === _stack()[i])
+                                        {
+                                                changeTop(ptrPage.Elementos[j].JqueryId, ptrPage.Elementos[j].T +1);
+                                        }
+                                  }
+                          }
+                  }
                   saveAfter();
           });
           
           keyboard.onUpPressed(function()
           {
-                  changeTop(ptrObject.JqueryId, ptrObject.T -1);
+                  if(_stack().length === 0)
+                        changeTop(ptrObject.JqueryId, ptrObject.T -1);
+                  else
+                  {
+                          for(var i = 0; i < _stack().length; i++)
+                          {
+                                  for(var j = 0; j < ptrPage.Elementos.length; j++)
+                                  {
+                                        if(ptrPage.Elementos[j].JqueryId === _stack()[i])
+                                        {
+                                                changeTop(ptrPage.Elementos[j].JqueryId, ptrPage.Elementos[j].T -1);
+                                        }
+                                  }
+                          }
+                  }
                   saveAfter();
+          });
+          
+          keyboard.onCtrVPressed(function()
+          {
+                  // copia elementos selecionados
+                  var elems = _stack();
+                  
+                  for(var i = 0; i < elems.length; i++)
+                  {
+                          for(var j = 0; j < ptrPage.Elementos.length; j++)
+                          {
+                                  if(ptrPage.Elementos[j].JqueryId === elems[i])
+                                  {
+                                                var objTmp = ptrPage.Elementos[j].copy();
+                                                objs.add(new Item(objTmp.JqueryId, objTmp));
+                                                var strTmp = newElem(objTmp.returnCode(true, false));
+                                                /*if(strTmp !== "")
+                                                {
+                                                        objTmp.FatherId = strTmp;
+                                                }*/
+                                                objTmp.implementGaiaEvents();
+
+                                                stackObjs.makeMomentumZ(ptrPage.Elementos);
+                                                ptrPage.Elementos.push(objTmp);
+
+                                                // salva
+                                                window.onbeforeunload = onBefore;
+                                                newObjeto(objTmp);
+                                  }
+                          }
+                  }
+          });
+          
+          keyboard.onCtrYPressed(function()
+          {
+                  if(stackObjs.verifiStackY())
+                  {
+                          ptrPage.Elementos = stackObjs.getMomentumY(ptrPage.Elementos);
+                          openPage(comboTool1Paginas.getSelectIndex());
+                          saveAfter(true);
+                  }
           });
           
           keyboard.onCtrZPressed(function()
           {
-                  ptrPage.Elementos = stackObjs.getMomentumZ(ptrPage.Elementos);
-                  openPage(comboTool1Paginas.getSelectIndex());
-                  saveAfter();
+                  if(stackObjs.verifiStackZ())
+                  {
+                        ptrPage.Elementos = stackObjs.getMomentumZ(ptrPage.Elementos);
+                        openPage(comboTool1Paginas.getSelectIndex());
+                        saveAfter(true);
+                  }
           });
 });
 
-function saveAfter()
+function saveAfter(dontStack)
 {
+        if(!dontStack)
+                stackObjs.makeMomentumZ(ptrPage.Elementos);
         if(canSetTimeout)
         {
                 canSetTimeout = false;
@@ -987,9 +1442,20 @@ function saveAfter()
                         canSetTimeout = true;
                         savePage(function()
                         {
-                                window.onbeforeunload = null;
+                                //window.onbeforeunload = null;
+                                confirmados++;
+                                verificaSaves();
                         });
-                }, 10000);
+                }, 1000);
+        }
+}
+
+function verificaSaves()
+{
+        if(confirmados === envios)
+        {
+                // tudo salvadinho
+                window.onbeforeunload = null;
         }
 }
 
@@ -1013,6 +1479,7 @@ function openProject(proj)
         colorPick2.setColor(proj.layout[0].BackgroundColor);
         fileUp2.setFile(proj.layout[0].BackgroundImage);
         ptrProject = proj;
+        ptrProject.ParseJsonEntities();
         
         /**
          * Verifica as páginas de layout
@@ -1068,6 +1535,15 @@ function openProject(proj)
                 }
         }
         Objetos.counterId = tmpId + 1;
+        
+        // entidades
+        ptrProject.ParseJsonEntities();
+        
+        for(var i = 0; i < ptrProject.getEntities().Entities.length; i++)
+        {
+                modelEntities.add(new Item(ptrProject.getEntities().Entities[i].Name, ptrProject.getEntities().Entities[i]));
+                modelTypes.add(new Item(ptrProject.getEntities().Entities[i].Name, ptrProject.getEntities().Entities[i]));
+        }
 }
 
 function openPage(pgI)
@@ -1087,15 +1563,32 @@ function openPage(pgI)
         
         for(var i = 0; i < ptrPage.Elementos.length; i++)
         {
+                /** @type Objetos */
                 var objTmp = ptrPage.Elementos[i];
-                objs.add(new Item(objTmp.JqueryId, objTmp));
-                var strTmp = newElem(objTmp.returnCode(true, false));
-                if(strTmp !== "")
+                
+                if(!objTmp.Deleted)
                 {
-                        objTmp.FatherId = strTmp;
+                        objs.add(new Item(objTmp.JqueryId, objTmp));
+                        //var strTmp = newElem(objTmp.returnCode(true, false));
+                        var strTmp = "";
+                        
+                        if(objTmp.FatherId === "0")
+                        {
+                                strTmp = newElem(objTmp.returnCode(true, false));
+                        }
+                        else
+                        {
+                                strTmp = newElemD(objTmp.FatherId, objTmp.returnCode(true, false));
+                        }
+                        
+                        /*if(strTmp !== "")
+                        {
+                                objTmp.FatherId = strTmp;
+                        }*/
+                        objTmp.implementGaiaEvents();
                 }
-                objTmp.implementGaiaEvents();
         }
+        ptrPage.ResolveObjectsSpecialFields();
 }
 
 function openLayout(pgI)
@@ -1128,10 +1621,10 @@ function openLayout(pgI)
                 var objTmp = ptrPage.Elementos[i];
                 objs.add(new Item(objTmp.JqueryId, objTmp));
                 var strTmp = newElem(objTmp.returnCode(true, false));
-                if(strTmp !== "")
+                /*if(strTmp !== "")
                 {
                         objTmp.FatherId = strTmp;
-                }
+                }*/
                 objTmp.implementGaiaEvents();
         }
 }
@@ -1159,6 +1652,7 @@ function changeEvents()
         objCorFundo.onColorChange(function()
         {
                 ptrObject.setBackgroundColor(objCorFundo.getColor());
+                
                 // salva
                 saveAfter();
         });
@@ -1313,8 +1807,8 @@ function debugLogEnter(ev)
         if(ev.keyCode === 13)
         {
                 errList.add(new Item($("#debugLog").val(), null, "../img/script.png"));
-                var str = winRef.eval($("#debugLog").val());
-                errList.add(new Item(str, null, "../img/ok.png"));
+                //var str = winRef.eval($("#debugLog").val());
+                winRef.postMessage($("#debugLog").val(), "*");
                 $("#debugLog").val("");
                 $("#debugTools").animate({ scrollTop: $('#debugTools')[0].scrollHeight}, 1000);
         }

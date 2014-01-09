@@ -23,6 +23,8 @@ function GText(largura, altura, topo, esquerda, visivel)
                 var italico = "italic";
                 var negrito = "bold";
                 var subline = "underline";
+                var position = "absolute";
+                var width = "";
 
                 if(!flag)
                 {
@@ -32,6 +34,14 @@ function GText(largura, altura, topo, esquerda, visivel)
                 else
                         display = "block";
 
+                if(this.StaticPos)
+                {
+                        width = "auto";
+                        position = "static";
+                }
+                else
+                        width = this.W + "px";
+
                 if(!this.Italico)
                         italico = "normal";
                 if(!this.Negrito)
@@ -40,12 +50,17 @@ function GText(largura, altura, topo, esquerda, visivel)
                         subline = "normal";
                 
                 code =	'\n<div id="text' + this.Id + '"\n' +
-                                                ' style="display:' + display + '; position: absolute; \n' +
-                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
+                                                ' style="display:' + display + '; position: ' + position + '; \n' +
+                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px; opacity: ' + (this.Opacity / 100) + ';\n' +
+                                                ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' -moz-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' -o-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' -ms-transform: rotate(' + this.A + 'deg);\n' +
+                                                ' transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 'box-sizing: initial; \n' +
                                                 ' -moz-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +

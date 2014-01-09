@@ -13,7 +13,7 @@ public class User  extends MproEntity
 {
         public String Nome;
         public String UserName;
-        public String Key;
+        public String Chave;
         public String Email;
         public String DataNascimento;
         //public boolean Loged;
@@ -31,7 +31,7 @@ public class User  extends MproEntity
         {
                 this.Nome = nome;
                 this.UserName = username;
-                this.Key = key;
+                this.Chave = key;
                 this.Email = email;
                 this.DataNascimento = datanascimento;
         }
@@ -47,5 +47,13 @@ public class User  extends MproEntity
                     calendar.set(Integer.parseInt(parts[2]), Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
                     long lg1 = today.getTime().getTime() - calendar.getTime().getTime();
                     return (int)(lg1 / (1000L * 60 * 60 * 24 *  365));
+          }
+          
+          public void deleteDeleteds()
+          {
+                  for(int i =0; i < this.Projetos.size(); i++)
+                  {
+                          this.Projetos.get(i).deleteDeleteds();
+                  }
           }
 }

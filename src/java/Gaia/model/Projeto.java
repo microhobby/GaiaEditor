@@ -17,6 +17,7 @@ public class Projeto extends MproEntityRelation
         public List<Paginas> paginas = new ArrayList();
         public  List<Recursos> recursos = new ArrayList();
         public String Obs;
+        public String JsonEntities;
         
         public Projeto(){}
         
@@ -26,5 +27,13 @@ public class Projeto extends MproEntityRelation
                 this.AlturaPaginas = altura;
                 this.LarguraPaginas = largura;
                 this.Obs = obs;
+        }
+        
+        public void deleteDeleteds()
+        {
+                for(int i =0; i < this.paginas.size(); i++)
+                {
+                        this.paginas.get(i).deleteDeleteds();
+                }
         }
 }

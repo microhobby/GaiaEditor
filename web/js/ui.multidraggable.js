@@ -467,7 +467,8 @@ $.ui.plugin.add("multidraggable", "scroll", {
 	},
 	drag: function(event, ui) {
 
-		var i = $(this).data("multidraggable"), o = i.options, scrolled = false;
+                                        
+		var i = $(this).data("multidraggable"),o = i.options, scrolled = false;
 
 		if(i.scrollParent[0] != document && i.scrollParent[0].tagName != 'HTML') {
 
