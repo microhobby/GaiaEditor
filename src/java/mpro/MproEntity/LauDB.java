@@ -46,27 +46,30 @@ public class LauDB
         {
             System.err.println(ex.getMessage());
         }
-        
-        connection = null;
-        
-        // cria a conexão com o banco
-        try
+
+        if(connection == null)
         {
-            //connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia", "root", "vertrigo");
-            //connection = DriverManager.getConnection("jdbc:mysql://mysql.mpro3.com.br:3307/gaia", "mpro3", "22032010laurate");
-            //connection = DriverManager.getConnection("jdbc:mysql://nut.unifenas.br:3306/Gaia", "root", "vertrigo");
-             //statement = connection.createStatement();
-            //statement.setQueryTimeout(30);  // set timer out para 30 segundos
-            //statement.execute("PRAGMA synchronous=OFF");
-            this.Err = true;
-        }
-        catch(SQLException e)
-        {
-            System.err.println(e.getMessage());
-            this.Message = "Mpro L.A.U DB ERROR: " + e.getMessage();
-            this.Err = false;
-        }
+                //connection = null;
+
+                // cria a conexão com o banco
+                try
+                {
+                        //connection = DriverManager.getConnection("jdbc:sqlite:" + file);
+                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia", "root", "vertrigo");
+                        //connection = DriverManager.getConnection("jdbc:mysql://mysql.mpro3.com.br:3307/gaia", "mpro3", "22032010laurate");
+                        //connection = DriverManager.getConnection("jdbc:mysql://nut.unifenas.br:3306/Gaia", "root", "vertrigo");
+                        //statement = connection.createStatement();
+                        //statement.setQueryTimeout(30);  // set timer out para 30 segundos
+                        //statement.execute("PRAGMA synchronous=OFF");
+                        this.Err = true;
+                }
+                catch(SQLException e)
+                {
+                        System.err.println(e.getMessage());
+                        this.Message = "Mpro L.A.U DB ERROR: " + e.getMessage();
+                        this.Err = false;
+                }
+        }   
     }
     
     /**
@@ -83,6 +86,8 @@ public class LauDB
             sql = statement.executeQuery(cmd);
             this.elems = this.fetchAll(sql);
             this.Err = true;
+            statement.close();
+            sql.close();
             
             if(this.numRows > 0)
                 return this.elems;
@@ -138,10 +143,13 @@ public class LauDB
                 boolean result = false;
                 try 
                 {
+                        sql.close();
                         Statement  statement = connection.createStatement();
                         sql = statement.executeQuery(cmd);
                         ResultSetMetaData rsmd = sql.getMetaData();
                         this.numCollsI = rsmd.getColumnCount();
+                        statement.close();
+                        //sql.close();
                         return true;
                  } 
                 catch (SQLException ex)
@@ -220,6 +228,8 @@ public class LauDB
                         result = rs.getInt(1);
                 }
                 //result = statement.execute(cmd);
+                statement.close();
+                rs.close();
         }
         catch (SQLException ex)
         {
@@ -269,6 +279,7 @@ public class LauDB
         try
         {
             this.connection.close();
+            this.connection = null;
         }
         catch (SQLException ex)
         {

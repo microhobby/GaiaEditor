@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<!-- PÁGINA PRINCIPAL DO NED TEMPLATE -->
+
+<head>
+          <!-- METAS -->
+    <meta charset="utf-8" />
+    <meta
+          name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
+          />
+
+	<script src="js/gaiaView/Lista.js" type="text/javascript"> </script>
+        <script src="js/gaiaController/Chatterbot.js" type="text/javascript"> </script>
+        
+	<script type="text/javascript">
+		var safira = new Chatterbot("http://mpro3.com.br/botServer");
+
+		safira.setWebServerFile("teste1.php");
+		safira.setCompleteCallBack(function(palavra)
+		{
+			// faca alguma coisa com a resposta
+			console.log(palavra);
+		});
+	</script>
+          
+</head>
+
+<!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->
+<body style="margin: 0; background-color:#EAEAEA;" onload="enableProx(true); iniS(1); pageCookie();">
+<!--PAGE-->
+<!--FIM PAGE-->
+</body>
+
+</html>

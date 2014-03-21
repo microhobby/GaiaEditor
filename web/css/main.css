@@ -5,9 +5,9 @@ body{
   color: #333;
   /*color:#191970;*/
   overflow-x: hidden;
-  overflow-y: hidden;
+  /*overflow-y: hidden;
   -webkit-transform-style: preserve-3d;
-  -webkit-transform: translateZ(0);
+  -webkit-transform: translateZ(0);*/
   background-size: 100%;
   /* select colorido */
     -webkit-touch-callout: none;
@@ -17,6 +17,8 @@ body{
     -ms-user-select: none;
     user-select: none;
 }
+
+.badWolf{ line-height: 160%; }
 
 div
 {
@@ -447,7 +449,8 @@ img{
 
 #windowProjects
 {
-        position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 400px;
@@ -464,7 +467,8 @@ img{
 
 #windowProjectsNew
 {
-        position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 400px;
@@ -481,7 +485,8 @@ img{
 
 #windowLayout
 {
-        position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 400px;
@@ -498,7 +503,8 @@ img{
 
 #windowResources
 {
-       position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 400px;
@@ -507,7 +513,8 @@ img{
 
 #windowEntity
 {
-       position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 400px;
@@ -516,7 +523,8 @@ img{
 
 #windowScript
 {
-       position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 400px;
@@ -525,7 +533,8 @@ img{
 
 #windowDebug
 {
-       position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 280px;
@@ -540,9 +549,28 @@ img{
         height: 330px;
 }
 
+#windowElementos
+{
+        /*position: absolute;*/
+        position: fixed;
+        top:  20px;
+        left:  20px;
+        width: 280px;
+        height: 370px;
+        z-index: 1500;
+}
+
+#containerWindowElementos
+{
+        position: absolute;
+        width: 280px;
+        height: 370px;
+}
+
 #windowCompleted
 {
-       position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  20px;
         left:  20px;
         width: 280px;
@@ -567,10 +595,27 @@ img{
         /*border: 2px solid #000;*/
 }
 
+#elementosTools
+{
+        position: absolute;
+        overflow-y: auto;
+        top: 40px;
+        width: 280px;
+        height: 260px;
+        /*border: 2px solid #000;*/
+}
+
 #debugLog
 {
         position: absolute;
         top: 300px;
+}
+
+#closeElementos
+{
+        position: absolute;
+        top: 295px;
+        left: 45px;
 }
 
 #containerWindowResources
@@ -619,11 +664,13 @@ img{
 
 #tool1base
 {
-        position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  0px;
         left:  5px;
         width: 225px;
         height: 400px;
+        z-index: 1000;
 }
 
 #tool1
@@ -646,11 +693,13 @@ img{
 
 #tool2base
 {
-        position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  0px;
         left:  5px;
         width: 225px;
         height: 400px;
+        z-index: 1000;
 }
 
 #tool2
@@ -673,11 +722,13 @@ img{
 
 #tool3
 {
-        position: absolute;
+        /*position: absolute;*/
+        position: fixed;
         top:  5px;
         left:  500px;
         width: 220px;
         height: 400px;
+        z-index: 1000;
         /*overflow: auto;*/
 }
 

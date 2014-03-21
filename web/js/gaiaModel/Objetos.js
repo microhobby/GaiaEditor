@@ -152,11 +152,21 @@ function Objetos()
         this.setBackgroundColor = function(hex)
         {
                 this.Cb = hex;
-                if(this.ClassType !== "GButton")
-                        $(this.JqueryId).css("background-color", hex);
+                if(this.ClassType === "GButton" || this.ClassType === "GComboBox")
+                        $("#btDinamic" + this.Id).text('#myItems' + this.Id + ' > li > a:hover { background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); } #bt' + this.Id + '{ text-shadow: initial; background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); border-radius: 4px; -webkit-border-radius: 4px; -mox-border-radius: 4px; } #bt' + this.Id + ':active { background-color: ' + this.Cb + '; background-image: none;} border-radius: 4px; -webkit-border-radius: 4px; -mox-border-radius: 4px;');
+                else if(this.ClassType === "GInput")
+                        $("#inputDinamic" + this.Id).text('#GInput' + this.Id + 'input:focus{\n' +
+                                                'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
+                                                'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'outline: 0 none;}\n');
+                else if(this.ClassType === "GTextArea")
+                        $("#inputDinamic" + this.Id).text('#GTextArea' + this.Id + 'input:focus{\n' +
+                                                'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
+                                                'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'outline: 0 none;}\n');
                 else
                 {
-                        $("#btDinamic" + this.Id).text('#bt' + this.Id + '{ background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); } #bt' + this.Id + ':active { background-color: ' + this.Cb + '; background-image: none;}');
+                        $(this.JqueryId).css("background-color", hex);
                 }
         };
         
@@ -213,12 +223,12 @@ function Objetos()
         this.setText = function(val)
         {
                 this.Text = val;
-                if(this.JqueryId.indexOf("bt") === -1)
+                if((this.JqueryId.indexOf("bt") === -1) && (this.JqueryId.indexOf("ComboBox") === -1))
                         changeT(this.JqueryId, val);
                 else
                 {
                         //$("#bt" + this.Id).html(val);
-                        $("#bt" + this.Id).find("span").html(val);
+                        $("#bt" + this.Id).find("#textHere").html(val);
                 }
         };
         
@@ -334,6 +344,10 @@ function Objetos()
                                 $(".gaiaFocused").removeClass("gaiaFocused")
                         }
                         $(this).addClass("gaiaFocused");
+                        
+                        if(event.ctrlKey)
+                                $(this).addClass('ui-multidraggable');
+                        
                         /*for(var i = 0; i < Objetos.selectAssigns.length; i++)
                         {
                                 Objetos.selectAssigns[i](me);

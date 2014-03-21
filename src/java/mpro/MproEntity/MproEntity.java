@@ -497,7 +497,7 @@ public abstract class MproEntity
                               _conn.execute("CREATE TABLE " + this._class.getName().replace('.', '_') + "(" + this.getTableFields() + ");");
                               return;
                     }    
-                    else
+                    /*else
                     {
                               this.namesRelation.clear();
                               // verifica os campos
@@ -558,7 +558,7 @@ public abstract class MproEntity
                               // agora podemos fazer as querys
                               if(isEqual)
                                         this.changeTable(changesTable);
-                    }
+                    }*/
           }
           
           /**

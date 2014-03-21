@@ -20,6 +20,21 @@ function GDivStatic(largura, altura, topo, esquerda, visivel)
                 
                 var code;
                 var display = "none";
+                var position = "absolute";
+                var width = "";
+                var height = "";
+                
+                if(this.StaticPos)
+                {
+                        width = "auto";
+                        position = "static";
+                        height = "auto";
+                }
+                else
+                {
+                        height = this.H + "px";
+                        width = this.W + "px";
+                }
                 
                   if(!flag)
                 {
@@ -30,9 +45,9 @@ function GDivStatic(largura, altura, topo, esquerda, visivel)
                         display = "block";
                 
                 code =	'\n<div id="divStatic' + this.Id + '"\n' +
-                                                ' style="display:' + display + '; position: absolute; \n' +
-                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
-                                                ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
+                                                ' class="badWolf" style="display:' + display + '; position: ' +  position + '; \n' +
+                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
+                                                ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px;\n' +

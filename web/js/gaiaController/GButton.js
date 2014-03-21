@@ -31,6 +31,21 @@ function GButton(largura, altura, topo, esquerda, visivel)
                 var negrito = "bold";
                 var subline = "underline";
                 var recursoInt = this.recurso;
+                var position = "absolute";
+                var width = "";
+                var height = "";
+                
+                if(this.StaticPos)
+                {
+                        width = this.W + "px";
+                        position = "static";
+                        height = this.H + "px";
+                }
+                else
+                {
+                        height = this.H + "px";
+                        width = this.W + "px";
+                }
 
                 if(!flag)
                 {
@@ -49,10 +64,10 @@ function GButton(largura, altura, topo, esquerda, visivel)
                 
                 
                 code =    '\n<div id="cont_bt' + this.Id +'"\n' +
-                                ' style="display: ' + display + '; position:absolute;\n' +
+                                ' class="badWolf" style="display: ' + display + '; position:' + position + ';\n' +
                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; ' +
-                                ' height: ' + this.H + 'px; width: ' + this.W + 'px; \n' +
-                                ' padding: ' + this._p + "px; \n" +
+                                ' height: ' + height + '; width: ' + width + '; \n' +
+                                ' padding: ' + this.P + "px; \n" +
                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                 ' border-radius: ' + this.R + 'px; opacity: ' + (this.Opacity / 100) + ';\n' +
                                 ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
@@ -83,7 +98,7 @@ function GButton(largura, altura, topo, esquerda, visivel)
                                 'font-size: inherit; font-family: inherit; font-style: inherit; font-weight: inherit; text-decoration: inherit; ' +
                                 'color: inherit;"><i class="glyphicon "><img id="cont_img' + this.Id + '" src="' +
                                                 (this.recurso !== -1 ?  
-                                                this.GetFileResource(recursoInt) : "../img/blank.gif") + '" width="100%" height="100%" /></i><span>' + this.Text + '</span></button>\n' +
+                                                this.GetFileResource(recursoInt) : "../img/blank.gif") + '" width="100%" height="100%" /></i><span id="textHere">' + this.Text + '</span></button>\n' +
                                 '</div>\n\n';
 
                 return code;

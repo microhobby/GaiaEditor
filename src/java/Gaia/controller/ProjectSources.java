@@ -4,6 +4,7 @@ package Gaia.controller;
 import Gaia.model.Entities;
 import Gaia.model.Entity;
 import Gaia.model.Field;
+import Gaia.model.Layout;
 import Gaia.model.Projeto;
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +207,7 @@ public class ProjectSources
                         break;
                         case 2: // zoom
                                 ret = "var auxid = pgInd;\n" +
-                                        "                    $(\"#pg\" + auxid).animate(\n" +
+                                        "                    if(pgInd != id){ $(\"#pg\" + auxid).animate(\n" +
                                         "                             {\n" +
                                         "                                       opacity: 0.0,\n" +
                                         "                                       left: 320,\n" +
@@ -224,7 +225,7 @@ public class ProjectSources
                                         "                    );\n" +
                                         "\n" +
                                         "                    pgInd = id;\n" +
-                                        "                    pageIn(pgInd);\n";
+                                        "                    pageIn(pgInd); }\n";
                         break;
                 }
                 
@@ -248,7 +249,7 @@ public class ProjectSources
         private String getMidiaFiles()
         {
                 String ret = "var __total___Events__ = " + Midias.size() + "; var ___catch__Event = 0;\n"+ 
-                        "function VERIFY__EVENTS__LOAD(){ if(__total___Events__ === ___catch__Event){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); } }\n"+
+                        "function VERIFY__EVENTS__LOAD(){ if(__total___Events__ === ___catch__Event){ hideLoading(); } }\n"+
                         "function ____incrementCatch(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); this.src = \"\"; }";
                 String calls = "";
                 int i;
@@ -266,12 +267,64 @@ public class ProjectSources
                         }
                 }
                 
+                ret += "function showLoading(){ if($(\"#blackOut\").css(\"display\") != \"block\"){\n"
+                        + "$(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);  }}\n";
+                ret += "function hideLoading(){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); }\n";
+                
                 ret += "function ____loadMidias(){\n " + calls + "\n";
                 ret += 
                                         "if(__total___Events__ !== 0)\n"+
-                                        "{ $(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);}\n";
+                                        "{ showLoading(); }\n";
                 
                 return ret + "\n}\n"; 
+        }
+        
+        private String getScalePattern()
+        {
+                String ret = "";
+                switch(projeto.layout.get(0).Tipo)
+                {
+                        case 2: // EAD
+                              ret +=  "	 //verifica tamanho da tela para aplicar escala\n" +
+                        "		 if(document.documentElement.clientWidth < document.documentElement.clientHeight)\n" +
+                        "		 {\n" +
+                        "		 	scale = (document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ";\n" +
+                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
+                        " 		 }\n" +
+                        "	 	 else\n" +
+                        "	 	 {\n" +
+                        "	 	 	scale = (document.documentElement.clientHeight) / " + (projeto.AlturaPaginas + 180) + ";\n" +
+                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
+                        "	 	 }\n";
+                        break;
+                        case 5: // WEB
+                                ret +=  "	 //verifica tamanho da tela para aplicar escala\n" +
+                        "		 if(document.documentElement.clientWidth < " + projeto.LarguraPaginas + ")\n" +
+                        "		 {\n" +
+                        "		 	scale = (document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ";\n" +
+                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
+                        " 		 }\n" +
+                        "	 	 else\n" +
+                        "	 	 {\n" +
+                        "	 	 	scale = 1;\n" +
+                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
+                        "	 	 }\n";
+                        break;
+                        case 6:
+                                 ret +=  "	 //verifica tamanho da tela para aplicar escala\n" +
+                        "		 /*if(document.documentElement.clientWidth < document.documentElement.clientHeight)\n" +
+                        "		 {\n" +
+                        "		 	scale = (document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ";\n" +
+                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
+                        " 		 }\n" +
+                        "	 	 else\n" +
+                        "	 	 {*/\n" +
+                        "	 	 	scale = (document.documentElement.clientHeight) / " + (projeto.AlturaPaginas) + ";\n" +
+                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
+                        "	 	 //}\n";
+                        break;
+                }
+                return ret;
         }
         
         public String getAppJs()
@@ -291,7 +344,9 @@ public class ProjectSources
                         " var scale = 1.0;\n" +
                         " var uScale = 0.0;\n" +
                         " var enableGest = true;\n" +
-                        " var timer = null;\n" +
+                        " var timer = null;\n"
+                        + "var __webType = " + (projeto.layout.get(0).Tipo == 5 ? "true;\n" : "false;\n") +
+                        "var ___pages__ = new Array();\n  var __badWolf = null;\n" + 
                         "\n" +
                         /*"//carrega as imagens que precisam de carregamento imediato\n" +
                         "imagem_lista = Array('../img/exclamation5.png', '../img/btB.png', '../img/btC.png', '../img/btD.png');\n" +
@@ -357,18 +412,23 @@ public class ProjectSources
                         " function recalcScale()\n" +
                         " {\n" +
                         "	 markZero();\n" +
-                        "	 //verifica tamanho da tela para aplicar escala\n" +
-                        "		 if(document.documentElement.clientWidth < document.documentElement.clientHeight)\n" +
-                        "		 {\n" +
-                        "		 	scale = (document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ";\n" +
-                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
-                        " 		 }\n" +
-                        "	 	 else\n" +
-                        "	 	 {\n" +
-                        "	 	 	scale = (document.documentElement.clientHeight) / " + (projeto.AlturaPaginas + 180) + ";\n" +
-                        "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
-                        "	 	 }\n" +
+                        getScalePattern() +
                         " }\n" +
+                        "\n" +
+                        "function magic(){ \n"
+                        + " if($(\"body\").scrollTop() != 0) $(\"body\").animate({ scrollTop: 0}, 500); \n"
+                        /*+ "if(___pages__[pgInd] === undefined){\n"
+                        + "$(\"#pg\" + pgInd).css(\"height\", (document.body.scrollHeight / scale) - ($(\".header\").height() / scale)); ___pages__[pgInd] = true;\n"
+                        + " } else { \n"
+                        + " $(\"#pg\" + pgInd).css(\"height\", (document.body.scrollHeight / scale) - ($(\".header\").height() / scale) - ($(\".footer\").height() / scale)); }\n"*/
+                        + "__badWolf = null;\n"
+                        + "$(\"#pg\" + pgInd).find(\".badWolf\").each(function(i){ this.__Soma = ($(this).offset().top / scale) + $(this)[0].scrollHeight; if((__badWolf === null) || (__badWolf.__Soma < this.__Soma)){ __badWolf = this;}});\n"
+                        + "$(\"#pg\" + pgInd).css(\"height\", (__badWolf.__Soma) - ($(\".header\").height()) + 10);\n"+  
+                        "$('#blackOut').css('left', 0);\n" +
+                        "$('#blackOut').css('top', 0);\n" +
+                        "blackHell();\n"
+                        + "}\n" +
+                        "\n" +
                         " \n" +
                         " //função que aplica zoom\n" +
                         " function setZoomOut()\n" +
@@ -392,15 +452,15 @@ public class ProjectSources
                         " {\n" +
                         "	 //e coloca blackout no lugar certo\n" +
                         "	 if((scale + uScale) < scale)\n" +
-                        "	 {\n" +
-                        "		 $('#blackOut').css('height', document.documentElement.clientHeight / (scale + uScale));\n" +
+                        "	 {\n" + //$('#blackOut').css('height', $(window).height() + window.document.body.scrollHeight / (scale + uScale));
+                        "		 $('#blackOut').css('height', window.document.body.scrollHeight / (scale + uScale));\n" +
                         "		 $('#blackOut').css('width', document.documentElement.clientWidth / (scale + uScale));\n" +
                         "		 $('#blackOut').css('left', Math.round(parseFloat($('#blackOut').position().left - $('#page').position().left /(scale + uScale))));\n" +
                         "		 $('#blackOut').css('top', Math.round(parseFloat($('#blackOut').position().top - $('#page').position().top / (scale + uScale))));\n" +
                         "	 }\n" +
                         "	 else\n" +
                         "	 {\n" +
-                        "		 $('#blackOut').css('height', $(document).height() / (scale + uScale));\n" +
+                        "		 $('#blackOut').css('height', window.document.body.scrollHeight / (scale + uScale));\n" +
                         "		 $('#blackOut').css('width', $(document).width() / (scale + uScale));\n" +
                         "		 $('#blackOut').css('left', Math.round(parseFloat($('#blackOut').position().left - $('#page').position().left /(scale + uScale))));\n" +
                         "		 $('#blackOut').css('top', Math.round(parseFloat($('#blackOut').position().top - $('#page').position().top / (scale + uScale))));\n" +
@@ -605,52 +665,158 @@ public class ProjectSources
         {
                 String css = "";
                 
-                css += ".pg\n" +
-                                "{\n" +
-                                "	position: absolute;\n" +
-                                "	display: none;\n" +
-                                "	opacity: 0.0;\n" +
-                                "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
-                                "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
-                                "	background-color: #EAEAEA;\n" +
-                                "	top: 109px;\n" +
-                                "}\n" +
-                                "\n" +
-                                ".pg_sub\n" +
-                                "{\n" +
-                                "	position: absolute;\n" +
-                                "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
-                                "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
-                                "	background-color: #EAEAEA;\n" +
-                                "}\n"
-                                + ".header{\n" +
-                                "  position: absolute;\n" +
-                                "  width: " + projeto.LarguraPaginas + "px;\n" +
-                                "  height: 100px;\n" +
-                                "  -webkit-border-radius: 10px;\n" +
-                                "  border-radius: 10px;\n" +
-                                "}\n"
-                                + ".footer{\n" +
-                                "	position: absolute;\n" +
-                                "	height: 50px;\n" +
-                                "	width: " + projeto.LarguraPaginas + "px;\n" +
-                                "	-webkit-border-radius: 10px;\n" +
-                                "	border-radius: 10px;\n" +
-                                "	position: absolute;\n" +
-                                "	top: " + (projeto.AlturaPaginas + 120) + "px;\n" +
-                                "}\n"
-                                + "#page{\n" +
-                                "    width: " + projeto.LarguraPaginas + "px;\n" +
-                                "	height: " + (projeto.AlturaPaginas + 180) + "px;\n" +
-                                "	position: absolute;\n" +
-                                "    /*margin:10px auto;*/\n" +
-                                "/*    padding: 10px;\n" +
-                                "    padding-top:0px;*/\n" +
-                                "    /*text-align:left; /* \"remédio\" para o hack do IE */\n" +
-                                "    /*border: 1px solid #333;*/\n" +
-                                "	background-color: transparent;\n" +
-                                "	/*overflow-x: hidden;*/\n" +
-                                "}";
+                switch(projeto.layout.get(0).Tipo)
+                {
+                        case 2: // EAD
+                                css += ".pg\n" +
+                                                "{\n" +
+                                                "	position: absolute;\n" +
+                                                "	display: none;\n" +
+                                                "	opacity: 0.0;\n" +
+                                                "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
+                                                "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
+                                                "	background-color: #EAEAEA;\n" +
+                                                "	top: 109px;\n" + 
+                                                "}\n"
+                                        + ".header{\n" +
+                                                "  position: absolute;\n" +
+                                                "  width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "  height: 100px;\n" +
+                                                "  -webkit-border-radius: 10px;\n" +
+                                                "  border-radius: 10px;\n" +
+                                                "}\n"
+                                                + ".footer{\n" +
+                                                "	position: absolute;\n" +
+                                                "	height: 50px;\n" +
+                                                "	width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "	-webkit-border-radius: 10px;\n" +
+                                                "	border-radius: 10px;\n" +
+                                                "	position: absolute;\n" +
+                                                "	top: " + (projeto.AlturaPaginas + 120) + "px;\n" +
+                                                "}\n"
+                                                + "#page{\n" +
+                                                "    width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "	height: " + (projeto.AlturaPaginas + 180) + "px;\n" +
+                                                "	position: absolute;\n" +
+                                                "    /*margin:10px auto;*/\n" +
+                                                "/*    padding: 10px;\n" +
+                                                "    padding-top:0px;*/\n" +
+                                                "    /*text-align:left; /* \"remédio\" para o hack do IE */\n" +
+                                                "    /*border: 1px solid #333;*/\n" +
+                                                "	background-color: transparent;\n" +
+                                                "	/*overflow-x: hidden;*/\n" +
+                                                "}";
+                        break;
+                        case 5: //WEB
+                                css += ".pg\n" +
+                                                "{\n" +
+                                                "	position: relative;\n" +
+                                                "	display: none;\n" +
+                                                "	opacity: 0.0;\n" +
+                                                "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
+                                                "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
+                                                "	background-color: transparent;\n" +
+                                                "	top: 0px;\n" + 
+                                                "}\n #main{ background-color: transparent; }\n" +
+                                                "\n" +
+                                                ".content\n"+
+                                                "{\n"+
+                                                "               position: relative;\n"+
+                                                "               margin-left: 0px;\n" +
+                                                "}\n" +
+                                                "\n" +
+                                                "body\n"
+                                                + "{\n" +
+                                                "               overflow-y: auto;\n"
+                                                + "}\n"
+                                        + ".header{\n" +
+                                                "  position: relative;\n" +
+                                                "  width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "  height: " + projeto.layout.get(0).Topo.get(0).Altura + "px;\n" +
+                                                "  -webkit-border-radius: 10px;\n" +
+                                                "  border-radius: 10px;\n" +
+                                                "}\n"
+                                                + ".footer{\n" +
+                                                "	position: absolute;\n" +
+                                                "	height: " + projeto.layout.get(0).Rodape.get(0).Altura + "px;\n" +
+                                                "	width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "	-webkit-border-radius: 10px;\n" +
+                                                "	border-radius: 10px;\n" +
+                                                "	position: relative;\n" +
+                                                "	top: 0px;\n" +
+                                                "}\n" +
+                                                "\n" +
+                                                ".web\n"
+                                                + "{\n" +
+                                                "               //top: 0px !important;"
+                                                + "}\n"
+                                                + "#page{\n" +
+                                                "    width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "	height: " + (projeto.AlturaPaginas + 180) + "px;\n" +
+                                                "	position: absolute;\n" +
+                                                "    /*margin:10px auto;*/\n" +
+                                                "/*    padding: 10px;\n" +
+                                                "    padding-top:0px;*/\n" +
+                                                "    /*text-align:left; /* \"remédio\" para o hack do IE */\n" +
+                                                "    /*border: 1px solid #333;*/\n" +
+                                                "	background-color: transparent;\n" +
+                                                "	/*overflow-x: hidden;*/\n" +
+                                                "}";
+                        break;
+                        case 6: // WEBAPP
+                                css += ".pg\n" +
+                                                "{\n" +
+                                                "	position: absolute;\n" +
+                                                "	display: none;\n" +
+                                                "	opacity: 0.0;\n" +
+                                                "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
+                                                "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
+                                                "	background-color: #EAEAEA;\n" +
+                                                "	top: 0px;\n" + 
+                                                "}\n" +
+                                                "body\n"
+                                                + "{\n" +
+                                                "               overflow-y: hidden;\n"
+                                                + "}\n"
+                                                + ".header{\n" +
+                                                "  position: relative;\n" +
+                                                "  width: " + 0 + "px;\n" +
+                                                "  height: " + 0 + "px;\n" +
+                                                "}\n"
+                                                + ".footer{\n" +
+                                                "	position: absolute;\n" +
+                                                "	height: " + 0 + "px;\n" +
+                                                "	width: " + 0 + "px;\n" +
+                                                "	-webkit-border-radius: 10px;\n" +
+                                                "	border-radius: 10px;\n" +
+                                                "	position: relative;\n" +
+                                                "	top: 0px;\n" +
+                                                "}\n" +
+                                                "\n"
+                                                + "#page{\n" +
+                                                "    width: " + projeto.LarguraPaginas + "px;\n" +
+                                                "	height: " + (projeto.AlturaPaginas) + "px;\n" +
+                                                "	position: absolute;\n" +
+                                                "    /*margin:10px auto;*/\n" +
+                                                "/*    padding: 10px;\n" +
+                                                "    padding-top:0px;*/\n" +
+                                                "    /*text-align:left; /* \"remédio\" para o hack do IE */\n" +
+                                                "    /*border: 1px solid #333;*/\n" +
+                                                "	background-color: transparent;\n" +
+                                                "	/*overflow-x: hidden;*/\n" +
+                                                "}";
+                        break;
+                }
+                
+                css += "\n" +
+                                                ".pg_sub\n" +
+                                                "{\n" +
+                                                "	position: absolute;\n" +
+                                                "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
+                                                "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
+                                                "	background-color: #EAEAEA;\n" +
+                                                "}\n"
+                                                ;
                 
                 return css;
         }
@@ -692,7 +858,7 @@ public class ProjectSources
         {
                 String html = "";
                 
-                if(projeto.layout.get(0).Tipo == 2) //EAD
+                if((projeto.layout.get(0).Tipo == 2) || (projeto.layout.get(0).Tipo == 5) || (projeto.layout.get(0).Tipo == 6)) // EAD OU WEB
                 {
                         html += "<?php header('Access-Control-Allow-Origin: *'); ?>\n" +
                                         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n" +
@@ -735,11 +901,13 @@ public class ProjectSources
                                         "<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />" +
                                         "                               <!-- Bootstrap core CSS -->\n" +
                                         "                              <link href=\"../dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n" +
+                                        "                               <link href=\"../dist/css/summernote.css\" rel=\"stylesheet\">\n <link href=\"../dist/css/awesome.css\" rel=\"stylesheet\">\n"+
                                         "                              <!-- Bootstrap theme -->\n" +
                                         "                              <link href=\"../dist/css/bootstrap-theme.min.css\" rel=\"stylesheet\">" +
                                         "    <link rel=\"stylesheet\" href=\"../css/aulas.css\" type=\"text/css\" />\n" +
                                         "    \n" +
                                         "    <!-- SCRIPTS -->\n" +
+                                        "    <script src=\"../js/crypt.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/jquery.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/jqueryMobile.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/jqueryUI.js\" type=\"text/javascript\"> </script>\n" +
@@ -757,26 +925,33 @@ public class ProjectSources
                                         "	<script src=\"../js/UserEntities.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/Lista.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/List.js\" type=\"text/javascript\"> </script>\n" +
+                                 "	<script src=\"../js/gaiaView/Combobox.js\" type=\"text/javascript\"> </script>\n" +
+                                "	<script src=\"../js/gaiaView/Repeater.js\" type=\"text/javascript\"> </script>\n" +
+                                "	<script src=\"../js/gaiaView/Table.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../lib/app.js\" type=\"text/javascript\"> </script>\n" +
-                                        "	<script src=\"../js/utils.js\" type=\"text/javascript\"> </script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n" +
+                                        "	<script src=\"../js/utils.js\" type=\"text/javascript\"> </script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n<script src=\"../dist/js/summernote.min.js\"></script>\n" +
+                                        "	<script src=\"../js/looper.js\" type=\"text/javascript\"> </script>\n" +
                                         "</head>\n" +
                                         "\n" +
                                         "<!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->\n" +
-                                        "<body style=\"background-image: url(../img/fundo.jpg); background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.paginas.size() - 2) + "'); enableProx(false); pageIn('1');\">\n" +
+                                        "<body style=\"background-image: url(../img/fundo.jpg); background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.layout.get(0).Tipo == 6 ? (projeto.paginas.size()) : (projeto.paginas.size() - 2)) + "'); enableProx(false); pageIn('1');\">\n" +
                                         "<!--PAGE-->\n" +
-                                        "<div id=\"page\">\n" +
+                                        "<div id=\"page\" class=\"web\">\n" +
                                         "<!--HEADER-->\n" +
                                 
                                         /**
                                          * HEADER
                                          */
                                 
+                                         //(projeto.layout.get(0).hasFooterTop == false ? "<!--" : "") +
+                                
                                         "  <div id=\"header\" class=\"header\">\n" +
                                                 Topo + 
                                         "	</div>\n" +
                                 
+                                        //(projeto.layout.get(0).hasFooterTop == false ? "-->" : "") +
                                 
                                         "\n" +
                                         "<!--CONTENT-->\n" +
@@ -791,11 +966,14 @@ public class ProjectSources
                                          * FOOTER
                                          */
                                 
+                                         //(projeto.layout.get(0).hasFooterTop == false ? "<!--" : "") +
+                                
                                         "    <div class=\"footer\">\n" +
                                                 Rodape + 
                                         "    </div>\n" +
-                                        "<!--FIM FOOTER-->\n" +
+                                        "\n" +
                                 
+                                       // (projeto.layout.get(0).hasFooterTop == false ? "-->" : "") +
                                 
                                         "\n" +
                                         "</div>\n" +

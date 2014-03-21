@@ -36,7 +36,11 @@ function FonteDados(largura, altura, topo, esquerda, visivel)
         //@override
         this.resolveSpecialFields = function()
         {
-                privateAttrs = JSON.parse(this.SpecialFields);
+                var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                for(var i = 0; i < privateAttrsTmp.length; i++)
+                {
+                        privateAttrs[i] = privateAttrsTmp[i];
+                }
         };
         
         //@override
@@ -55,6 +59,7 @@ function FonteDados(largura, altura, topo, esquerda, visivel)
         this.getPrivateAttrs().push(new SpecialAttrs("Quantidade Maxima", "objNumber", "setMax", 100));
         this.getPrivateAttrs().push(new SpecialAttrs("Comece do número", "objNumber", "setBegin", 0));
         this.getPrivateAttrs().push(new SpecialAttrs("Filtros", "objText", "setWhere", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("Ordenar", "objText", "setOrdBy", ""));
         
         this.setWhere = function(where)
         {
@@ -74,6 +79,11 @@ function FonteDados(largura, altura, topo, esquerda, visivel)
         this.setBegin = function(beg)
         {
                 this.getPrivateAttrs()[2].Data = beg;
+        };
+        
+        this.setOrdBy = function(ordBy)
+        {
+                this.getPrivateAttrs()[4].Data = ordBy;
         };
         
         //@override
@@ -104,11 +114,12 @@ function FonteDados(largura, altura, topo, esquerda, visivel)
                                                         + this.getPrivateAttrs()[0].Data + ","
                                                         + this.getPrivateAttrs()[1].Data + ", "
                                                         + this.getPrivateAttrs()[2].Data + ", '"
-                                                        + this.getPrivateAttrs()[3].Data +"');\n";
+                                                        + this.getPrivateAttrs()[3].Data +"','"
+                                                        + this.getPrivateAttrs()[4].Data + "');\n";
                 }
                 else
                 {
-                        code += '<div id="FonteDados' + this.Id + '" style="width: 1px; height: 1px; \n' +
+                        code += '<div id="FonteDados' + this.Id + '" class="badWolf" style="width: 1px; height: 1px; \n' +
                                         'position: absolute; left: ' + this.L + 'px; top: ' + this.T + 'px; z-index: ' + this.Zindex + ';' +
                                         '"><img src="../img/db_blank16.png" ></img></div>';
                 }

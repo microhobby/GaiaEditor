@@ -39,7 +39,11 @@ function GList(largura, altura, topo, esquerda, visivel)
         //@override
         this.resolveSpecialFields = function()
         {
-                privateAttrs = JSON.parse(this.SpecialFields);
+                var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                for(var i = 0; i < privateAttrsTmp.length; i++)
+                {
+                        privateAttrs[i] = privateAttrsTmp[i];
+                }
         };
         
         //@override
@@ -103,7 +107,10 @@ function GList(largura, altura, topo, esquerda, visivel)
                 var italico = "italic";
                 var negrito = "bold";
                 var subline = "underline";
-
+                var position = "absolute";
+                var width = "";
+                var height = "";
+                
                 if(!flag)
                 {
                         if(this.Visible)
@@ -111,6 +118,18 @@ function GList(largura, altura, topo, esquerda, visivel)
                 }
                 else
                         display = "block";
+
+                if(this.StaticPos)
+                {
+                        width = "auto";
+                        position = "static";
+                        height = "auto";
+                }
+                else
+                {
+                        height = this.H + "px";
+                        width = this.W + "px";
+                }
 
                 if(!this.Italico)
                         italico = "normal";
@@ -120,9 +139,9 @@ function GList(largura, altura, topo, esquerda, visivel)
                         subline = "normal";
                 
                 code =	'\n<div id="GList' + this.Id + '"\n' +
-                                                ' style="display:' + display + '; position: absolute; \n' +
-                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
-                                                ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
+                                                ' class="badWolf" style="display:' + display + '; position:' + position + '; \n' +
+                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
+                                                ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px;\n' +

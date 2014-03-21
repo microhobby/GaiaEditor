@@ -8,6 +8,8 @@ var LogedUser = null;
 var ptrProject = null;                                                                                                                  // projeto selecionado
 /** @type Paginas */
 var ptrPage = null;
+/** @type Rodape */
+var ptrLayout = null;
 /** @type Objetos */
 var ptrObject = null;
 /** @type Objetos */
@@ -18,6 +20,7 @@ var listProj = new List();
 var listObjects = new List();
 var listRecursos = new List();
 var listDebug = new List();
+var listObjsCheck = new List();
 var comboLayouts = new Combobox();
 var comboEfeitos = new Combobox();
 var comboTool1Paginas = new Combobox();
@@ -75,21 +78,36 @@ var eventChange = null;
 var eventGeral = false;
 var IDE;
 var errList = new ItemModel();
+var checkObjs = new ItemModel();
 var lastJquerySelected = "";
 var isState = false;
 var envios = 0;
 var confirmados = 0;
+var safira = new Chatterbot("http://localhost/botServer");
+var gaiaVoiceId = "fimfdcmkbpidncilmcpjihejngmbmped";
 /*var errList = new Lista();
 errList.init();*/
+
+function sendMessageToExtension(msg)
+{
+        chrome.runtime.sendMessage(gaiaVoiceId, msg, function(resp)
+        {});
+}
 
 window.addEventListener("message", receiveMessage, false);
 
 function receiveMessage(event)
 {
+        //console.log(event);
         if(event.data.indexOf("eval") !== -1)
         {
                 errList.add(new Item(event.data.replace("eval|", ""), null, "../img/ok.png"));
                 $("#debugTools").animate({ scrollTop: $('#debugTools')[0].scrollHeight}, 1000);
+        }
+        else if(event.data.indexOf("voz:") !== -1)
+        {
+               var comando = event.data.replace("voz:", "");
+               safira.postQuestion(comando);
         }
         else if(event.data !== "fechou")
         {
@@ -101,7 +119,19 @@ function receiveMessage(event)
 }
 
 $(document).ready(function()
-{  
+{      
+        
+        /**
+        * SAFIRA
+        */
+        safira.setWebServerFile("gaia.php");
+        safira.setCompleteCallBack(function(palavra)
+        {
+                // faca alguma coisa com a resposta
+                console.log(palavra);
+                sendMessageToExtension(palavra);
+        });
+        
         /**
          * CONFIGURA AJAX
          */
@@ -138,13 +168,13 @@ $(document).ready(function()
                 openLayout(comboTool1Layouts.getSelectIndex());
         });
         
-        modelLayouts.add(new Item("BOOK", 1));
+        //modelLayouts.add(new Item("BOOK", 1));
         modelLayouts.add(new Item("EAD", 2));
-        modelLayouts.add(new Item("SMARTPHONE", 3));
-        modelLayouts.add(new Item("SMARTPHONEAPP", 4));
+        //modelLayouts.add(new Item("SMARTPHONE", 3));
+        //modelLayouts.add(new Item("SMARTPHONEAPP", 4));
         modelLayouts.add(new Item("WEB", 5));
         modelLayouts.add(new Item("WEBAPP", 6));
-        modelLayouts.add(new Item("DESKTOP", 7));
+        //modelLayouts.add(new Item("DESKTOP", 7));
         
         /**
          * SETA EFEITOS
@@ -235,13 +265,42 @@ $(document).ready(function()
         listDebug.setElement("#debugErros");
         listDebug.setModel(errList);
         
+        listObjsCheck.setElement("#elementosChecks");
+        listObjsCheck.setModel(checkObjs);
+        
+        listObjsCheck.addMouseActionListener(function(obj, bool, gambiarra)
+        {
+                if(bool)
+                {
+                       $(obj.obj.JqueryId).hide();
+                }
+                else if(bool === false)
+                {
+                        $(obj.obj.JqueryId).show();
+                }
+                else if(bool === null)
+                {
+                        if(gambiarra === 2)
+                        {
+                                $(obj.obj.JqueryId).show();
+                                $(obj.obj.JqueryId).mousedown();
+                                $(obj.obj.JqueryId).mouseup();
+                        }
+                }
+        });
+        
         modelObjects.add(new Item("Texto", function(){ return new GText(153, 52, 0, 0, true); }, "../img/ui_labels.png"));
         modelObjects.add(new Item("Container", function(){ return new GDiv(153, 52, 0, 0, true); }, "../img/div.png"));
         modelObjects.add(new Item("Container Dinamico", function(){ return new GDivStatic(153, 52, 0, 0, true); }, "../img/div.png"));
-        modelObjects.add(new Item("Lista", function(){ return new GList(153, 183, 0, 0, true); }, "../img/list.png"));
+        modelObjects.add(new Item("Container Repetidor", function(){ return new GRepeater(153, 52, 0, 0, true); }, "../img/div.png"));
+        modelObjects.add(new Item("Lista", function(){ return new GList(153, 183, 0, 0, true); }, "../img/ui_list_box_blue.png"));
+        modelObjects.add(new Item("ComboBox", function(){ return new GComboBox(190, 40, 0, 0, true); }, "../img/ui_combo_box_blue.png"));
+        modelObjects.add(new Item("Tabela", function(){ return new GTable(190, 190, 0, 0, true); }, "../img/ui_scroll_pane_table.png"));
         modelObjects.add(new Item("Imagem", function(){ return new GImage(64, 64, 0, 0, true); }, "../img/img.png"));
         modelObjects.add(new Item("Botão", function(){ return new GButton(67, 28, 0, 0, true); }, "../img/button.png"));
         modelObjects.add(new Item("Input", function(){ return new GInput(153, 52, 0, 0, true); }, "../img/input.png"));
+        modelObjects.add(new Item("Text Area", function(){ return new GTextArea(153, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png"));
+        modelObjects.add(new Item("Text Editor", function(){ return new GTextEditor(300, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png"));
         modelObjects.add(new Item("HAudio", function(){ return new GAudioHide(16, 16, -20, -20, true); }, "../img/ui-audio.png"));
         modelObjects.add(new Item("FonteDados", function(){ return new FonteDados(1, 1, -20, -20, true); }, "../img/db_blank16.png"));
         
@@ -273,6 +332,7 @@ $(document).ready(function()
         objAnimas.addMouseActionListener(function(obj)
         {
                 ptrObject = obj.obj;
+                $(ptrObject.JqueryId).addClass("anima");
                 $(obj.obj.JqueryId).click();
                 $(obj.obj.JqueryId).remove();
                 newElem(obj.obj.returnCode(true, false));
@@ -367,68 +427,68 @@ $(document).ready(function()
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
-                                        "	direction: 'up'\n" +
+                                        "direction: 'up'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('slide', {\n" +
-                                        "	direction: 'up'\n" +
+                                        "direction: 'up'\n" +
                                         "}, 1000);";
         }));                                               //8
         modelActions.add(new Item("Slide In Down", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
-                                        "	direction: 'down'\n" +
+                                        "direction: 'down'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('slide', {\n" +
-                                        "	direction: 'down'\n" +
+                                        "direction: 'down'\n" +
                                         "}, 1000);";
         }));		//9
         modelActions.add(new Item("Slide Out Up", function(id, show)
         {
                         return "$('" + id + "').hide('slide', {\n" +
-                                        "	direction: 'up'\n" +
+                                        "direction: 'up'\n" +
                                         "}, 1000);";
         }));		//10
         modelActions.add(new Item("Slide Out Down", function(id, show)
         {
                         return "$('" + id + "').hide('slide', {\n" +
-                                        "	direction: 'up'\n" +
+                                        " direction: 'up'\n" +
                                         "}, 1000);";
         }));		//11
         modelActions.add(new Item("Slide In Left", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
-                                        "	direction: 'left'\n" +
+                                        " direction: 'left'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('slide', {\n" +
-                                        "	direction: 'left'\n" +
+                                        " direction: 'left'\n" +
                                         "}, 1000);";
         }));                                             //12
         modelActions.add(new Item("Slide In Right", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
-                                        "	direction: 'right'\n" +
+                                        " direction: 'right'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('slide', {\n" +
-                                        "	direction: 'right'\n" +
+                                        " direction: 'right'\n" +
                                         "}, 1000);";
         }));		//13
         modelActions.add(new Item("Slide Out Left", function(id)
         {
                         return "$('" + id + "').hide('slide', {\n" +
-                                        "	direction: 'left'\n" +
+                                        " direction: 'left'\n" +
                                         "}, 1000);";
         }));		//14
         modelActions.add(new Item("Slide Out Right", function(id)
         {
                         return "$('" + id + "').hide('slide', {\n" +
-                                        "	direction: 'right'\n" +
+                                        " direction: 'right'\n" +
                                         "}, 1000);";
         }));	                      //15
         modelActions.add(new Item("Explode In", function(id, show)
@@ -452,136 +512,136 @@ $(document).ready(function()
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
-                                        "	direction: 'up'\n" +
+                                        " direction: 'up'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('drop', {\n" +
-                                        "	direction: 'up'\n" +
+                                        " direction: 'up'\n" +
                                         "}, 1000);";
         }));			//18
         modelActions.add(new Item("Drop In Down", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
-                                        "	direction: 'down'\n" +
+                                        " direction: 'down'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('drop', {\n" +
-                                        "	direction: 'down'\n" +
+                                        " direction: 'down'\n" +
                                         "}, 1000);";
         }));		//19
         modelActions.add(new Item("Drop Out Up", function(id)
         {
                         return "$('" + id + "').hide('drop', {\n" +
-                                        "	direction: 'up'\n" +
+                                        " direction: 'up'\n" +
                                         "}, 1000);";
         }));		//20
         modelActions.add(new Item("Drop Out Down", function(id)
         {
                         return "$('" + id + "').hide('drop', {\n" +
-                                        "	direction: 'down'\n" +
+                                        " direction: 'down'\n" +
                                         "}, 1000);";
         }));		//21
         modelActions.add(new Item("Drop In Left", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
-                                        "	direction: 'left'\n" +
+                                        " direction: 'left'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('drop', {\n" +
-                                        "	direction: 'left'\n" +
+                                        " direction: 'left'\n" +
                                         "}, 1000);";
         }));		                      //22
         modelActions.add(new Item("Drop In Right", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
-                                        "	direction: 'right'\n" +
+                                        " direction: 'right'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('drop', {\n" +
-                                        "	direction: 'right'\n" +
+                                        " direction: 'right'\n" +
                                         "}, 1000);";
         }));		//23
         modelActions.add(new Item("Drop Out Left", function(id)
         {
                         return "$('" + id + "').hide('drop', {\n" +
-                                        "	direction: 'left'\n" +
+                                        " direction: 'left'\n" +
                                         "}, 1000);";
         }));		//24
         modelActions.add(new Item("Drop Out Right", function(id)
         {
                         return "$('" + id + "').hide('drop', {\n" +
-                                        "	direction: 'right'\n" +
+                                        " direction: 'right'\n" +
                                         "}, 1000);";
         }));		//25
         modelActions.add(new Item("Clip In V", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('clip', {\n" +
-                                        "	direction: 'vertical'\n" +
+                                        " direction: 'vertical'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('clip', {\n" +
-                                        "	direction: 'vertical'\n" +
+                                        " direction: 'vertical'\n" +
                                         "}, 1000);";
         }));			//26
         modelActions.add(new Item("Clip Out V", function(id)
         {
                         return "$('" + id + "').hide('clip', {\n" +
-                                        "	direction: 'vertical'\n" +
+                                        " direction: 'vertical'\n" +
                                         "}, 1000);";
         }));			//27
         modelActions.add(new Item("Clip In H", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('clip', {\n" +
-                                        "	direction: 'horizontal'\n" +
+                                        " direction: 'horizontal'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('clip', {\n" +
-                                        "	direction: 'horizontal'\n" +
+                                        " direction: 'horizontal'\n" +
                                         "}, 1000);";
         }));			//28
         modelActions.add(new Item("Clip Out H", function(id)
         {
                         return "$('" + id + "').hide('clip', {\n" +
-                                        "	direction: 'horizontal'\n" +
+                                        " direction: 'horizontal'\n" +
                                         "}, 1000);";
         }));			//29
         modelActions.add(new Item("Blind In V", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('blind', {\n" +
-                                        "	direction: 'vertical'\n" +
+                                        " direction: 'vertical'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('blind', {\n" +
-                                        "	direction: 'vertical'\n" +
+                                        " direction: 'vertical'\n" +
                                         "}, 1000);";
         }));			//30
         modelActions.add(new Item("Blind Out V", function(id)
         {
                         return "$('" + id + "').hide('blind', {\n" +
-                                        "	direction: 'vertical'\n" +
+                                        " direction: 'vertical'\n" +
                                         "}, 1000);";
         }));		                      //31
         modelActions.add(new Item("Blind In H", function(id, show)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('blind', {\n" +
-                                        "	direction: 'horizontal'\n" +
+                                        " direction: 'horizontal'\n" +
                                         "}, 1000);";
                 else
                         return "$('" + id + "').show('blind', {\n" +
-                                        "	direction: 'horizontal'\n" +
+                                        " direction: 'horizontal'\n" +
                                         "}, 1000);";
         }));			//32
         modelActions.add(new Item("Blind Out H", function(id)
         {
                         return "$('" + id + "').hide('blind', {\n" +
-                                        "	direction: 'horizontal'\n" +
+                                        " direction: 'horizontal'\n" +
                                         "}, 1000);";
         }));		                      //33
         modelActions.add(new Item("Puff In", function(id, show)
@@ -627,6 +687,10 @@ $(document).ready(function()
         {
                 return 'StopAudio("' + id + '"); \n';
         }));			//39
+        modelActions.add(new Item("Anima ID", function(id)
+        {
+                return 'PlayBlock("' + id + '", 1000);\n';
+        }));
         
         objEventosTarget.setElement("#objEventosTarget");
         objEventosTarget.setModel(objs);
@@ -638,6 +702,7 @@ $(document).ready(function()
         
         $("#windowDebug").multidraggable({cancel:false});
         $("#windowCompleted").multidraggable({cancel:false});
+        $("#windowElementos").multidraggable({cancel:false});
         
         /**
          *  REDIMENSIONAMENTO DAS TOOLS
@@ -715,6 +780,7 @@ $(document).ready(function()
        $("#windowScript").css("transform", "scale(0)").css("opacity", "0");
        $("#windowEntity").css("transform", "scale(0)").css("opacity", "0");
        $("#windowDebug").css("transform", "scale(0)").css("opacity", "0");
+       $("#windowElementos").css("transform", "scale(0)").css("opacity", "0");
        $("#windowCompleted").css("transform", "scale(0)").css("opacity", "0");
 
         getUser(function()
@@ -782,190 +848,191 @@ $(document).ready(function()
         {
                 if($(obj.JqueryId).hasClass("gaiaFocused"))
                 {
-                if(lastJquerySelected !== obj.JqueryId)
-                {
-                        if(ptrObject !== null)
+                        if((lastJquerySelected !== "") && (lastJquerySelected !== obj.JqueryId))
                         {
-                                // retorna o estado original
-                                if(modelEstados.get(0) && (!modelEstados.get(0).obj.Deleted))
+                                if(ptrObject !== null)
                                 {
-                                        var blMult = false;
-                                        if($(lastJquerySelected).hasClass("ui-multidraggable"))
-                                                blMult = true;
-                                        
-                                        $(lastJquerySelected).remove();
-                                        
-                                        if(modelEstados.get(0).obj.FatherId === "0")
+                                        // retorna o estado original
+                                        if(modelEstados.get(0) && (!modelEstados.get(0).obj.Deleted) && ($(lastJquerySelected).hasClass("anima")))
                                         {
-                                                newElem(modelEstados.get(0).obj.returnCode(true, false));
-                                        }
-                                        else
-                                        {
-                                                newElemD(modelEstados.get(0).obj.FatherId, modelEstados.get(0).obj.returnCode(true, false));
-                                        }
-                                        
-                                        var filhos = FileFactory.childs(ptrPage.Elementos, lastJquerySelected);
-                                        for(var f = 0; f < filhos.length; f++)
-                                        {
-                                                newElemD(lastJquerySelected, filhos[f].returnCode(true, false));
-                                                filhos[f].implementGaiaEvents();
-                                        }
-                                        
-                                        modelEstados.get(0).obj.implementGaiaEvents();
-                                        
-                                        if(blMult)
-                                        {
-                                                $(lastJquerySelected).addClass("ui-multidraggable");
-                                        }
-                                }
+                                                //$(obj.JqueryId).hasClass("anima");
+                                                var blMult = false;
+                                                if($(lastJquerySelected).hasClass("ui-multidraggable"))
+                                                        blMult = true;
 
-                                // carrega a lista de estados
-                                modelEstados.clear();
-                                modelEstados.add(new Item("Estado Primario", obj));
-                                for(var i = 0; i < obj.estados.length; i++)
-                                {
-                                        /** @type Objetos */
-                                        var tmpState = obj.estados[i];
-                                        modelEstados.add(new Item(tmpState.Name, tmpState));
+                                                $(lastJquerySelected).remove();
+
+                                                if(modelEstados.get(0).obj.FatherId == "0")
+                                                {
+                                                        newElem(modelEstados.get(0).obj.returnCode(true, false));
+                                                }
+                                                else
+                                                {
+                                                        newElemD(modelEstados.get(0).obj.FatherId, modelEstados.get(0).obj.returnCode(true, false));
+                                                }
+
+                                                var filhos = FileFactory.childs(ptrPage.Elementos, lastJquerySelected);
+                                                for(var f = 0; f < filhos.length; f++)
+                                                {
+                                                        newElemD(lastJquerySelected, filhos[f].returnCode(true, false));
+                                                        filhos[f].implementGaiaEvents();
+                                                }
+
+                                                modelEstados.get(0).obj.implementGaiaEvents();
+
+                                                if(blMult)
+                                                {
+                                                        $(lastJquerySelected).addClass("ui-multidraggable");
+                                                }
+                                        }
+
+                                        // carrega a lista de estados
+                                        modelEstados.clear();
+                                        modelEstados.add(new Item("Estado Primario", obj));
+                                        for(var i = 0; i < obj.estados.length; i++)
+                                        {
+                                                /** @type Objetos */
+                                                var tmpState = obj.estados[i];
+                                                modelEstados.add(new Item(tmpState.Name, tmpState));
+                                        }
+                                        objAnimas.setSelectIndex(0, false);
                                 }
-                                objAnimas.setSelectIndex(0, false);
                         }
-                }
-                else
-                {
-                        if(ptrObject !== null)
-                                obj = ptrObject;
-                }
-                
-                lastJquerySelected = obj.JqueryId;
-                
-                $("#idSelected").text(obj.JqueryId);
-                $("#idSelected1").text(obj.JqueryId);
-                ptrObject = obj;
-                // seta forms
-                objEventosTipo.setSelectIndex(0, false);
-                objEventosTarget.setSelectIndex(0, false);
-                objEventosActions.setSelectIndex(0, false);
-                novo = true;
-                $("#objVar").val(ptrObject.Name);
-                $("#objAltura").val(ptrObject.H);
-                $("#objLargura").val(ptrObject.W);
-                $("#objTopo").val(ptrObject.T);
-                $("#objEsquerda").val(ptrObject.L);
-                $("#objAngulo").val(ptrObject.A);
-                $("#objPadding").val(ptrObject.P);
-                objCorFundo.setColor(ptrObject.Cb);
-                $("#objRadius").val(ptrObject.R);
-                $("#objSombra").val(ptrObject.S);
-                objCorSombra.setColor(ptrObject.Cs);
-                $("#objZindex").val(ptrObject.Zindex);
-                $("#objBorda").val(ptrObject.B);
-                objCorBorda.setColor(ptrObject.Cbb);
-                $("#objOpacity").val(ptrObject.Opacity);
-
-                if((ptrObject.ClassType === "GImage") || (ptrObject.ClassType === "GAudioHide") || (ptrObject.ClassType === "GButton"))
-                {
-                        $("#objRecurso").find("button").prop("disabled", false);
-                        var ixSelectRecurso = 0;
-                        var countAll = 0;
-                        modelRecursos.lista_.filter(function(elem)
+                        else
                         {
-                                if(elem.obj.cod === ptrObject.recurso)
+                                if(ptrObject !== null)
+                                        obj = ptrObject;
+                        }
+
+                        lastJquerySelected = obj.JqueryId;
+
+                        $("#idSelected").text(obj.JqueryId);
+                        $("#idSelected1").text(obj.JqueryId);
+                        ptrObject = obj;
+                        // seta forms
+                        objEventosTipo.setSelectIndex(0, false);
+                        objEventosTarget.setSelectIndex(0, false);
+                        objEventosActions.setSelectIndex(0, false);
+                        novo = true;
+                        $("#objVar").val(ptrObject.Name);
+                        $("#objAltura").val(ptrObject.H);
+                        $("#objLargura").val(ptrObject.W);
+                        $("#objTopo").val(ptrObject.T);
+                        $("#objEsquerda").val(ptrObject.L);
+                        $("#objAngulo").val(ptrObject.A);
+                        $("#objPadding").val(ptrObject.P);
+                        objCorFundo.setColor(ptrObject.Cb);
+                        $("#objRadius").val(ptrObject.R);
+                        $("#objSombra").val(ptrObject.S);
+                        objCorSombra.setColor(ptrObject.Cs);
+                        $("#objZindex").val(ptrObject.Zindex);
+                        $("#objBorda").val(ptrObject.B);
+                        objCorBorda.setColor(ptrObject.Cbb);
+                        $("#objOpacity").val(ptrObject.Opacity);
+
+                        if((ptrObject.ClassType === "GImage") || (ptrObject.ClassType === "GAudioHide") || (ptrObject.ClassType === "GButton"))
+                        {
+                                $("#objRecurso").find("button").prop("disabled", false);
+                                var ixSelectRecurso = 0;
+                                var countAll = 0;
+                                modelRecursos.lista_.filter(function(elem)
                                 {
-                                        ixSelectRecurso = countAll;
+                                        if(elem.obj.cod === ptrObject.recurso)
+                                        {
+                                                ixSelectRecurso = countAll;
+                                                countAll++;
+                                                return elem;
+                                        }
                                         countAll++;
-                                        return elem;
-                                }
-                                countAll++;
-                        })
-                        objRecurso.setSelectIndex(ixSelectRecurso, false);
-                }
-                else
-                {
-                        $("#objRecurso").find("button").prop("disabled", true);
-                        objRecurso.setSelectIndex(0, false);
-                }
-
-                objFont.setSelectIndex(ptrObject.FontId);
-                $("#objFonteTam").val(ptrObject.SizeFont);
-                objCorFonte.setColor(ptrObject.Cf);
-                $("#objTexto").val(ptrObject.Text);
-
-                // estados checks
-                $("#objVisible").find("input").attr('checked', (ptrObject.Visible ? true: false));
-                $("#objFonteNegrito").find("input").attr('checked', (ptrObject.Negrito ? true: false));
-                $("#objFonteItalico").find("input").attr('checked', (ptrObject.Italico ? true: false));
-                $("#objFonteSublinhado").find("input").attr('checked', (ptrObject.Subline ? true: false));
-                
-                // vamos agora colocar os novos fields
-                $("#SpecialFields").html("");
-                
-                for(var i = 0; i < ptrObject.getPrivateAttrs().length; i++)
-                {      
-                        switch (ptrObject.getPrivateAttrs()[i].Type)
-                        {
-                                case "objCombo":
-                                        $("#SpecialFields").append(
-                                                '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + '</span><br>\n' +
-                                                '<div id="objCombo' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" class="btn-group">\n'+
-                                                '<button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">\n'+
-                                                '        ' + (ptrObject.getPrivateAttrs()[i].Data === null ? ptrObject.getPrivateAttrs()[i].Name : ptrObject.getPrivateAttrs()[i].Data) + ' <span class="caret"></span>\n' +
-                                                '</button>\n' +
-                                                '<ul class="dropdown-menu" style="width: 190px;" role="menu">\n' +     
-                                                '</ul>\n'+
-                                        '</div>');
-                                        var tmpCombo = new Combobox();
-                                        tmpCombo.setElement('#objCombo' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method);
-                                        tmpCombo.setModel(window[ptrObject.getPrivateAttrs()[i].Model]);
-                                        var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
-                                        tmpCombo.addMouseActionListener(function(ptr, method)
-                                        {
-                                                return function(obj)
-                                                {
-                                                        method.call(ptr, obj.string);
-                                                };
-                                        }(ptrObject, method));
-                                break;
-                                case "objText":
-                                        $("#SpecialFields").append(
-                                                '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + ': <br> </span>\n'+
-                                                '<input id="objText' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" type="text" class="form-control" style="height: 25px; padding: 0px;" placeholder="'
-                                                + ptrObject.getPrivateAttrs()[i].Name +'" value="' + ptrObject.getPrivateAttrs()[i].Data + '">'
-                                        );
-                                        var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
-                                        $('#objText' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method).change(function(ptr, method)
-                                        {
-                                                return function(obj)
-                                                {
-                                                        method.call(ptr, $(obj.target).val());
-                                                };
-                                        }(ptrObject, method));
-                                break;
-                                case "objNumber":
-                                        $("#SpecialFields").append(
-                                                '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + ': <br> </span>\n'+
-                                                '<input id="objNumber' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" type="text" class="form-control" style="height: 25px; padding: 0px;" placeholder="'
-                                                + ptrObject.getPrivateAttrs()[i].Name +'" value="' + ptrObject.getPrivateAttrs()[i].Data + '">'
-                                        );
-                                        var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
-                                        $('#objNumber' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method).change(function(ptr, method)
-                                        {
-                                                return function(obj)
-                                                {
-                                                        method.call(ptr, parseFloat($(obj.target).val()));
-                                                };
-                                        }(ptrObject, method));
-                                break;
-                                case "objBoolean":
-                                        
-                                break;
+                                })
+                                objRecurso.setSelectIndex(ixSelectRecurso, false);
                         }
-                }
-                
-                stackObjs.makeMomentumZ(ptrPage.Elementos);
-                
-                // salva
-                saveAfter(true);
+                        else
+                        {
+                                $("#objRecurso").find("button").prop("disabled", true);
+                                objRecurso.setSelectIndex(0, false);
+                        }
+
+                        objFont.setSelectIndex(ptrObject.FontId);
+                        $("#objFonteTam").val(ptrObject.SizeFont);
+                        objCorFonte.setColor(ptrObject.Cf);
+                        $("#objTexto").val(ptrObject.Text);
+
+                        // estados checks
+                        $("#objVisible").find("input").attr('checked', (ptrObject.Visible ? true: false));
+                        $("#objFonteNegrito").find("input").attr('checked', (ptrObject.Negrito ? true: false));
+                        $("#objFonteItalico").find("input").attr('checked', (ptrObject.Italico ? true: false));
+                        $("#objFonteSublinhado").find("input").attr('checked', (ptrObject.Subline ? true: false));
+
+                        // vamos agora colocar os novos fields
+                        $("#SpecialFields").html("");
+
+                        for(var i = 0; i < ptrObject.getPrivateAttrs().length; i++)
+                        {      
+                                switch (ptrObject.getPrivateAttrs()[i].Type)
+                                {
+                                        case "objCombo":
+                                                $("#SpecialFields").append(
+                                                        '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + '</span><br>\n' +
+                                                        '<div id="objCombo' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" class="btn-group">\n'+
+                                                        '<button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown">\n'+
+                                                        '        ' + (ptrObject.getPrivateAttrs()[i].Data === null ? ptrObject.getPrivateAttrs()[i].Name : ptrObject.getPrivateAttrs()[i].Data) + ' <span class="caret"></span>\n' +
+                                                        '</button>\n' +
+                                                        '<ul class="dropdown-menu" style="width: 190px;" role="menu">\n' +     
+                                                        '</ul>\n'+
+                                                '</div>');
+                                                var tmpCombo = new Combobox();
+                                                tmpCombo.setElement('#objCombo' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method);
+                                                tmpCombo.setModel(window[ptrObject.getPrivateAttrs()[i].Model]);
+                                                var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
+                                                tmpCombo.addMouseActionListener(function(ptr, method)
+                                                {
+                                                        return function(obj)
+                                                        {
+                                                                method.call(ptr, obj.string);
+                                                        };
+                                                }(ptrObject, method));
+                                        break;
+                                        case "objText":
+                                                $("#SpecialFields").append(
+                                                        '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + ': <br> </span>\n'+
+                                                        '<input id="objText' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" type="text" class="form-control" style="height: 25px; padding: 0px;" placeholder="'
+                                                        + ptrObject.getPrivateAttrs()[i].Name +'" value="' + ptrObject.getPrivateAttrs()[i].Data + '">'
+                                                );
+                                                var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
+                                                $('#objText' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method).change(function(ptr, method)
+                                                {
+                                                        return function(obj)
+                                                        {
+                                                                method.call(ptr, $(obj.target).val());
+                                                        };
+                                                }(ptrObject, method));
+                                        break;
+                                        case "objNumber":
+                                                $("#SpecialFields").append(
+                                                        '<span style="color:  #333333; font-size: 11px;">' + ptrObject.getPrivateAttrs()[i].Name + ': <br> </span>\n'+
+                                                        '<input id="objNumber' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method + '" type="text" class="form-control" style="height: 25px; padding: 0px;" placeholder="'
+                                                        + ptrObject.getPrivateAttrs()[i].Name +'" value="' + ptrObject.getPrivateAttrs()[i].Data + '">'
+                                                );
+                                                var method = ptrObject[ptrObject.getPrivateAttrs()[i].Method];
+                                                $('#objNumber' + ptrObject.Id + '' + ptrObject.getPrivateAttrs()[i].Method).change(function(ptr, method)
+                                                {
+                                                        return function(obj)
+                                                        {
+                                                                method.call(ptr, parseFloat($(obj.target).val()));
+                                                        };
+                                                }(ptrObject, method));
+                                        break;
+                                        case "objBoolean":
+
+                                        break;
+                                }
+                        }
+
+                        stackObjs.makeMomentumZ(ptrPage.Elementos);
+
+                        // salva
+                        saveAfter(true);
                 }
         });
         
@@ -1104,6 +1171,16 @@ $(document).ready(function()
                   eventGeral = true;
           });
           
+          $("#elementoPage").click(function()
+          {
+                  scalePanels("windowElementos");
+          });
+          
+          $("#closeElementos").click(function()
+          {
+                  scalePanels("windowElementos", true);
+          });
+          
           $("#scriptCancel").click(function()
           {
                   scalePanels("windowScript", true);
@@ -1158,6 +1235,7 @@ $(document).ready(function()
           
           $("#debugPage").click(function()
           {
+                  saveAfter(true, true);
                   $("#debugPage").find("img").attr("src", "../img/loading.gif");
                   makeProject();
           });
@@ -1176,6 +1254,18 @@ $(document).ready(function()
           $("#remPage").click(function()
           {
                   
+          });
+
+          $("#setLayoutH").click(function()
+          {
+                  var res = 0;
+                  res = prompt("Digite valor da altura:", ptrLayout.Altura);
+                  if((res !== null) && (res > -1))
+                  {
+                        ptrLayout.Altura = parseFloat(res);
+                        saveLayout();
+                        openLayout(ptrLayout.pgI);
+                  }
           });
 
           $("#addEstado").click(function()
@@ -1429,24 +1519,27 @@ $(document).ready(function()
           });
 });
 
-function saveAfter(dontStack)
+function saveAfter(dontStack, gogo)
 {
-        if(!dontStack)
-                stackObjs.makeMomentumZ(ptrPage.Elementos);
-        if(canSetTimeout)
+        if((gogo !== undefined) && (gogo === true))
         {
-                canSetTimeout = false;
-                window.onbeforeunload = onBefore;
-                setTimeout(function()
+                if(!dontStack)
+                        stackObjs.makeMomentumZ(ptrPage.Elementos);
+                if(canSetTimeout)
                 {
-                        canSetTimeout = true;
-                        savePage(function()
+                        canSetTimeout = false;
+                        window.onbeforeunload = onBefore;
+                        setTimeout(function()
                         {
-                                //window.onbeforeunload = null;
-                                confirmados++;
-                                verificaSaves();
-                        });
-                }, 1000);
+                                canSetTimeout = true;
+                                savePage(function()
+                                {
+                                        //window.onbeforeunload = null;
+                                        confirmados++;
+                                        verificaSaves();
+                                });
+                        }, 10000);
+                }
         }
 }
 
@@ -1490,13 +1583,32 @@ function openProject(proj)
                         modelLayoutsPages.clear();
                         modelLayoutsPages.add(new Item("Topo", proj.paginas[0]));
                         modelLayoutsPages.add(new Item("Rodapé", proj.paginas[1]));
-                break;  
+                break;
+                case Layout.WEB:
+                        modelLayoutsPages.clear();
+                        modelLayoutsPages.add(new Item("Topo", proj.paginas[0]));
+                        modelLayoutsPages.add(new Item("Rodapé", proj.paginas[1]));
+                break;
         }
         
         modelPaginas.clear();
         for(var i = 2; i < proj.paginas.length; i++)
         {
                 if(proj.layout[0].Tipo === Layout.EAD)
+                {
+                        var pg = proj.paginas[i];
+                        modelPaginas.add(new Item("Página " + (pg.Indice -1), pg));
+                }
+                else if(proj.layout[0].Tipo === Layout.WEB)
+                {
+                        var pg = proj.paginas[i];
+                        modelPaginas.add(new Item("Página " + (pg.Indice -1), pg));
+                }
+        }
+        
+        if(proj.layout[0].Tipo === Layout.WEBAPP)
+        {
+                for(var i = 0; i < proj.paginas.length; i++)
                 {
                         var pg = proj.paginas[i];
                         modelPaginas.add(new Item("Página " + (pg.Indice -1), pg));
@@ -1548,6 +1660,7 @@ function openProject(proj)
 
 function openPage(pgI)
 {
+        lastJquerySelected = "";
         ptrObject = null;
         comboTool1Paginas.setSelectIndex(pgI, false);
         ptrPage = comboTool1Paginas.getSelectedItem().obj;
@@ -1557,7 +1670,16 @@ function openPage(pgI)
         
         $("#main").html("");
         goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
+        
+        if(ptrProject.layout[0].Tipo === Layout.WEB)
+        {
+                $("#main").css("top", 5);
+                $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                "px; height: " + $(document).height() + "px; background-color: #EAEAEA; }");
+        }
+        
         objs.clear();
+        checkObjs.clear();
         objs.add(new Item("Nenhum"));
         //ptrPage = ptrProject.paginas[pgI];
         
@@ -1569,10 +1691,11 @@ function openPage(pgI)
                 if(!objTmp.Deleted)
                 {
                         objs.add(new Item(objTmp.JqueryId, objTmp));
+                        checkObjs.add(new Item("Ocultar " + objTmp.JqueryId, objTmp, "check"));
                         //var strTmp = newElem(objTmp.returnCode(true, false));
                         var strTmp = "";
                         
-                        if(objTmp.FatherId === "0")
+                        if(objTmp.FatherId == "0")
                         {
                                 strTmp = newElem(objTmp.returnCode(true, false));
                         }
@@ -1589,24 +1712,34 @@ function openPage(pgI)
                 }
         }
         ptrPage.ResolveObjectsSpecialFields();
+        window.onresize();
 }
 
 function openLayout(pgI)
 {
+        lastJquerySelected = "";
         ptrObject = null;
         $("#main").html("");
         objs.clear();
+        checkObjs.clear();
         objs.add(new Item("Nenhum"));
         
+        /**
+         * ISSO É BURRICE ? NÃO QUE ISSO
+         */
         switch (pgI)
         {
                 case 0:
+                        ptrLayout = ptrProject.layout[0].Topo[0];
+                        ptrLayout.pgI = pgI;
                         ptrPage = ptrProject.layout[0].Topo[0];
                         $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrPage.Largura + 
                 "px; height: " + ptrPage.Altura + "px; background-color: #EAEAEA; }");
                         ptrPage = ptrProject.paginas[0];
                 break;
                 case 1:
+                        ptrLayout = ptrProject.layout[0].Rodape[0];
+                        ptrLayout.pgI = pgI;
                         ptrPage = ptrProject.layout[0].Rodape[0];
                         $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrPage.Largura + 
                 "px; height: " + ptrPage.Altura + "px; background-color: #EAEAEA; }");
@@ -1616,17 +1749,53 @@ function openLayout(pgI)
         
         goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
         
-        for(var i = 0; i < ptrPage.Elementos.length; i++)
+        /*for(var i = 0; i < ptrPage.Elementos.length; i++)
         {
                 var objTmp = ptrPage.Elementos[i];
-                objs.add(new Item(objTmp.JqueryId, objTmp));
-                var strTmp = newElem(objTmp.returnCode(true, false));
-                /*if(strTmp !== "")
+                
+                if(!objTmp.Deleted)
                 {
-                        objTmp.FatherId = strTmp;
-                }*/
-                objTmp.implementGaiaEvents();
+                        objs.add(new Item(objTmp.JqueryId, objTmp));
+                        checkObjs.add(new Item("Ocultar " + objTmp.JqueryId, objTmp, "check"));
+                        var strTmp = newElem(objTmp.returnCode(true, false));
+                        /*if(strTmp !== "")
+                        {
+                                objTmp.FatherId = strTmp;
+                        }*/
+                        /*objTmp.implementGaiaEvents();
+                }
+        }*/
+        
+        for(var i = 0; i < ptrPage.Elementos.length; i++)
+        {
+                /** @type Objetos */
+                var objTmp = ptrPage.Elementos[i];
+                
+                if(!objTmp.Deleted)
+                {
+                        objs.add(new Item(objTmp.JqueryId, objTmp));
+                        checkObjs.add(new Item("Ocultar " + objTmp.JqueryId, objTmp, "check"));
+                        //var strTmp = newElem(objTmp.returnCode(true, false));
+                        var strTmp = "";
+                        
+                        if(objTmp.FatherId == "0")
+                        {
+                                strTmp = newElem(objTmp.returnCode(true, false));
+                        }
+                        else
+                        {
+                                strTmp = newElemD(objTmp.FatherId, objTmp.returnCode(true, false));
+                        }
+                        
+                        /*if(strTmp !== "")
+                        {
+                                objTmp.FatherId = strTmp;
+                        }*/
+                        objTmp.implementGaiaEvents();
+                }
         }
+        ptrPage.ResolveObjectsSpecialFields();
+        window.onresize();
 }
 
 function changeEvents()

@@ -18,6 +18,7 @@ function Combobox()
          */
         var _elem = null;
         var _ix = 0;
+        var _input = null;
         
         /**
          * @type Item
@@ -32,7 +33,7 @@ function Combobox()
                 for(var i = 0; i < _model.getTam(); i++)
                 {
                         var tmpElem = _model.get(i);
-                         _elem.find(".dropdown-menu").html( _elem.find(".dropdown-menu").html() + '<li><a href="#" id="' + i + '" class="' + 
+                         _elem.find(".dropdown-menu").html( _elem.find(".dropdown-menu").html() + '<li><a href="javascript:void(0)" id="' + i + '" class="' + 
                                  _model.ObjectId + '">' + tmpElem.string + '</a></li>');
                 }
                 _elem.find("." + _model.ObjectId).click(function()
@@ -47,7 +48,48 @@ function Combobox()
                 });
         }
         
+        function doFilter()
+        {
+                if(_input !== null && _input.val() !== "")
+                {
+                        _elem.find(".dropdown-menu").html("");
+                        for(var i = 0; i < _model.getTam(); i++)
+                        {
+                                var tmpElem = _model.get(i);
+                                if(tmpElem.string.toUpperCase().indexOf(_input.val().toUpperCase()) !== -1)
+                                {
+                                        _elem.find(".dropdown-menu").html( _elem.find(".dropdown-menu").html() + '<li><a href="javascript:void(0)" id="' + i + '" class="' + 
+                                                _model.ObjectId + '">' + tmpElem.string + '</a></li>');
+                                }
+                        }
+                        _elem.find("." + _model.ObjectId).click(function()
+                        {
+                                var retObj = _model.get(parseInt($(this).attr('id')));
+                                _ix = parseInt($(this).attr('id'));
+                                _selected = retObj;
+                                _elem.find("button").html(_selected.string + ' <span class="caret"></span>');
+                                if(_funcMouseListener && _propagate)
+                                        _funcMouseListener(retObj);
+                                _propagate = true;
+                        });
+                }
+                else
+                        arrange();
+        }
+        
         // Metodos publicos
+        
+        /**
+         * Seta um input para filtro
+         */
+        this.setInputFilter = function(elem)
+        {
+                _input = $(elem);
+                _input.on('input', function()
+                {
+                        doFilter();
+                });
+        };
         
         /**
          * Seta o elemento DOM que sera o container da lista

@@ -34,15 +34,18 @@ var uno = 1;
  {
 	 var docW = document.documentElement.clientWidth;
 	 var docH = document.documentElement.clientHeight;
-	 
-	 if(docW > ($("#" + id).width() * scale))
-	 {
-		 $("#" + id).css("left", (docW - $("#" + id).width()) / 2);
-	 }
-	 else
-	 {
-		 $("#" + id).css("left", $('#' + id).offset().left * -1);
-	 }
+	
+                if(docW > ($("#" + id).width() * scale))
+                {
+                        $("#" + id).css("left", (docW - $("#" + id).width()) / 2);
+                }
+                else
+                {
+                        $("#" + id).css("left", $('#' + id).offset().left * -1);
+                }
+         
+                if(!__webType)
+                {
 	 if(docH > ($("#" + id).height() * scale))
 	 {
 		 $("#" + id).css("top", (docH - $("#" + id).height()) / 2 );
@@ -51,8 +54,12 @@ var uno = 1;
 	 {
 		 $("#" + id).css("top", $('#' + id).offset().top * -1);
 	 }
-	 uno++;
-	 $('#logs').empty().append(uno);
+                }
+                else
+                       $("#" + id).css("top", $('#' + id).offset().top * -1); 
+                
+                uno++;
+                $('#logs').empty().append(uno);
  }
 
 //função que pega se é internet explorer 8
@@ -446,7 +453,7 @@ function checkCookie()
 function getUrlVars(str)
 {
     var vars = [], hash;
-    var hashes = str.slice(str.indexOf('?') + 1).split('&');
+    var hashes = str.slice(str.indexOf('!') + 1).split('&');
     for(var i = 0; i < hashes.length; i++)
     {
         hash = hashes[i].split('=');

@@ -85,6 +85,8 @@
                             <!--<link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />-->
                               <!-- Bootstrap core CSS -->
                               <link href="../dist/css/bootstrap.css" rel="stylesheet">
+                              <link href="../dist/css/summernote.css" rel="stylesheet">
+                              <link href="../dist/css/awesome.css" rel="stylesheet">
                               <!-- Bootstrap theme -->
                               <link href="../dist/css/bootstrap-theme.min.css" rel="stylesheet">
                               <link href="../css/colorpicker.css" rel="stylesheet">
@@ -100,6 +102,7 @@
                               <![endif]-->
 
                             <!-- SCRIPTS -->
+                            <script src="../js/crypt.js" type="text/javascript"> </script>
                             <script src="../js/jquery.js" type="text/javascript"> </script>
                             <!--<script src="../js/jqueryMobile.js" type="text/javascript"> </script>-->
                             <!-- <script src="../js/swipe.js" type="text/javascript"> </script> -->
@@ -119,6 +122,7 @@
                             <script type="text/javascript" src="../js/KineticScroll.js"> </script>-->
                             <script src="../js/utils.js" type="text/javascript"> </script>
                             <script src="../dist/js/bootstrap.min.js"></script>
+                            <script src="../dist/js/summernote.min.js"></script>
                             <script src="../assets/js/holder.js"></script>
                             <script src="../js/bootstrap-colorpicker.js"></script>
                             
@@ -146,7 +150,13 @@
                             <script src="../js/gaiaController/GAudioHide.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/FonteDados.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GList.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GComboBox.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GRepeater.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GTable.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GInput.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GTextArea.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GTextEditor.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/Chatterbot.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->
                             <script src="../js/gaiaView/Ajax.js" type="text/javascript"> </script>
@@ -154,13 +164,16 @@
                             <script src="../js/gaiaView/Item.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/ItemModel.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/List.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/Repeater.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/Combobox.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/ColorPicker.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/FileUpload.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/KeyBoardUtils.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/StackUndo.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/ScriptError.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/Table.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/main.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/VoiceActions.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/EntitysCmds.js" type="text/javascript"> </script>
                             
                             <script type="text/javascript">
@@ -273,6 +286,9 @@
                                                 <button id="scriptPage" class="btn btn-default" title="Script Geral da Página Selecionada">
                                                         <i class="glyphicon "><img src="../img/script.png" /></i>
                                                 </button>
+                                                <button id="elementoPage" class="btn btn-default" title="Elementos da Página">
+                                                        <i class="glyphicon "><img src="../img/class.png" /></i>
+                                                </button>
                                                 
                                                 <br>
                                                 <!-- altura -->
@@ -290,6 +306,10 @@
                                                         <ul class="dropdown-menu" style="width: 190px;" role="menu">          
                                                         </ul>
                                                 </div>
+                                                <button id="setLayoutH" class="btn btn-default" title="Mude a Altura">
+                                                        <i class="glyphicon "><img src="../img/height.png" /></i>
+                                                </button>
+                                                <br>
                                                 <!-- efeitos -->
                                                 <span style="color:  #333333; font-size: 11px;">Efeito:</span>
                                                 <div id="projEfeito" class="btn-group dropup">
@@ -772,6 +792,25 @@
                                         </div>
                                         <input id="debugLog" type="text" step="1" min="0" max="100" class="form-control objNumber" style="height: 25px; padding: 0px;" placeholder="Log"
                                                onkeypress="debugLogEnter(event)">
+                                </div>
+                        </div>
+                        
+                        <!-- JANELA DE ELEMENTOS -->
+                        <div id="windowElementos" class="tool">
+                                <div id="containerWindowElementos" class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title">Elementos</h3>
+                                        </div>
+                                        <img id="iconConfig" style="position: absolute; top: 10px; left:  255px;" src="../img/class.png" />
+                                        <div id="elementosTools">
+                                                <div id="elementosChecks" class="list-group">
+                                                        <!-- CARREGA AQUI UMA LISTA -->
+                                                </div>
+                                        </div>
+                                        <button id="closeElementos" class="btn btn-default" style="width: 190px; margin-top: 25px;">
+                                                        <i class="glyphicon "><img src="../img/ok.png" /></i>
+                                                        Ok
+                                        </button>
                                 </div>
                         </div>
                         

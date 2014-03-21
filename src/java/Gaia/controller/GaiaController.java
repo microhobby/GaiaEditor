@@ -9,8 +9,12 @@ import Gaia.model.Paginas;
 import Gaia.model.Projeto;
 import Gaia.model.Recursos;
 import Gaia.model.User;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
@@ -168,6 +172,17 @@ public class GaiaController
                 replacePagina(ptrProjeto, ptrPaginas);
                 this.userContext.Save();
                 this.writeStream("Pagina salva", "", false);
+        }
+        
+        public void saveLayout()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                Type listType = new TypeToken<List<Layout>>(){}.getType();
+                List<Layout> layouts = (new Gson()).fromJson(this.request.getParameter("layout"), listType);
+                ptrProjeto.layout = layouts;
+                ptrProjeto.Save();
+                this.writeStream("Layout salvo", "", false);
         }
         
         public void saveEntity()

@@ -30,6 +30,7 @@ public class Login
                         {
                                 numus++;
                                 LogedUser = u;
+                                LogedUser.deleteDeleteds();
                         }
                         
                         return numus == 1 ? true : false;

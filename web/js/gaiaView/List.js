@@ -7,6 +7,8 @@
 function List()
 {
         // Campos privados
+        var myId = List.ID;
+        List.ID++;
         
         /**
          * @type ItemModel
@@ -22,26 +24,61 @@ function List()
         var _input = null;
         var _funcMouseListener = null;
         
+        this.reArrange = function()
+        {
+                arrange();
+        };
+        
         // Metodos privados
         
         function arrange()
         {
                 _elem.html("");
+                var _check = false;
+                
                 for(var i = 0; i < _model.getTam(); i++)
                 {
                         /** @type Item */
                         var tmpElem = _model.get(i);
-                        _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
-                                + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" '  +
-                                (tmpElem.size !== undefined ? 'width="' + tmpElem.size + '" height="' + tmpElem.size + '"' : "")
-                                +  ' /></i>  ' : "") + tmpElem.string + '</a>');
+                        if(tmpElem.icon !== "check")
+                        {
+                                _elem.html(_elem.html() + '<a href="javascript:void(0)" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
+                                        + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" '  +
+                                        (tmpElem.size !== undefined ? 'width="' + tmpElem.size + '" height="' + tmpElem.size + '"' : "")
+                                        +  ' /></i>  ' : "") + tmpElem.string + '</a>');
+                        }
+                        else
+                        {
+                                _check = true;
+                                _elem.html(_elem.html() + '<a href="javascript:void(0)" id="' + i + '" class="list-group-item labelis">' 
+                                        + '<input type="checkbox" id="' + i + '" class="' + _model.ObjectId + '">  ' + tmpElem.string + '</a>');
+                        }
                 }
-                $("." + _model.ObjectId).click(function()
+                
+                if(_check)
                 {
-                        var retObj = _model.get(parseInt($(this).attr('id')));
-                        if(_funcMouseListener)
-                                _funcMouseListener(retObj);
-                });
+                        $("." + _model.ObjectId).click(function()
+                        {
+                                var retObj = _model.get(parseInt($(this).attr('id')));
+                                if(_funcMouseListener)
+                                        _funcMouseListener(retObj, $(this).is(":checked"));
+                        });
+                        $(".labelis").mousedown(function(e)
+                        {
+                                var retObj = _model.get(parseInt($(this).attr('id')));
+                                e.stopPropagation();
+                                 _funcMouseListener(retObj, null, 2);
+                        });
+                }
+                else
+                {
+                        $("." + _model.ObjectId).click(function()
+                        {
+                                var retObj = _model.get(parseInt($(this).attr('id')));
+                                if(_funcMouseListener)
+                                        _funcMouseListener(retObj);
+                        });
+                }
         }
         
         function doFilter()
@@ -49,24 +86,48 @@ function List()
                 if(_input !== null && _input.val() !== "")
                 {
                        _elem.html("");
+                       var _check = false;
+                       
                         for(var i = 0; i < _model.getTam(); i++)
                         {
                                 var tmpElem = _model.get(i);
                                 if(tmpElem.string.toUpperCase().indexOf(_input.val().toUpperCase()) !== -1)
                                 {
                                         //_elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' + tmpElem.string + '</a>');
-                                        _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
-                                                + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" '  +
-                                                (tmpElem.size !== undefined ? 'width="' + tmpElem.size + '" height="' + tmpElem.size + '"' : "")
-                                                +  ' /></i>  ' : "") + tmpElem.string + '</a>');
+                                        if(tmpElem.icon !== "check")
+                                        {
+                                                _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item ' + _model.ObjectId + '">' 
+                                                        + (tmpElem.icon !== undefined  ? '<i class="glyphicon "><img src="' + tmpElem.icon + '" '  +
+                                                        (tmpElem.size !== undefined ? 'width="' + tmpElem.size + '" height="' + tmpElem.size + '"' : "")
+                                                        +  ' /></i>  ' : "") + tmpElem.string + '</a>');
+                                        }
+                                        else
+                                        {
+                                                _check = true;
+                                                _elem.html(_elem.html() + '<a href="#" id="' + i + '" class="list-group-item">' 
+                                                        + '<input type="checkbox" id="' + i + '" class="' + _model.ObjectId + '">  ' + tmpElem.string + '</a>');
+                                        }
                                 }
                         }
-                        $("." + _model.ObjectId).click(function()
+                        
+                        if(_check)
                         {
-                                var retObj = _model.get(parseInt($(this).attr('id')));
-                                if(_funcMouseListener)
-                                        _funcMouseListener(retObj);
-                        });
+                                $("." + _model.ObjectId).change(function()
+                                {
+                                        var retObj = _model.get(parseInt($(this).attr('id')));
+                                        if(_funcMouseListener)
+                                                _funcMouseListener(retObj, $(this).is(":checked"));
+                                });
+                        }
+                        else
+                        {
+                                $("." + _model.ObjectId).click(function()
+                                {
+                                        var retObj = _model.get(parseInt($(this).attr('id')));
+                                        if(_funcMouseListener)
+                                                _funcMouseListener(retObj);
+                                });
+                        }
                 }
                 else
                         arrange();
@@ -114,3 +175,5 @@ function List()
         
         this.click = this.addMouseActionListener;
 }
+
+List.ID = 0;

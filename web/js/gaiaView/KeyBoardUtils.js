@@ -17,7 +17,7 @@ function KeyBoardUtils()
         
         window.onkeyup = function(event)
         {
-                if(event.target.nodeName !== "INPUT")
+                if((event.target.nodeName !== "INPUT") && (event.target.nodeName !== "TEXTAREA"))
                 {
                         //console.log(event);
                         if(event.keyCode === 46) // delete
@@ -65,7 +65,7 @@ function KeyBoardUtils()
         
         window.onkeydown = function(event)
         {
-                 if(event.target.nodeName !== "INPUT")
+                if((event.target.nodeName !== "INPUT") && (event.target.nodeName !== "TEXTAREA"))
                 {
                         if(event.keyIdentifier === "Down")
                         {

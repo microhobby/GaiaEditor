@@ -9,8 +9,14 @@ function GInput(largura, altura, topo, esquerda, visivel)
         
         this.ClassType = "GInput";
         this.JqueryId = "#GInput" + this.Id;
-        this.Text = "Seu Texto aqui...";
+        this.Text = "";
         this.Name = "GInput" + this.Id;
+        this.Cb = "#66AFE9";
+        
+        this.parseRGB = function()
+        {
+                return parseInt(this.Cb.substring(1,3),16)+','+parseInt(this.Cb.substring(3,5),16)+','+parseInt(this.Cb.substring(5,7),16);
+        };
         
         //@override
         this.returnCode = function(flag, isPreview)
@@ -25,6 +31,21 @@ function GInput(largura, altura, topo, esquerda, visivel)
                 var italico = "italic";
                 var negrito = "bold";
                 var subline = "underline";
+                var position = "absolute";
+                var width = "";
+                var height = "";
+                
+                if(this.StaticPos)
+                {
+                        width = "auto";
+                        position = "static";
+                        height = this.H + "px";
+                }
+                else
+                {
+                        height = this.H + "px";
+                        width = this.W + "px";
+                }
 
                 if(!flag)
                 {
@@ -42,10 +63,10 @@ function GInput(largura, altura, topo, esquerda, visivel)
                         subline = "normal";
                 
                 code =	'\n<div id="GInput' + this.Id + '"\n' +
-                                                ' style="display:' + display + '; position: absolute; \n' +
-                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
-                                                ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
-                                                ' background-color: ' + this.Cb + '; ' +
+                                                ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
+                                                ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
+                                                ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
+                                                ' /*background-color: ' + this.Cb + '; */ ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px;\n' +
                                                 ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
@@ -61,9 +82,17 @@ function GInput(largura, altura, topo, esquerda, visivel)
                                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; opacity: ' + (this.Opacity / 100) + ';' +
                                                 ' z-index: '+this.Zindex+'; color: ' + this.Cf + '; font-size: ' + this.SizeFont + 'px; font-family: ' + this.Font + ';\n' +
                                                 ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + '" >\n' +
+                                                
+                                                '<style id="inputDinamic' + this.Id + '">\n' +
+                                                '#GInput' + this.Id + 'input:focus{\n' +
+                                                'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
+                                                'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'outline: 0 none;}\n' +
+                                                '</style>\n' +
+                                                
                                                 '<input id="GInput' + this.Id + 'input" type="text" class="form-control" style="height: inherit;'+ 
                                                 'padding: 5px; color: inherit; font-size: inherit; font-family: inherit; font-style: inherit; font-weight: inherit;'+
-                                                ' text-decoration: inherit;" placeholder="">\n'+
+                                                ' text-decoration: inherit;" placeholder="' + this.Text + '">\n'+
                                                 '</div>';
                 
                 return code;

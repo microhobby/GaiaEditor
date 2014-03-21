@@ -9,6 +9,7 @@ function Ajax()
         var _data = "";
         var _funcS = null;
         var _funcE = null;
+        $.ajaxSetup({ cache: false });
         
         /**
          * Seta os parametros para o Ajax
@@ -46,8 +47,8 @@ function Ajax()
                 $.ajax({
                             async: _async,
                             type:'post',
-                            cache:false,
-                            url: this.Url,
+                            cache: false,
+                            url: this.Url + "?nada=" + new Date().getTime() + Math.random(),
                             data: _data,
                             success: function(data)
                             {

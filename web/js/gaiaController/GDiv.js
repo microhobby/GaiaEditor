@@ -30,7 +30,7 @@ function GDiv(largura, altura, topo, esquerda, visivel)
                         display = "block";
                 
                 code =	'\n<div id="div' + this.Id + '"\n' +
-                                                ' style="display:' + display + '; position: absolute; \n' +
+                                                ' class="badWolf" style="display:' + display + '; position: absolute; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
                                                 ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +

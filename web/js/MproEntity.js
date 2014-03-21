@@ -10,11 +10,68 @@ function MproEntity()
         var namesRelation = new Array();
         this.cod = 2147483647;
         this.superCod = 2147483647;
+        this.RefObject = null;
         
         if(this.class === undefined)
                 this.class = "";
         
-        this.Save = function()
+        this.Delete = function(classref, codref)
+        {
+                var sql = new Array();
+                var del = "";
+                
+                if(me.cod === 0)
+                {
+                        return 0;
+                }
+                else
+                {
+                        if(!me.RefObject)
+                        {
+                                sql.push("DELETE FROM " + me.class + " WHERE cod = " + me.cod + ";");
+                                if(classref && codref)
+                                        sql.push("DELETE FROM Reference WHERE cod = " + 
+                                        codref + " AND codref = "+ 
+                                        me.cod + " AND class = '" + 
+                                        classref + "' AND classref = '" + me.class + "';");
+                        }
+                        else
+                        {
+                               sql.push("DELETE FROM Reference WHERE cod = " + 
+                                me.RefObject.cod + " AND codref = "+ 
+                                me.cod + " AND class = '" + 
+                                me.RefObject.class + "' AND classref = '" + me.class + "';");
+                        }
+                }
+                
+                if(!window.mproEntityBridge)
+                {
+                        var tmpNamesRelation = $.extend(true, [], namesRelation);
+                        var ajax = new Ajax();
+                        ajax.Url = "../MproEntity/Executions.php";
+                        ajax.setData({jsonList: JSON.stringify(sql), ins: del});
+                        ajax.onSucces(function(data)
+                        { 
+                                //console.log(data); 
+                                
+                                if(joined)
+                                {
+                                        for(var i = 0; i < tmpNamesRelation.length; i++)
+                                        {
+                                                /** @type Array */
+                                                var arr = me[tmpNamesRelation[i]];
+                                                for(var j = 0; j < arr.length; j++)
+                                                {
+                                                        arr[j].Delete(tmpNamesRelation[i], me.cod);
+                                                }
+                                        }
+                                }
+                        });
+                        ajax.execute();
+                }
+        };
+        
+        this.Save = function(classref, codref)
         {
                 var sql = new Array();
                 var insert = "";
@@ -37,10 +94,26 @@ function MproEntity()
                         ajax.setData({jsonList: JSON.stringify(sql), ins: insert});
                         ajax.onSucces(function(data)
                         { 
-                                console.log(data); 
+                                //console.log(data); 
                                 if(insert === "ver")
                                 {
                                         me.cod = parseInt(data);
+                                }
+                                
+                                if(classref && codref)
+                                {
+                                        sql = [];
+                                        sql.push("INSERT INTO Reference VALUES('" + classref + "', '" + me.class + "', " + codref + ", " + me.cod + ");");
+                                        if(!window.mproEntityBridge)
+                                        {
+                                                var ajax = new Ajax();
+                                                ajax.Url = "../MproEntity/Executions.php";
+                                                ajax.setData({jsonList: JSON.stringify(sql)});
+                                                ajax.onSucces(function(data){  });
+                                                ajax.execute();
+                                        }
+                                        else
+                                                window.mproEntityBridge.Table();
                                 }
                                 
                                 if(joined)
@@ -51,8 +124,8 @@ function MproEntity()
                                                 var arr = me[tmpNamesRelation[i]];
                                                 for(var j = 0; j < arr.length; j++)
                                                 {
-                                                        arr[j].superCod = me.cod;
-                                                        arr[j].Save();
+                                                        //arr[j].superCod = me.cod;
+                                                        arr[j].Save(me.class, me.cod);
                                                 }
                                         }
                                 }
@@ -69,11 +142,30 @@ function MproEntity()
                 namesRelation = new Array();
                 for(var field in me)
                 {
-                        if((field !== "getAll") && (field !== "class") && (field !== "Save") && (field !== "cod"))
+                        if((field !== "getAll") && (field !== "class") && (field !== "Save") && (field !== "cod") && (field !== "Delete")
+                                && (field !== "RefObject") && ((typeof (me[field]) !== "function")))
                         {
                                 if(!(me[field] instanceof Array))
                                 {
-                                        string += (typeof(me[field]) === "string" ? "'" : "") + me[field] + (typeof(me[field]) === "string" ? "'" : "") + ", ";
+                                        if(field.indexOf("Ref") !== -1)
+                                        {
+                                                var fieldTmp = me[field].cod;
+                                                string += (typeof(fieldTmp) === "string" ? "'" : "") + fieldTmp + (typeof(fieldTmp) === "string" ? "'" : "") + ", ";
+                                        }
+                                        else if(field.indexOf("Crypt") !== -1)
+                                        {
+                                                if(me[field].indexOf("{}") === -1)
+                                                {
+                                                        me[field] = "{}" + CryptoJS.SHA1(me[field]);
+                                                        string += (typeof(me[field]) === "string" ? "'" : "") + me[field] + (typeof(me[field]) === "string" ? "'" : "") + ", ";
+                                                }
+                                                else
+                                                {
+                                                        string += (typeof(me[field]) === "string" ? "'" : "") + me[field] + (typeof(me[field]) === "string" ? "'" : "") + ", ";
+                                                }
+                                        }
+                                        else
+                                                string += (typeof(me[field]) === "string" ? "'" : "") + me[field] + (typeof(me[field]) === "string" ? "'" : "") + ", ";
                                 }
                                 else
                                 {
@@ -94,11 +186,27 @@ function MproEntity()
                 namesRelation = new Array();
                 for(var field in me)
                 {
-                        if((field !== "getAll") && (field !== "class") && (field !== "Save") && (field !== "cod"))
+                        if((field !== "getAll") && (field !== "class") && (field !== "Save") && (field !== "cod") && (field !== "Delete")
+                               && (field !== "RefObject") && (typeof (me[field]) !== "function"))
                         {
                                 if(!(me[field] instanceof Array))
                                 {
-                                        string += field + " = " + (typeof(me[field]) === "string" ? "'" : "") + me[field] + (typeof(me[field]) === "string" ? "'" : "") + ", ";
+                                        if(field.indexOf("Ref") !== -1)
+                                        {
+                                                var fieldTmp = me[field].cod;
+                                                string += field + " = " + (typeof(fieldTmp) === "string" ? "'" : "") + fieldTmp+ (typeof(fieldTmp) === "string" ? "'" : "") + ", ";
+                                        }
+                                        else if(field.indexOf("Crypt") !== -1)
+                                        {
+                                                var fieldTmp = me[field];
+                                                if(fieldTmp.indexOf("{}") === -1)
+                                                {
+                                                        fieldTmp = "{}" + CryptoJS.SHA1(fieldTmp);
+                                                }
+                                                string += field + " = " + (typeof(fieldTmp) === "string" ? "'" : "") + fieldTmp+ (typeof(fieldTmp) === "string" ? "'" : "") + ", ";
+                                        }
+                                        else
+                                                string += field + " = " + (typeof(me[field]) === "string" ? "'" : "") + me[field] + (typeof(me[field]) === "string" ? "'" : "") + ", ";
                                 }
                                 else
                                 {
@@ -122,7 +230,8 @@ function MproEntity()
 
                         for(var field in me)
                         {
-                                if((field !== "getAll") && (field !== "cod") && (field !== "class") && (field !== "Save"))
+                                if((field !== "getAll") && (field !== "cod") && (field !== "class") && (field !== "Save") && (field !== "Delete")
+                                       && (field !== "RefObject") && (typeof (me[field]) !== "function"))
                                 {
                                         if(!(me[field] instanceof Array))
                                         {
@@ -136,7 +245,7 @@ function MproEntity()
                                 var ajax = new Ajax();
                                 ajax.Url = "../MproEntity/Executions.php";
                                 ajax.setData({jsonList: JSON.stringify(sql)});
-                                ajax.onSucces(function(data){ console.log(data); });
+                                ajax.onSucces(function(data){  });
                                 ajax.execute();
                         }
                         else
@@ -148,8 +257,9 @@ function MproEntity()
         {
                 for(var field in me)
                 {
-                        //console.log(field);
-                        if((field !== "getAll") && (field !== "class") && (field !== "Save"))
+                        ////console.log(field);
+                        if((field !== "getAll") && (field !== "class") && (field !== "Save") && (field !== "Delete") && (typeof (me[field]) !== "function")
+                                && (field !== "RefObject") && (typeof (me[field]) !== "function"))
                         {
                                 if(typeof(me[field]) === "string")
                                         me[field] = null;
@@ -169,11 +279,20 @@ MproEntity.getWhere = function(classe, superFilter, objFilter)
                 return null;
 };
 
-MproEntity.getAll = function(classe, limiter, superFilter, where)
+MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordBy, sync, data)
 {
         
         if(classe === undefined)
                 return null;
+        
+        if(where === undefined)
+                where = "";
+        
+        if((ordBy === undefined) || (ordBy === ""))
+                ordBy = "cod asc";
+        
+        if(sync === undefined)
+                sync = true;
         
         var instance = new classe();
         var relations = new Array();
@@ -189,7 +308,8 @@ MproEntity.getAll = function(classe, limiter, superFilter, where)
                 }
                 else
                 {
-                        if((field !== "getAll") && (field !== "cod") && (field !== "class") && (field !== "Save"))
+                        if((field !== "getAll") && (field !== "cod") && (field !== "class") && (field !== "Save") && (field !== "Delete")
+                                && (field !== "RefObject") && (typeof (instance[field]) !== "function"))
                         {
                                 fields.push(field);
                         }
@@ -197,12 +317,17 @@ MproEntity.getAll = function(classe, limiter, superFilter, where)
         }
         
         if(superFilter === undefined)
-                sql = "SELECT * FROM " + instance.class + " " +  (where === "" ? "" : (" WHERE (" + where + ")"));
+                sql = "SELECT * FROM " + instance.class + " " +  (where === "" ? "ORDER BY " : (" WHERE (" + where + ") ORDER BY ")) + ordBy;
         else
-                sql = "SELECT * FROM " + instance.class + " WHERE superCod = " + superFilter + " " + 
-                        (where === "" ? "" : (" AND (" + where + ")"));
+        {
+                sql = "SELECT * FROM " + instance.class + " WHERE cod in "
+                        + "(SELECT codref FROM Reference WHERE class = '" + superFilter.class + "' and cod = " + 
+                        superFilter.cod + " AND classref = '" + instance.class + "') "
+                        + " " + 
+                        (where === "" ? "ORDER BY " : (" AND (" + where + ") ORDER BY ")) + ordBy;
+        }
         
-        if(limiter.length && (limiter.length === 2))
+        if(limiter && limiter.length && (limiter.length === 2))
         {
                 sql += " LIMIT " + limiter[0] + ", " + limiter[1];
         }
@@ -214,9 +339,10 @@ MproEntity.getAll = function(classe, limiter, superFilter, where)
                 ajax.setData({cmd: sql});
                 ajax.onSucces(function(data)
                 {
-                        console.log(data);
+                        //console.log(data);
                         /** @type Array */
                         var arrTmp = JSON.parse(data);
+                        var refs = [];
                         
                         for(var j = 0; j < arrTmp.length; j++)
                         {
@@ -229,23 +355,50 @@ MproEntity.getAll = function(classe, limiter, superFilter, where)
 
                                 for(var i = 0; i < fields.length; i++)
                                 {
-                                        objTmp[fields[i]] = arrM[i+1];
+                                        if(fields[i].indexOf("Ref") === -1)
+                                                objTmp[fields[i]] = arrM[i+1];
+                                        else
+                                        {
+                                                var ret = MproEntity.getAll(window[fields[i].replace("Ref", "")], null, 1, undefined, "cod = " + arrM[i+1], undefined, false);
+                                                if(ret)
+                                                        objTmp[fields[i]] = ret[0];
+                                        }
                                 }
                                 
                                 if(relations.length > 0)
                                 {
                                         for(var k = 0; k < relations.length; k++)
                                         {
-                                                var objR = MproEntity.getAll(window[relations[k]], undefined, objTmp.cod);
+                                                var objR = MproEntity.getAll(window[relations[k]], undefined, undefined, objTmp, undefined, undefined, false);
+                                                
+                                                for(var i = 0; i < objR.length; i++)
+                                                {
+                                                        objR[i].RefObject = objTmp;
+                                                }
+                                                
                                                 if(objR !== null)
-                                                        objTmp["Entity" + relations[k]].push(objR[0]);
+                                                {
+                                                        objTmp["Entity" + relations[k]] = objR;
+                                                        objTmp[relations[k+1]] = objR;
+                                                        objTmp.RefObject = 
+                                                        k++;
+                                                }
+                                                        //objTmp["Entity" + relations[k]].push(objR[0]);
                                         }
                                 }
                                 
                                 elems.push(objTmp);
                         }
+                        
+                        if(callBack)
+                        {
+                                hideLoading();
+                                callBack(elems);
+                        }
                 });
-                ajax.execute(false);
+                ajax.execute(sync);
+                 showLoading();
+                        
         }
         else
                 elems = window.mproEntityBridge.getAll();

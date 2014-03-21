@@ -290,6 +290,19 @@ function savePage(onSucesso)
         envios++;
 }
 
+function saveLayout()
+{
+        var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        ajaxi.setData({user: LogedUser.cod, layout: JSON.stringify(ptrProject.layout), projectCod: ptrProject.cod, method: "saveLayout"});
+        ajaxi.onSucces(function()
+        {
+                confirmados++;
+        });
+        ajaxi.execute();
+        envios++;  
+}
+
 function saveEntity()
 {
         ptrProject.EntitiesToJson();
