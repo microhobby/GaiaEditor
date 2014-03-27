@@ -267,9 +267,12 @@ public class ProjectSources
                         }
                 }
                 
-                ret += "function showLoading(){ if($(\"#blackOut\").css(\"display\") != \"block\"){\n"
-                        + "$(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);  }}\n";
-                ret += "function hideLoading(){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); }\n";
+                ret += "var ____ID_FETCH = 0;\n var ____ID_FETCH_OK = 0;\n var ____LOAD_THREAD = new Thread(function(){ if(____ID_FETCH == ____ID_FETCH_OK){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); ____LOAD_THREAD.stop(); } });\n"
+                        + "function showLoading(){ if($(\"#blackOut\").css(\"display\") != \"block\"){\n"
+                        + "$(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);  }"
+                        + " ____ID_FETCH++; ____LOAD_THREAD.run(); }\n";
+                ret += "function hideLoading(){ ____ID_FETCH_OK++; if(____ID_FETCH == ____ID_FETCH_OK){"
+                        + "$(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); }}\n";
                 
                 ret += "function ____loadMidias(){\n " + calls + "\n";
                 ret += 
@@ -451,19 +454,22 @@ public class ProjectSources
                         " function blackHell()\n" +
                         " {\n" +
                         "	 //e coloca blackout no lugar certo\n" +
+                        "                   var winS = window.document.documentElement.scrollHeight || window.document.body.scrollHeight;" +
                         "	 if((scale + uScale) < scale)\n" +
                         "	 {\n" + //$('#blackOut').css('height', $(window).height() + window.document.body.scrollHeight / (scale + uScale));
-                        "		 $('#blackOut').css('height', window.document.body.scrollHeight / (scale + uScale));\n" +
+                        "		 $('#blackOut').css('height', winS / (scale + uScale));\n" +
                         "		 $('#blackOut').css('width', document.documentElement.clientWidth / (scale + uScale));\n" +
                         "		 $('#blackOut').css('left', Math.round(parseFloat($('#blackOut').position().left - $('#page').position().left /(scale + uScale))));\n" +
-                        "		 $('#blackOut').css('top', Math.round(parseFloat($('#blackOut').position().top - $('#page').position().top / (scale + uScale))));\n" +
+                        //"		 $('#blackOut').css('top', Math.round(parseFloat($('#blackOut').position().top - $('#page').position().top / (scale + uScale))));\n" +
+                        "		 $('#blackOut').css('top', 0);\n" +
                         "	 }\n" +
                         "	 else\n" +
                         "	 {\n" +
-                        "		 $('#blackOut').css('height', window.document.body.scrollHeight / (scale + uScale));\n" +
+                        "		 $('#blackOut').css('height', winS / (scale + uScale));\n" +
                         "		 $('#blackOut').css('width', $(document).width() / (scale + uScale));\n" +
                         "		 $('#blackOut').css('left', Math.round(parseFloat($('#blackOut').position().left - $('#page').position().left /(scale + uScale))));\n" +
-                        "		 $('#blackOut').css('top', Math.round(parseFloat($('#blackOut').position().top - $('#page').position().top / (scale + uScale))));\n" +
+                        //"		 $('#blackOut').css('top', Math.round(parseFloat($('#blackOut').position().top - $('#page').position().top / (scale + uScale))));\n" +
+                        "		 $('#blackOut').css('top', 0);\n" +
                         "	 }\n" +
                         " }\n" +
                         " \n" +
@@ -930,6 +936,7 @@ public class ProjectSources
                                 "	<script src=\"../js/gaiaView/Table.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n" +
+                                "	<script src=\"../js/gaiaView/FormCreator.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../lib/app.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/utils.js\" type=\"text/javascript\"> </script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n<script src=\"../dist/js/summernote.min.js\"></script>\n" +
                                         "	<script src=\"../js/looper.js\" type=\"text/javascript\"> </script>\n" +

@@ -14,7 +14,8 @@ function Thread(func)
          */
         this.run = function()
         {
-                _timePtr = setInterval(func, 0);
+                if(!_timePtr)
+                        _timePtr = setInterval(func, 0);
         };
         
         /**

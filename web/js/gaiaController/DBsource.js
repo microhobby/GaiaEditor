@@ -22,6 +22,7 @@ function DBsource(entity, max, begin, where, ord)
                 setTimeout(function()
                 {
                         //me.Data = MproEntity.getAll(me.EntityName, [__begin, __max], undefined, me.Where, me.OrdBy);
+                        showLoading();
                         MproEntity.getAll(me.EntityName, function(data)
                         {
                                 me.Data = data;
@@ -29,6 +30,7 @@ function DBsource(entity, max, begin, where, ord)
                                 __dataLoaded = true;
                                 for(var i = 0; i < __funcMouseListener.length; i++)
                                         __funcMouseListener[i]();
+                                hideLoading();
                                 magic();
                         }, [__begin, __max], undefined, me.Where, me.OrdBy);
                 }, 100);

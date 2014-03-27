@@ -36,10 +36,13 @@ function FonteDados(largura, altura, topo, esquerda, visivel)
         //@override
         this.resolveSpecialFields = function()
         {
-                var privateAttrsTmp = JSON.parse(this.SpecialFields);
-                for(var i = 0; i < privateAttrsTmp.length; i++)
+                if(this.SpecialFields !== "")
                 {
-                        privateAttrs[i] = privateAttrsTmp[i];
+                        var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                        for(var i = 0; i < privateAttrsTmp.length; i++)
+                        {
+                                privateAttrs[i] = privateAttrsTmp[i];
+                        }
                 }
         };
         

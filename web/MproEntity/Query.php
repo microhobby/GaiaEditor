@@ -9,7 +9,7 @@
 
         $res = $laudb->query($cmd);
         
-        sleep(3);
+        //sleep(2);
         
         echo json_encode($res);
 ?>

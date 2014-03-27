@@ -1,25 +1,20 @@
 
-
 /**
  * Classe que retorna
- * @returns {GRepeater}
+ * @returns {GForm}
  */
-function GTable(largura, altura, topo, esquerda, visivel)
+function GForm(largura, altura, topo, esquerda, visivel)
 {
         var privateAttrs = new Array();
         var instructs = "";
         var vars = "";
-        var minhasColuna = [];
-        var tTmp = null;
-        //var essaLista = new List();
-        //var meuModelo = new ItemModel();
         
         this.init(largura, altura, topo, esquerda, visivel);
 
-        this.ClassType = "GTable";
-        this.JqueryId = "#GTable" + this.Id;
+        this.ClassType = "GForm";
+        this.JqueryId = "#divStatic" + this.Id;
         this.Cb = "#6666cc";
-        this.Name = "GTable" + this.Id;
+        this.Name = "GForm" + this.Id;
         
         //@override
         this.returnCodeInstructs = function()
@@ -61,37 +56,14 @@ function GTable(largura, altura, topo, esquerda, visivel)
         //@override
         this.canCreateVar = function()
         {
-                return true;
+                return false;
         };
         
-        this.getPrivateAttrs().push(new SpecialAttrs("Fonte", "objText", "setFonteDados", ""));
-        this.getPrivateAttrs().push(new SpecialAttrs("Colunas", "objText", "setCollums", "Coluna1;Coluna2"));
-        this.getPrivateAttrs().push(new SpecialAttrs("Input Filtro", "objText", "setFilterElement", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("Entidade", "objCombo", "setEntidade", null, "modelEntities"));
         
-        this.setFilterElement = function(nameElement)
+        this.setEntidade = function(entityName)
         {
-                this.getPrivateAttrs()[2].Data = nameElement;
-        };
-        
-        this.setFonteDados = function(nameFonte)
-        {
-                 this.getPrivateAttrs()[0].Data = nameFonte;
-        };
-        
-        this.setCollums = function(collums)
-        {
-                this.getPrivateAttrs()[1].Data = collums;
-                minhasColuna = [];
-                var its = collums.split(";");
-                for(var i = 0; i < its.length; i++)
-                {
-                        //meuModelo.add(new Item(its[i], i));
-                        minhasColuna.push(its[i]);
-                }
-                if(tTmp !== null)
-                {
-                        tTmp.setCollums(minhasColuna);
-                }
+                this.getPrivateAttrs()[0].Data = entityName;
         };
         
         this.returnCode = function(flag, isPreview)
@@ -131,7 +103,7 @@ function GTable(largura, altura, topo, esquerda, visivel)
                 else
                         display = "block";
                 
-                code =	'\n<div id="GTable' + this.Id + '"\n' +
+                code =	'\n<div id="divStatic' + this.Id + '"\n' +
                                                 ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
@@ -150,43 +122,17 @@ function GTable(largura, altura, topo, esquerda, visivel)
                                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; opacity: ' + (this.Opacity / 100) + ';' +
                                                 ' z-index: '+this.Zindex+';">\n' +
-                                                '<table id="GTable' + this.Id + 'Items" class="table table-hover" style="border-collapse:  initial; border-color: rgb(189, 189, 189); border-style:solid; border-width:1px; width: 100%; height: auto; border-radius: 4px; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.075); box-shadow: 0 1px 2px rgba(0,0,0,0.075);">' +
-                                                '</table>'+
                                                         //vai ser o conteudo aqui
-                                                        //this.Text +
                                                 '\n</div>\n';
                                                 
                         if(!flag)
                         {
-                                vars +=         'var table' + this.Name + ' = new Table("' + this.JqueryId + 'Items");\n' +
-                                         'var ' + this.JqueryId.replace("#", "util") + ' = {};\n';
-                                if(this.getPrivateAttrs()[0].Data !== "" && this.getPrivateAttrs()[0].Data.indexOf("@") === -1)
-                                {
-                                        instructs +=    'table' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ');\n';
-                                }
-                                else
-                                        instructs += '' +  this.JqueryId.replace("#", "util") + '.Fonte = "' + this.getPrivateAttrs()[0].Data  + '";\n';
-                                if(minhasColuna.length > 0)
-                                {
-                                        instructs +=  'table' + this.Name + '.setCollums('+ JSON.stringify(minhasColuna) + ');\n';
-                                }
-                                if(this.getPrivateAttrs()[2].Data !== "")
-                                {
-                                        instructs += 'table' + this.Name + '.setInputFilter("'+ this.getPrivateAttrs()[2].Data+'input");\n';
-                                }
-                                instructs += '' +  this.JqueryId.replace("#", "util") + '.Table = table' + this.Name  + ';\n';
+                                vars +=         'var ' + this.Name + ' = new FormCreator(' + this.getPrivateAttrs()[0].Data + ', "' + this.JqueryId + '");\n';
                         }
-                        
-                        var me = this;
-                        setTimeout(function()
-                        {
-                                tTmp = new Table(me.JqueryId + "Items");
-                                me.setCollums(me.getPrivateAttrs()[1].Data);
-                        }, 200);
                         
                 return code;
         };
 }
 
 // Herança
-GTable.prototype = new Objetos();
+GForm.prototype = new Objetos();

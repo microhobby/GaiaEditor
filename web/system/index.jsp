@@ -156,6 +156,7 @@
                             <script src="../js/gaiaController/GInput.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GTextArea.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GTextEditor.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GForm.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/Chatterbot.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->

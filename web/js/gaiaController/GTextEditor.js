@@ -81,7 +81,7 @@ function GTextEditor(largura, altura, topo, esquerda, visivel)
                 if(!this.Subline)
                         subline = "normal";
                 
-                code =	'\n<div id="GTextEditor' + this.Id + '"\n' +
+                code =	'\n<div fonte="' + this.Text + '" id="GTextEditor' + this.Id + '"\n' +
                                                 ' class="badWolf" style="display:' + display + '; position:' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
@@ -107,7 +107,8 @@ function GTextEditor(largura, altura, topo, esquerda, visivel)
                 {           
                         vars +=           'var ' + this.Name + ' = $("#GTextEditor' + this.Id + 'Container");\n';
                                         
-                        instructs +=   '' + this.Name + '.summernote({ height: "68%", focus: true});';
+                        instructs +=   '' + this.Name + '.summernote({ height: "68%", focus: true});\n';
+                        instructs += '' + this.Name + '.code("' + this.Text + '");';
                 }
                 
                 var me = this;
@@ -115,6 +116,7 @@ function GTextEditor(largura, altura, topo, esquerda, visivel)
                 setTimeout(function()
                 {
                         $("#GTextEditor" + me.Id + "Container").summernote();
+                        $("#GTextEditor" + me.Id + "Container").code(me.Text);
                 }, 500);
                 
                 return code;

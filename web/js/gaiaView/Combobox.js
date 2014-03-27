@@ -79,6 +79,9 @@ function Combobox()
         
         // Metodos publicos
         
+        this.Fonte = "";
+        this.Coluna = "";
+        
         /**
          * Seta um input para filtro
          */

@@ -279,7 +279,7 @@ MproEntity.getWhere = function(classe, superFilter, objFilter)
                 return null;
 };
 
-MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordBy, sync, data)
+MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordBy, sync, end)
 {
         
         if(classe === undefined)
@@ -293,6 +293,9 @@ MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordB
         
         if(sync === undefined)
                 sync = true;
+        
+        if(end === undefined)
+                end = true;
         
         var instance = new classe();
         var relations = new Array();
@@ -346,6 +349,7 @@ MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordB
                         
                         for(var j = 0; j < arrTmp.length; j++)
                         {
+                                refs = [];
                                 /** @type Array */
                                 var arrM = arrTmp[j];
                                 /** @type MproEntity */
@@ -356,49 +360,81 @@ MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordB
                                 for(var i = 0; i < fields.length; i++)
                                 {
                                         if(fields[i].indexOf("Ref") === -1)
-                                                objTmp[fields[i]] = arrM[i+1];
+                                                  objTmp[fields[i]] = arrM[i+1];
                                         else
                                         {
-                                                var ret = MproEntity.getAll(window[fields[i].replace("Ref", "")], null, 1, undefined, "cod = " + arrM[i+1], undefined, false);
-                                                if(ret)
-                                                        objTmp[fields[i]] = ret[0];
+                                                //var ret = MproEntity.getAll(window[fields[i].replace("Ref", "")], null, 1, undefined, "cod = " + arrM[i+1], undefined, false);
+                                                refs.push(fields[i]);
+                                                var endi = false;
+                                                if(j >= arrTmp.length-1)
+                                                        endi = true;
+                                                
+                                                var funcCall = function(objTmp, fields, i, callBack, elems, endi, len){ return function(ret)
+                                                {
+                                                        if(ret)
+                                                                objTmp[fields[i]] = ret[0];
+                                                        
+                                                        if(callBack && endi && refs.length === len)
+                                                                callBack(elems);
+                                                } };
+                                                
+                                                MproEntity.getAll(window[fields[i].replace("Ref", "")], funcCall(objTmp, fields, i, callBack, elems, endi, refs.length), 1, undefined, "cod = " + arrM[i+1], undefined, true, endi);
                                         }
                                 }
                                 
                                 if(relations.length > 0)
-                                {
+                                {      
                                         for(var k = 0; k < relations.length; k++)
                                         {
-                                                var objR = MproEntity.getAll(window[relations[k]], undefined, undefined, objTmp, undefined, undefined, false);
+                                                //var objR = MproEntity.getAll(window[relations[k]], undefined, undefined, objTmp, undefined, undefined, false);
+                                                var endi = false;
                                                 
-                                                for(var i = 0; i < objR.length; i++)
-                                                {
-                                                        objR[i].RefObject = objTmp;
-                                                }
+                                                if(k >= relations.length-2 && j >= arrTmp.length-1)
+                                                        endi = true;
                                                 
-                                                if(objR !== null)
+                                                var funcCall2 = function(objTmp, relations, k, callBack, endi)
                                                 {
-                                                        objTmp["Entity" + relations[k]] = objR;
-                                                        objTmp[relations[k+1]] = objR;
-                                                        objTmp.RefObject = 
-                                                        k++;
-                                                }
-                                                        //objTmp["Entity" + relations[k]].push(objR[0]);
+                                                        return function(objR, stop)
+                                                        {
+                                                                for(var i = 0; i < objR.length; i++)
+                                                                {
+                                                                        objR[i].RefObject = objTmp;
+                                                                }
+
+                                                                if(objR !== null)
+                                                                {
+                                                                        objTmp["Entity" + relations[k]] = objR;
+                                                                        objTmp[relations[k+1]] = objR;
+                                                                        //objTmp.RefObject = me;
+                                                                        //k++;
+                                                                }
+                                                                if(callBack && endi)
+                                                                        callBack(elems);
+                                                        };
+                                                };
+                         
+                                                if(k % 2 === 0)
+                                                MproEntity.getAll(window[relations[k]], funcCall2(objTmp, relations, k, callBack, endi), undefined, objTmp, undefined, undefined, true);
+                                                //objTmp["Entity" + relations[k]].push(objR[0]);
                                         }
                                 }
                                 
                                 elems.push(objTmp);
                         }
                         
-                        if(callBack)
+                        if(relations.length !== 0 || refs.length !== 0)
                         {
-                                hideLoading();
-                                callBack(elems);
+                                // se tem referencias não faz nada
+                               //callBack(elems);
+                        }
+                        else
+                        {
+                                //hideLoading();
+                                callBack(elems, end);
                         }
                 });
                 ajax.execute(sync);
-                 showLoading();
-                        
+                //showLoading();
         }
         else
                 elems = window.mproEntityBridge.getAll();

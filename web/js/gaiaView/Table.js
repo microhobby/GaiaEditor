@@ -91,13 +91,16 @@ function Table(elem)
                                 $(".remEnti"+myId).click(function(evt)
                                 {
                                         evt.stopPropagation();
-                                        if(!OverrideDelete)
+                                        if(Source.Data[parseInt($(this).attr("id"))].Delete)
                                         {
-                                                Source.Data[parseInt($(this).attr("id"))].Delete();
-                                                Source.Data.splice(parseInt($(this).attr("id")), 1);
+                                                if(!OverrideDelete)
+                                                {
+                                                        Source.Data[parseInt($(this).attr("id"))].Delete();
+                                                        Source.Data.splice(parseInt($(this).attr("id")), 1);
+                                                }
+                                                else
+                                                        OverrideDelete(Source.Data[parseInt($(this).attr("id"))]);
                                         }
-                                        else
-                                                OverrideDelete(Source.Data[parseInt($(this).attr("id"))]);
                                         $(this).closest("tr").remove();
                                 });
 
@@ -111,13 +114,15 @@ function Table(elem)
                                 $("#prox"+myId).unbind();
                                 $("#prox"+myId).click(function()
                                 {
-                                        Source.prox();
+                                        if(Source.prox)
+                                                Source.prox();
                                 });
 
                                 $("#back"+myId).unbind();
                                 $("#back"+myId).click(function()
                                 {
-                                        Source.back();
+                                        if(Source.prox)
+                                                Source.back();
                                 });
                         }
                 }
@@ -183,6 +188,18 @@ function Table(elem)
                 Source = model;
                 arrange();
         };
+        
+        this.getSourceArray = function()
+        {
+                if(Source instanceof DBsource)
+                {
+                        return Source.Data;
+                }
+                else
+                {
+                        return Source;
+                }
+        }
         
         /**
          * 

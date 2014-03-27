@@ -301,6 +301,7 @@ $(document).ready(function()
         modelObjects.add(new Item("Input", function(){ return new GInput(153, 52, 0, 0, true); }, "../img/input.png"));
         modelObjects.add(new Item("Text Area", function(){ return new GTextArea(153, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png"));
         modelObjects.add(new Item("Text Editor", function(){ return new GTextEditor(300, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png"));
+        modelObjects.add(new Item("Auto Form", function(){ return new GForm(300, 153, 0, 0, true); }, "../img/list.png"));
         modelObjects.add(new Item("HAudio", function(){ return new GAudioHide(16, 16, -20, -20, true); }, "../img/ui-audio.png"));
         modelObjects.add(new Item("FonteDados", function(){ return new FonteDados(1, 1, -20, -20, true); }, "../img/db_blank16.png"));
         

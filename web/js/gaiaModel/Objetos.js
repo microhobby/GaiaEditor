@@ -223,7 +223,15 @@ function Objetos()
         this.setText = function(val)
         {
                 this.Text = val;
-                if((this.JqueryId.indexOf("bt") === -1) && (this.JqueryId.indexOf("ComboBox") === -1))
+                if(this.JqueryId.indexOf("GTable") !== -1)
+                        ;
+                else if(this.JqueryId.indexOf("GInput") !== -1)
+                        $(this.JqueryId).find("input").attr("placeholder", this.Text);
+                else if(this.JqueryId.indexOf("GTextArea") !== -1)
+                        $(this.JqueryId).find("textarea").attr("placeholder", this.Text);
+                else if(this.JqueryId.indexOf("GTextEditor") !== -1)
+                        $("#GTextEditor" + this.Id + "Container").code(this.Text);
+                else if((this.JqueryId.indexOf("bt") === -1) && (this.JqueryId.indexOf("ComboBox") === -1))
                         changeT(this.JqueryId, val);
                 else
                 {

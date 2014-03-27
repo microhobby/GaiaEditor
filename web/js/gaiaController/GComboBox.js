@@ -39,10 +39,13 @@ function GComboBox(largura, altura, topo, esquerda, visivel)
         //@override
         this.resolveSpecialFields = function()
         {
-                var privateAttrsTmp = JSON.parse(this.SpecialFields);
-                for(var i = 0; i < privateAttrsTmp.length; i++)
+                if(this.SpecialFields !== "")
                 {
-                        privateAttrs[i] = privateAttrsTmp[i];
+                        var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                        for(var i = 0; i < privateAttrsTmp.length; i++)
+                        {
+                                privateAttrs[i] = privateAttrsTmp[i];
+                        }
                 }
         };
         
@@ -207,10 +210,14 @@ function GComboBox(largura, altura, topo, esquerda, visivel)
                                                 '' + this.Name + '.setInputFilter("' +this.getPrivateAttrs()[3].Data+ 'input");\n';*/
                                         
                         vars +=           'var ' + this.Name + ' = new Combobox();\n' +
-                                                'var model' + this.Name + ' = new ItemModel();\n';
+                                                'var model' + this.Name + ' = new ItemModel();\n' +
+                                                 'var ' + this.JqueryId.replace("#", "util") + ' = {};\n';
                                         
                         instructs +=    '' + this.Name + '.setElement("#GComboBox' + this.Id + 'Items");\n' +
-                                                '' + this.Name + '.setModel(model' + this.Name + ');\n';
+                                                '' + this.Name + '.setModel(model' + this.Name + ');\n' +
+                                                '' + this.JqueryId.replace("#", "util") + '.Fonte = "' + this.getPrivateAttrs()[0].Data + '";\n' +
+                                                '' + this.JqueryId.replace("#", "util") + '.Coluna = "' + this.getPrivateAttrs()[1].Data + '";\n' +
+                                                '' + this.JqueryId.replace("#", "util") + '.Model = model' + this.Name + ';\n';
                         
                         if(this.getPrivateAttrs()[0].Data === "")
                         {
