@@ -235,3 +235,34 @@ var __stack__ = new Array();
 	}
 	
 })(jQuery);
+
+function calcule(arr1, arr2)
+{
+        console.log("teste");
+        var result = {};
+        result.num = Number.MAX_VALUE;
+        result.ix = 0;
+        
+        for(var i = 0; i < arr2.length; i++)
+        {
+                var aux = result.num;
+                result.num = Math.min(euclideanDistance(arr1, arr2[i].elems, 0, arr2[i].elems.length), result.num);
+                if(aux !== result.num)
+                        result.ix = i;
+        }
+        
+        return result;
+}
+
+function gene(arr, place){ this.elems = arr; this.place = place; }
+
+var euclideanDistance = function (a1, a2, startIndex, len) {
+    'use strict';
+
+    var result = 0, i, diff;
+    for (i = startIndex; i < (startIndex + len); i += 1) {
+        diff = a1[i] - a2[i];
+        result += diff * diff;
+    }
+    return Math.sqrt(result);
+};

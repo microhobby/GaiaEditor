@@ -5,14 +5,39 @@
  */
 function GAudioHide(largura, altura, topo, esquerda, visivel)
 {
+        var instructs = "";
+        var vars = "";
+        
         this.init(largura, altura, topo, esquerda, visivel);
         
         this.ClassType = "GAudioHide";
         this.Name = "Audio" + this.Id;
         this.JqueryId = "#Haudio" + this.Id;
         
+        //@override
+        this.returnCodeInstructs = function()
+        {
+                return instructs;
+        };
+        
+        //@override
+        this.returnCodeVars = function()
+        {
+                return vars;
+        };
+        
+        //@override
+        this.canCreateVar = function()
+        {
+                return false;
+        };
+        
         this.returnCode = function(flag, isPreview)
         {
+                // zera
+                vars = "";
+                instructs = "";
+                
                 var code;
                 var display = "none";
                 var bgColor = "transparent";
@@ -64,6 +89,9 @@ function GAudioHide(largura, altura, topo, esquerda, visivel)
                                 '</audio>\n'+
                                         what +
                                 '</div>';
+                        
+                        vars += 'var ' + this.Name + ' = document.getElementById("Haudio' + this.Id + 'aud");\n';
+                        instructs += '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
 
                 return code;
         }

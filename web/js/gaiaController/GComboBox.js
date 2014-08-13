@@ -65,6 +65,12 @@ function GComboBox(largura, altura, topo, esquerda, visivel)
         this.getPrivateAttrs().push(new SpecialAttrs("Coluna", "objText", "setCollum", ""));
         this.getPrivateAttrs().push(new SpecialAttrs("Itens", "objText", "setItems", "Item1;Item2;Item3"));
         this.getPrivateAttrs().push(new SpecialAttrs("Input Filtro", "objText", "setFilterElement", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("MproTag", "objText", "setMproTag", ""));
+        
+        this.setMproTag = function(tag)
+        {
+                this.getPrivateAttrs()[4].Data = tag;
+        };
         
         this.setFilterElement = function(nameElement)
         {
@@ -195,7 +201,8 @@ function GComboBox(largura, altura, topo, esquerda, visivel)
                                 'color: inherit;">' +
                                                 '<span id="textHere">' + this.Text + '</span><span class="caret"></span>' +
                                                 '</button>' +
-                                                '<ul id="myItems' + this.Id + '" class="dropdown-menu" style="width: inherit;" role="menu">' +          
+                                                '<ul id="myItems' + this.Id + '" class="dropdown-menu" style="width: inherit; font-size: inherit; font-family: inherit; font-style: inherit; font-weight: inherit; text-decoration: inherit; color: inherit;' +
+                                'color: inherit;" role="menu">' +          
                                                 '</ul>' +
                                                         //vai ser o conteudo aqui
                                                 '\n</div></div>\n';
@@ -212,12 +219,14 @@ function GComboBox(largura, altura, topo, esquerda, visivel)
                         vars +=           'var ' + this.Name + ' = new Combobox();\n' +
                                                 'var model' + this.Name + ' = new ItemModel();\n' +
                                                  'var ' + this.JqueryId.replace("#", "util") + ' = {};\n';
-                                        
+                        
+                        instructs +=    '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
                         instructs +=    '' + this.Name + '.setElement("#GComboBox' + this.Id + 'Items");\n' +
                                                 '' + this.Name + '.setModel(model' + this.Name + ');\n' +
                                                 '' + this.JqueryId.replace("#", "util") + '.Fonte = "' + this.getPrivateAttrs()[0].Data + '";\n' +
                                                 '' + this.JqueryId.replace("#", "util") + '.Coluna = "' + this.getPrivateAttrs()[1].Data + '";\n' +
-                                                '' + this.JqueryId.replace("#", "util") + '.Model = model' + this.Name + ';\n';
+                                                '' + this.JqueryId.replace("#", "util") + '.Model = model' + this.Name + ';\n' +
+                                                '' + this.JqueryId.replace("#", "util") + '.MproTag = "' + this.getPrivateAttrs()[4].Data + '";\n';
                         
                         if(this.getPrivateAttrs()[0].Data === "")
                         {

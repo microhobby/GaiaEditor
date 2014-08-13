@@ -119,6 +119,7 @@ function FonteDados(largura, altura, topo, esquerda, visivel)
                                                         + this.getPrivateAttrs()[2].Data + ", '"
                                                         + this.getPrivateAttrs()[3].Data +"','"
                                                         + this.getPrivateAttrs()[4].Data + "');\n";
+                        instructs += "" + this.Name + ".getData();\n";
                 }
                 else
                 {

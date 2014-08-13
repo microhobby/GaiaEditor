@@ -55,8 +55,13 @@ public class LauDB
                 try
                 {
                         //connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-                        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia", "root", "vertrigo");
-                        //connection = DriverManager.getConnection("jdbc:mysql://mysql.mpro3.com.br:3307/gaia", "mpro3", "22032010laurate");
+                        
+                        //connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Gaia", "root", "vertrigo");
+                        
+                       connection = DriverManager.getConnection("jdbc:mysql://" + System.getenv("OPENSHIFT_MYSQL_DB_HOST") + 
+                                ":" + System.getenv("OPENSHIFT_MYSQL_DB_PORT") + "/Gaia", "adminDRNplL2", "ujuPWpl1JKrt");
+                        
+                        //connection = DriverManager.getConnection("jdbc:mysql://mysql.mpro3.com.br:3307/gaia", "mpro", "22032010laurate");
                         //connection = DriverManager.getConnection("jdbc:mysql://nut.unifenas.br:3306/Gaia", "root", "vertrigo");
                         //statement = connection.createStatement();
                         //statement.setQueryTimeout(30);  // set timer out para 30 segundos

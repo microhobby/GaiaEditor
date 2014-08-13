@@ -27,6 +27,7 @@ function Table(elem)
         var Collums = [];
         var OverrideDelete = null;
         var _funcMouseListener = null;
+        var _removeEnable = true;
         
         reArrange = function()
         {
@@ -48,7 +49,8 @@ function Table(elem)
                  {
                          Elem.find("thead").find("tr:last").append("<th><b>" + Collums[i] + "</b></th>");
                  }
-                 Elem.find("thead").find("tr:last").append("<th><b>Remove</b></th>");
+                 if(_removeEnable)
+                        Elem.find("thead").find("tr:last").append("<th><b>Remove</b></th>");
                  Elem.append("<tbody></tbody>");
 
                  if(Source)
@@ -68,7 +70,10 @@ function Table(elem)
                                         for(var j = 0; j < Collums.length; j++)
                                        {
                                                if(Collums[j].indexOf(".") === -1)
-                                                        Elem.find("tbody").find("tr:last").append("<td>" + objTmp[Collums[j]] + "</td>");
+                                                       if(typeof(objTmp[Collums[j]]) !== "function")
+                                                                Elem.find("tbody").find("tr:last").append("<td>" + objTmp[Collums[j]] + "</td>");
+                                                        else
+                                                                Elem.find("tbody").find("tr:last").append("<td>" + objTmp[Collums[j]]() + "</td>");
                                                 else
                                                 {
                                                         var splits = Collums[j].split(".");
@@ -82,7 +87,8 @@ function Table(elem)
                                                         Elem.find("tbody").find("tr:last").append("<td>" + objTmp + "</td>");
                                                 }
                                        }
-                                       Elem.find("tbody").find("tr:last").append('<td width="10%"><center><button id="' + i + '" class="btn btn-default remEnti'+myId+'" title="Remover" style="width:  100%;"><i class="glyphicon glyphicon-remove-circle"></i></button></center></td>');
+                                       if(_removeEnable)
+                                                Elem.find("tbody").find("tr:last").append('<td width="10%"><center><button id="' + i + '" class="btn btn-default remEnti'+myId+'" title="Remover" style="width:  100%;"><i class="glyphicon glyphicon-remove-circle"></i></button></center></td>');
                                 }
                                 Elem.append('<span id="back'+myId+'" class="glyphicon glyphicon-chevron-left" style="cursor: pointer; padding-left: 20px; padding-bottom: 20px; padding-top: 20px;"></span>' +
                                         '<span id="prox'+myId+'" class="glyphicon glyphicon-chevron-right" style="cursor: pointer; padding-left: 20px; padding-bottom: 20px; padding-top: 20px;"></span>');
@@ -235,6 +241,11 @@ function Table(elem)
         {
                 _funcMouseListener = func;
                 //arrange();
+        };
+        
+        this.removeEnable = function(bol)
+        {
+                _removeEnable = bol;
         };
 }
 

@@ -38,6 +38,7 @@ function FormCreator(classe, elem)
                 if(tmp.attr("id").indexOf("GInput") !== -1 || 
                 tmp.attr("id").indexOf("GTextArea") !== -1 || 
                 tmp.attr("id").indexOf("GTextEditor") !== -1 ||
+                tmp.attr("id").indexOf("GCheckBox") !== -1 ||
                 tmp.attr("id").indexOf("GComboBox") !== -1 || 
                 tmp.attr("id").indexOf("GTable") !== -1)
                         this.ElemsClone.push(tmp.clone());
@@ -59,59 +60,61 @@ function FormCreator(classe, elem)
                 {
                         var elemC = $(this.ElemsClone[i]);
                         elemC.css("height", "auto");
-                        var tags = $(this.ElemsClone[i]).html().match(/@{(.*?)}/g);
                         
-                        if(!tags)
-                        {
-                                if($(this.ElemsClone[i]).attr("fonte") !== "" && $(this.ElemsClone[i]).attr("fonte") !== undefined)
-                                {
-                                        tags = [];
-                                        tags[0] = $(this.ElemsClone[i]).attr("fonte");
-                                }
-                        }
+                        var tags = $(this.ElemsClone[i]).attr("mprotag");
                         
-                        if(tags)
+                        if(tags !== undefined)
                         {
-                                var clearTag = tags[0].replace("@{", "").replace("}", "");
-                                if(elemC.attr("id").indexOf("GInput") !== -1)
+                                if(tags !== "undefined" && tags !== "")
                                 {
-                                        this.Elem.find("#" + elemC.attr("id")).find("input").val(this.Source[clearTag]);
-                                }
-                                else if(elemC.attr("id").indexOf("GTextArea") !== -1)
-                                {
-                                        this.Elem.find("#" + elemC.attr("id")).find("textarea").val(this.Source[clearTag]);
-                                }
-                                else if(elemC.attr("id").indexOf("GTextEditor") !== -1)
-                                {
-                                        this.Elem.find("#" + elemC.attr("id")).find("#" + elemC.attr("id") + "Container").code(this.Source[clearTag]);
+                                        var clearTag = tags;
+                                        if(elemC.attr("id").indexOf("GInput") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("input").val(this.Source[clearTag]);
+                                        }
+                                        else if(elemC.attr("id").indexOf("GTextArea") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("textarea").val(this.Source[clearTag]);
+                                        }
+                                        else if(elemC.attr("id").indexOf("GTextEditor") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("#" + elemC.attr("id") + "Container").code(this.Source[clearTag]);
+                                        }
+                                        else if(elemC.attr("id").indexOf("GCheckBox") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("input").prop('checked', 
+                                                        (this.Source[clearTag] === 1 ? true : false)
+                                                );
+                                        }
                                 }
                         }
                         else
                         {
                                 if(elemC.attr("id").indexOf("GComboBox") !== -1 || elemC.attr("id").indexOf("GTable") !== -1)
-                                        tags = window["util" + elemC.attr("id")].Fonte;
-                                
-                                if(tags)
                                 {
-                                        var clearTag = tags.replace("@{", "").replace("}", "");
-                                        if(elemC.attr("id").indexOf("GComboBox") !== -1)
-                                        {      
-                                                window["util" + elemC.attr("id")].Model.clear();
-                                                if(this.Source[clearTag] && this.Source[clearTag].length)
-                                                {
-                                                        for(var ix = 0; ix < this.Source[clearTag].length; ix++)
+                                        tags = window["util" + elemC.attr("id")].MproTag;
+                                        if(tags !== undefined && tags !== "undefined" && tags !== "")
+                                        {
+                                                var clearTag = tags;
+                                                if(elemC.attr("id").indexOf("GComboBox") !== -1)
+                                                {      
+                                                        window["util" + elemC.attr("id")].Model.clear();
+                                                        if(this.Source[clearTag] && this.Source[clearTag].length)
                                                         {
-                                                                window["util" + elemC.attr("id")].Model.add(new Item(
-                                                                        this.Source[clearTag][ix][window["util" + elemC.attr("id")].Coluna], 
-                                                                        this.Source[clearTag][ix]
-                                                                ));
+                                                                for(var ix = 0; ix < this.Source[clearTag].length; ix++)
+                                                                {
+                                                                        window["util" + elemC.attr("id")].Model.add(new Item(
+                                                                                this.Source[clearTag][ix][window["util" + elemC.attr("id")].Coluna], 
+                                                                                this.Source[clearTag][ix]
+                                                                        ));
+                                                                }
                                                         }
                                                 }
-                                        }
-                                        else if(elemC.attr("id").indexOf("GTable") !== -1)
-                                        {
-                                                if(this.Source[clearTag] && this.Source[clearTag].length)
-                                                        window["util" + elemC.attr("id")].Table.setSourceArray(this.Source[clearTag]);
+                                                else if(elemC.attr("id").indexOf("GTable") !== -1)
+                                                {
+                                                        if(this.Source[clearTag] && this.Source[clearTag].length)
+                                                                window["util" + elemC.attr("id")].Table.setSourceArray(this.Source[clearTag]);
+                                                }
                                         }
                                 }
                         }
@@ -140,48 +143,48 @@ function FormCreator(classe, elem)
                 {
                         var elemC = $(this.ElemsClone[i]);
                         elemC.css("height", "auto");
-                        var tags = $(this.ElemsClone[i]).html().match(/@{(.*?)}/g);
                         
-                        if(!tags)
-                        {
-                                if($(this.ElemsClone[i]).attr("fonte") !== "" && $(this.ElemsClone[i]).attr("fonte") !== undefined)
-                                {
-                                        tags = [];
-                                        tags[0] = $(this.ElemsClone[i]).attr("fonte");
-                                }
-                        }
+                        var tags = $(this.ElemsClone[i]).attr("mprotag");
                         
-                        if(tags)
+                        if(tags !== undefined)
                         {
-                                var clearTag = tags[0].replace("@{", "").replace("}", "");
-                                if(elemC.attr("id").indexOf("GInput") !== -1)
+                                if(tags !== "undefined" && tags !== "")
                                 {
-                                        this.Elem.find("#" + elemC.attr("id")).find("input").val("");
-                                }
-                                else if(elemC.attr("id").indexOf("GTextArea") !== -1)
-                                {
-                                        this.Elem.find("#" + elemC.attr("id")).find("textarea").val("");
-                                }
-                                else if(elemC.attr("id").indexOf("GTextEditor") !== -1)
-                                {
-                                        this.Elem.find("#" + elemC.attr("id")).find("#" + elemC.attr("id") + "Container").code("");
+                                        var clearTag = tags;
+                                        if(elemC.attr("id").indexOf("GInput") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("input").val("");
+                                        }
+                                        else if(elemC.attr("id").indexOf("GTextArea") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("textarea").val("");
+                                        }
+                                        else if(elemC.attr("id").indexOf("GTextEditor") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("#" + elemC.attr("id") + "Container").code("");
+                                        }
+                                        else if(elemC.attr("id").indexOf("GCheckBox") !== -1)
+                                        {
+                                                this.Elem.find("#" + elemC.attr("id")).find("input").prop('checked', true);
+                                        }
                                 }
                         }
                         else
                         {
                                 if(elemC.attr("id").indexOf("GComboBox") !== -1 || elemC.attr("id").indexOf("GTable") !== -1)
-                                        tags = window["util" + elemC.attr("id")].Fonte;
-                                
-                                if(tags && tags !== "")
                                 {
-                                        var clearTag = tags.replace("@{", "").replace("}", "");
-                                        if(elemC.attr("id").indexOf("GComboBox") !== -1)
-                                        {      
-                                                window["util" + elemC.attr("id")].Model.clear();
-                                        }
-                                        else if(elemC.attr("id").indexOf("GTable") !== -1)
+                                        tags = window["util" + elemC.attr("id")].MproTag;
+                                        if(tags !== undefined && tags !== "undefined" && tags !== "")
                                         {
-                                                window["util" + elemC.attr("id")].Table.setSourceArray([]);
+                                                var clearTag = tags;
+                                                if(elemC.attr("id").indexOf("GComboBox") !== -1)
+                                                {      
+                                                        window["util" + elemC.attr("id")].Model.clear();
+                                                }
+                                                else if(elemC.attr("id").indexOf("GTable") !== -1)
+                                                {
+                                                        window["util" + elemC.attr("id")].Table.setSourceArray([]);
+                                                }
                                         }
                                 }
                         }
@@ -202,55 +205,56 @@ function FormCreator(classe, elem)
                 {
                         var elemC = $(this.ElemsClone[i]);
                         elemC.css("height", "auto");
-                        var tags = $(this.ElemsClone[i]).html().match(/@{(.*?)}/g);
                         
-                        if(!tags)
-                        {
-                                if($(this.ElemsClone[i]).attr("fonte") !== "" && $(this.ElemsClone[i]).attr("fonte") !== undefined)
-                                {
-                                        tags = [];
-                                        tags[0] = $(this.ElemsClone[i]).attr("fonte");
-                                }
-                        }
+                        var tags = $(this.ElemsClone[i]).attr("mprotag");
                         
-                        if(tags)
+                        if(tags !== undefined)
                         {
-                                var clearTag = tags[0].replace("@{", "").replace("}", "");
-                                if(elemC.attr("id").indexOf("GInput") !== -1)
+                                if(tags !== "undefined" && tags !== "")
                                 {
-                                        this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("input").val();
-                                }
-                                else if(elemC.attr("id").indexOf("GTextArea") !== -1)
-                                {
-                                        this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("textarea").val();
-                                }
-                                else if(elemC.attr("id").indexOf("GTextEditor") !== -1)
-                                {
-                                        this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("#" + elemC.attr("id") + "Container").code();
+                                        var clearTag = tags;
+                                        if(elemC.attr("id").indexOf("GInput") !== -1)
+                                        {
+                                                this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("input").val();
+                                        }
+                                        else if(elemC.attr("id").indexOf("GTextArea") !== -1)
+                                        {
+                                                this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("textarea").val();
+                                        }
+                                        else if(elemC.attr("id").indexOf("GTextEditor") !== -1)
+                                        {
+                                                this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("#" + elemC.attr("id") + "Container").code();
+                                        }
+                                        else if(elemC.attr("id").indexOf("GCheckBox") !== -1)
+                                        {
+                                                this.Source[clearTag] = this.Elem.find("#" + elemC.attr("id")).find("input").prop('checked') ? 1 : 0;
+                                        }
                                 }
                         }
                         else
                         {
                                 if(elemC.attr("id").indexOf("GComboBox") !== -1 || elemC.attr("id").indexOf("GTable") !== -1)
-                                        tags = window["util" + elemC.attr("id")].Fonte;
-                                
-                                if(tags && tags !== "")
                                 {
-                                        var clearTag = tags.replace("@{", "").replace("}", "");
-                                        if(elemC.attr("id").indexOf("GComboBox") !== -1)
-                                        {      
-                                                //window["util" + elemC.attr("id")].Model.clear();
-                                                var dadas = new Array();
-                                                for(var j = 0; j < window["util" + elemC.attr("id")].Model.tam; j++)
-                                                {
-                                                        dadas = window["util" + elemC.attr("id")].Model.get(j).obj;
-                                                }
-                                                this.Source[clearTag] = dadas;
-                                        }
-                                        else if(elemC.attr("id").indexOf("GTable") !== -1)
+                                        tags = window["util" + elemC.attr("id")].MproTag;
+                                        if(tags !== undefined && tags !== "undefined" && tags !== "")
                                         {
-                                                //window["util" + elemC.attr("id")].Table.setSourceArray([]);
-                                                this.Source[clearTag] = window["util" + elemC.attr("id")].Table.getSourceArray();
+                                                var clearTag = tags;
+                                                if(elemC.attr("id").indexOf("GComboBox") !== -1)
+                                                {      
+                                                        /**
+                                                         * Se caso a propiedade for uma coleção push
+                                                         * Se não atribuição apenas
+                                                         */
+                                                        if(this.Source[clearTag] instanceof Array)
+                                                                this.Source[clearTag].push(window[elemC.attr("id")].getSelectedItem().obj);
+                                                        else
+                                                                 this.Source[clearTag] = window[elemC.attr("id")].getSelectedItem().obj;
+                                                }
+                                                else if(elemC.attr("id").indexOf("GTable") !== -1)
+                                                {
+                                                        //this.Source[clearTag] = window["util" + elemC.attr("id")].Table.getSourceArray();
+                                                        this.Source["set"+clearTag](window["util" + elemC.attr("id")].Table.getSourceArray());
+                                                }
                                         }
                                 }
                         }

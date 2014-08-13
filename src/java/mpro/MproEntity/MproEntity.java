@@ -673,7 +673,7 @@ public abstract class MproEntity
                                                             parts += ((Boolean)this._class.getFields()[i].get(this)) ? "1, " : "0, ";
                                                   else if(!"cod".equals(this._class.getFields()[i].getName()))
                                                             parts += (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
-                                                                     .replaceAll("\'", "\\\"")
+                                                                     .replaceAll("\'", "\'\'")
                                                                       + (this._class.getFields()[i].getType() == String.class ? "', " : ", ");
                                                   else
                                                             parts += "NULL";
@@ -712,11 +712,11 @@ public abstract class MproEntity
                                                                 parts += this._class.getFields()[i].getName() + " = " + ((Boolean)this._class.getFields()[i].get(this) == true ? "1 " : "0 ");
                                                 else if(i < this._class.getFields().length -1)
                                                           parts += this._class.getFields()[i].getName() + " = " + (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
-                                                                  .replaceAll("\'", "\\\"")
+                                                                  .replaceAll("\'", "\'\'")
                                                                     + (this._class.getFields()[i].getType() == String.class ? "', " : ", ");
                                                 else
                                                           parts += this._class.getFields()[i].getName() + " = " + (this._class.getFields()[i].getType() == String.class ? "'" : "") + this._class.getFields()[i].get(this).toString()
-                                                                   .replaceAll("\'", "\\\"")
+                                                                  .replaceAll("\'", "\'\'")
                                                                     + (this._class.getFields()[i].getType() == String.class ? "'" : "");
                                       }
                                       else
@@ -764,7 +764,7 @@ public abstract class MproEntity
                                             if(this._class.getFields()[i].get(this) != null)
                                                     json += "\"" + this._class.getFields()[i].get(this).toString().replaceAll("\n", "\\\\n")
                                                             .replaceAll("\"", "\\\\\"")
-                                                            .replaceAll("\'", "\\\'") + "\",";
+                                                            .replaceAll("\'", "\\'") + "\",";
                                             else
                                                     json += "null,";
                                     }

@@ -5,6 +5,10 @@
  */
 function GTextArea(largura, altura, topo, esquerda, visivel)
 {
+        var privateAttrs = new Array();
+        var instructs = "";
+        var vars = "";
+        
         this.init(largura, altura, topo, esquerda, visivel);
         
         this.ClassType = "GTextArea";
@@ -12,6 +16,60 @@ function GTextArea(largura, altura, topo, esquerda, visivel)
         this.Text = "";
         this.Name = "GTextArea" + this.Id;
         this.Cb = "#66AFE9";
+        
+        //@override
+        this.returnCodeInstructs = function()
+        {
+                return instructs;
+        };
+        
+        //@override
+        this.returnCodeVars = function()
+        {
+                return vars;
+        };
+        
+        //@override
+        this.canCreateVar = function()
+        {
+                return false;
+        };
+        
+        //@override
+        this.getPrivateAttrs = function()
+        {
+                return privateAttrs;
+        };
+        
+        //@override
+        this.resolveSpecialFields = function()
+        {
+                if(this.SpecialFields !== "")
+                {
+                        var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                        for(var i = 0; i < privateAttrsTmp.length; i++)
+                        {
+                                privateAttrs[i] = privateAttrsTmp[i];
+                        }
+                        for(var i = 0; i < privateAttrs.length; i++)
+                        {
+                                this[privateAttrs[i].Method](privateAttrs[i].Data);
+                        }
+                }
+        };
+        
+        //@override
+        this.parseSpecialFields = function()
+        {
+                this.SpecialFields = JSON.stringify(privateAttrs);
+        };
+        
+        this.getPrivateAttrs().push(new SpecialAttrs("MproTag", "objText", "setMproTag", ""));
+        
+        this.setMproTag = function(tag)
+        {
+                this.getPrivateAttrs()[0].Data = tag;
+        };
         
         this.parseRGB = function()
         {
@@ -21,6 +79,10 @@ function GTextArea(largura, altura, topo, esquerda, visivel)
         //@override
         this.returnCode = function(flag, isPreview)
         {
+                // zera
+                vars = "";
+                instructs = "";
+                
                 if(flag == undefined)
                         flag = false;
                 if(isPreview == undefined)
@@ -81,12 +143,15 @@ function GTextArea(largura, altura, topo, esquerda, visivel)
                                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; opacity: ' + (this.Opacity / 100) + ';' +
                                                 ' z-index: '+this.Zindex+'; color: ' + this.Cf + '; font-size: ' + this.SizeFont + 'px; font-family: ' + this.Font + ';\n' +
-                                                ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + '" >\n' +
+                                                ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + '" mprotag="'
+                                                + this.getPrivateAttrs()[0].Data
+                                                +'">\n' +
                                                 
                                                 '<style id="inputDinamic' + this.Id + '">\n' +
                                                 '#GTextArea' + this.Id + 'input:focus{\n' +
                                                 'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
-                                                'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                //'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
                                                 'outline: 0 none;}\n' +
                                                 '</style>\n' +
                                                 
@@ -94,6 +159,12 @@ function GTextArea(largura, altura, topo, esquerda, visivel)
                                                 'padding: 5px; color: inherit; font-size: inherit; font-family: inherit; font-style: inherit; font-weight: inherit;'+
                                                 ' text-decoration: inherit;" placeholder="' + this.Text + '"></textarea>\n'+
                                                 '</div>';
+                
+                if(!flag)
+                {
+                        vars += 'var ' + this.Name + ' = $("' + this.JqueryId + '");\n';
+                        instructs += '' + this.Name + '.text = function(t){ return (t != undefined ? $("' + this.JqueryId + '").find("textarea").val(t) : $("' + this.JqueryId + '").find("textarea").val()); };\n';
+                }
                 
                 return code;
         };

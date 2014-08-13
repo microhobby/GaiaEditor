@@ -37,30 +37,55 @@ function newElemD(jqueryID, code)
 function changeW(jqueryID, num) 
 { 
         $(jqueryID).css("width", num+"px"); 
+        $(jqueryID).removeClass('gaiaFocused');
+        setTimeout(function()
+        {
+                $(jqueryID).addClass('gaiaFocused');
+        }, 100);
 } 
 
 //troca a altura de um elemento 
 function changeH(jqueryID, num) 
 { 
         $(jqueryID).css("height", num+"px"); 
+        $(jqueryID).removeClass('gaiaFocused');
+        setTimeout(function()
+        {
+                $(jqueryID).addClass('gaiaFocused');
+        }, 100);
 } 
 
 //troca o left de um elemento 
 function changeL(jqueryID, num) 
 { 
         $(jqueryID).css("left", num+"px"); 
+        $(jqueryID).removeClass('gaiaFocused');
+        setTimeout(function()
+        {
+                $(jqueryID).addClass('gaiaFocused');
+        }, 100);
 } 
 
 //troca o topo 
 function changeTop(jqueryID, num) 
 { 
         $(jqueryID).css("top", num+"px");  
+        $(jqueryID).removeClass('gaiaFocused');
+        setTimeout(function()
+        {
+                $(jqueryID).addClass('gaiaFocused');
+        }, 100);
 } 
 
 //troca o padding do elemento 
 function changeP(jqueryID, num) 
 { 
         $(jqueryID).css("padding", num+"px"); 
+        $(jqueryID).removeClass('gaiaFocused');
+        setTimeout(function()
+        {
+                $(jqueryID).addClass('gaiaFocused');
+        }, 100);
 } 
 
 //troca o radius do elemento 
@@ -68,6 +93,11 @@ function changeR(jqueryID, num)
 { 
         $(jqueryID).css("border-radius", num+"px"); 
         $(jqueryID).css("-webkit-border-radius", num+"px"); 
+        $(jqueryID).removeClass('gaiaFocused');
+        setTimeout(function()
+        {
+                $(jqueryID).addClass('gaiaFocused');
+        }, 100);
 } 
 
 //troca o fator da sombra 

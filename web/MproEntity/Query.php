@@ -7,7 +7,7 @@
         
         $laudb = new LauDB("GaiaMproEntities.lau");
 
-        $res = $laudb->query($cmd);
+        $res = $laudb->query(stripslashes($cmd));
         
         //sleep(2);
         

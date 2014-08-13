@@ -64,7 +64,12 @@ public class Layout extends MproEntityRelation
                         break;
                         default:
                                 this.hasFooterTop = false;
-                                
+                                tp  = new LayoutPaginaTopo("", 0, p.LarguraPaginas);
+                                this.Topo.add(tp);
+                                rp = new LayoutPaginaRodape("", 0, p.LarguraPaginas);
+                                this.Rodape.add(rp);
+                                projsLayout.add(new Paginas("", 0));
+                                projsLayout.add(new Paginas("", 1));
                         break;
                 }
                 return projsLayout;

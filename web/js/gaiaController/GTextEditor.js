@@ -5,6 +5,7 @@
  */
 function GTextEditor(largura, altura, topo, esquerda, visivel)
 {
+        var privateAttrs = new Array();
         var instructs = "";
         var vars = "";
         
@@ -31,6 +32,42 @@ function GTextEditor(largura, altura, topo, esquerda, visivel)
         this.canCreateVar = function()
         {
                 return false;
+        };
+        
+        //@override
+        this.getPrivateAttrs = function()
+        {
+                return privateAttrs;
+        };
+        
+        //@override
+        this.resolveSpecialFields = function()
+        {
+                if(this.SpecialFields !== "")
+                {
+                        var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                        for(var i = 0; i < privateAttrsTmp.length; i++)
+                        {
+                                privateAttrs[i] = privateAttrsTmp[i];
+                        }
+                        for(var i = 0; i < privateAttrs.length; i++)
+                        {
+                                this[privateAttrs[i].Method](privateAttrs[i].Data);
+                        }
+                }
+        };
+        
+        //@override
+        this.parseSpecialFields = function()
+        {
+                this.SpecialFields = JSON.stringify(privateAttrs);
+        };
+        
+        this.getPrivateAttrs().push(new SpecialAttrs("MproTag", "objText", "setMproTag", ""));
+        
+        this.setMproTag = function(tag)
+        {
+                this.getPrivateAttrs()[0].Data = tag;
         };
         
         //@override
@@ -99,7 +136,9 @@ function GTextEditor(largura, altura, topo, esquerda, visivel)
                                                 ' -o-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; opacity: ' + (this.Opacity / 100) + ';' +
-                                                ' z-index: '+this.Zindex+';" class="things">\n' +
+                                                ' z-index: '+this.Zindex+';" class="things" mprotag="'
+                                                + this.getPrivateAttrs()[0].Data
+                                                +'">\n' +
                                                 '<div id="GTextEditor' + this.Id + 'Container"></div>'
                                                 +'</div>\n';
                 

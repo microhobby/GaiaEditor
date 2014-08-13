@@ -19,7 +19,8 @@ function FileFactory()
                 // paginas
                 for(var i = 0; i < ptrProject.paginas.length; i++)
                 {
-                        if((ptrProject.layout[0].Tipo === Layout.EAD) || (ptrProject.layout[0].Tipo === Layout.WEB))
+                        if((ptrProject.layout[0].Tipo === Layout.EAD) || (ptrProject.layout[0].Tipo === Layout.WEB)
+                                || (ptrProject.layout[0].Tipo === Layout.WEBAPP))
                         {
                                 if(i === 0)
                                         _final.Topo = makePage(ptrProject.paginas[i], ptrProject.layout[0].Topo[0].Altura, ptrProject.LarguraPaginas, false);
@@ -28,10 +29,10 @@ function FileFactory()
                                 else
                                         _final.Paginas.push(makePage(ptrProject.paginas[i], ptrProject.AlturaPaginas, ptrProject.LarguraPaginas, true));
                         }
-                        else if(ptrProject.layout[0].Tipo === Layout.WEBAPP)
+                        /*else if(ptrProject.layout[0].Tipo === Layout.WEBAPP)
                         {
                                 _final.Paginas.push(makePage(ptrProject.paginas[i], ptrProject.AlturaPaginas, ptrProject.LarguraPaginas, true));
-                        }
+                        }*/
                 }
                 
                 return _final;

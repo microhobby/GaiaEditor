@@ -5,13 +5,35 @@
  */
 function GButton(largura, altura, topo, esquerda, visivel)
 {
+        var instructs = "";
+        var vars = "";
+        
         this.init(largura, altura, topo, esquerda, visivel);
 
         this.ClassType = "GButton";
+        this.Name = "GButton" + this.Id;
         this.JqueryId = "#cont_bt" + this.Id;
         this.Text = "Ok";
         this.SizeFont = 15;
         this.Cb = "#3276b1";
+        
+        //@override
+        this.returnCodeInstructs = function()
+        {
+                return instructs;
+        };
+        
+        //@override
+        this.returnCodeVars = function()
+        {
+                return vars;
+        };
+        
+        //@override
+        this.canCreateVar = function()
+        {
+                return false;
+        };
         
         this.calculeHexHUE = function()
         {
@@ -20,6 +42,10 @@ function GButton(largura, altura, topo, esquerda, visivel)
         
         this.returnCode = function(flag, isPreview)
         {
+                // zera
+                vars = "";
+                instructs = "";
+                
                  if(flag === undefined)
                         flag = false;
                 if(isPreview === undefined)
@@ -100,6 +126,10 @@ function GButton(largura, altura, topo, esquerda, visivel)
                                                 (this.recurso !== -1 ?  
                                                 this.GetFileResource(recursoInt) : "../img/blank.gif") + '" width="100%" height="100%" /></i><span id="textHere">' + this.Text + '</span></button>\n' +
                                 '</div>\n\n';
+                        
+                        vars += 'var ' + this.Name + ' = $("' + this.JqueryId + '");\n';
+                        instructs += '' + this.Name + '.text = function(t){ return (t != undefined ? $("' + this.JqueryId + '").find("#textHere").html(t) : $("' + this.JqueryId + '").find("#textHere").html()) }\n;';
+                        instructs += '' + this.Name + '.click = function(fun){  if(fun != undefined){ $("' + this.JqueryId + '").click(fun); } };\n';
 
                 return code;
         }

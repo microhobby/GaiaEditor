@@ -177,6 +177,12 @@ function FileUpload()
         {
                 $("#" + _elem.attr('id') + ' .fileDesc').html(msg);
                 _file = "";
+                var progress = parseInt(0 / 1 * 100, 10);
+                $("#" + _elem.attr('id') + ' .progress .progress-bar').css(
+                    'width',
+                    progress + '%'
+                );
+                $("#" + _elem.attr('id') + ' .fileDesc').html(progress + '%'); 
         };
         
         /**

@@ -51,7 +51,7 @@ public class FileWriter
         {
                 try {
                         String preFolder  =  folder + "sandbox/" + proj.cod + "/";
-                        String recursosFolder = preFolder + "/" + usu.UserName + "_" + usu.cod + "/";
+                        String recursosFolder = preFolder + "/dados/" + usu.UserName + "_" + usu.cod + "/";
                         // cria sandbox
                         File sandBox = new File(preFolder);
                         sandBox.mkdir();
@@ -107,6 +107,16 @@ public class FileWriter
 
                         FileUtils.copyDirectory(scrFile, tmpFile);
                         
+                        scrFile = new File(realFolder + "swf/");
+                        tmpFile = new File(preFolder + "swf/");
+
+                        FileUtils.copyDirectory(scrFile, tmpFile);
+                        
+                        scrFile = new File(realFolder + "php/");
+                        tmpFile = new File(preFolder + "php/");
+
+                        FileUtils.copyDirectory(scrFile, tmpFile);
+                        
                         scrFile = new File(realFolder + "dist/");
                         tmpFile = new File(preFolder + "dist/");
 
@@ -124,10 +134,11 @@ public class FileWriter
                         }
                         
                         // cria index
-                        this.WriteFile(proSrc.getIndex(), preFolder + "html/index.php");
+                        //this.WriteFile(proSrc.getIndex(), preFolder + "html/index.php");
+                        this.WriteFile(proSrc.getIndex(), preFolder + "html/index.html");
                         
                         // reescreve lib
-                        this.WriteFile(proSrc.getAppJs(), preFolder + "lib/app.js");
+                        this.WriteFile(proSrc.getAppJs(usu.UserName + "_" + usu.cod), preFolder + "lib/app.js");
                         
                         // reescreve css
                         this.WriteFile(proSrc.getAulaCss(), preFolder + "css/aulas.css");
@@ -138,10 +149,13 @@ public class FileWriter
                         // manda pro ambiente do PHP
                         //FileUtils.deleteDirectory(new File(GaiaController.PHP_CONTEXT + "/" + usu.UserName + "_" + usu.cod + "/" + proj.cod));
                         
-                        scrFile = new File(preFolder);
+                        /**
+                         * COPIA PARA O CONTEXTO DO PHP
+                         */
+                        /*scrFile = new File(preFolder);
                         tmpFile = new File(GaiaController.PHP_CONTEXT + "/" + usu.UserName + "_" + usu.cod + "/" + proj.cod);
                         
-                        FileUtils.copyDirectory(scrFile, tmpFile);
+                        FileUtils.copyDirectory(scrFile, tmpFile);*/
                 } 
                 catch (IOException ex) 
                 {

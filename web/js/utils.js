@@ -9,6 +9,8 @@ var alerta = alert;
 var verdade = true;
 var falso = false;
 var uno = 1;
+var ___backTask = null;
+var ___android = false;
 
  //função que esmaece a tela
  function blackOut()
@@ -57,6 +59,9 @@ var uno = 1;
                 }
                 else
                        $("#" + id).css("top", $('#' + id).offset().top * -1); 
+                
+                if(window.onCenter !== undefined && typeof(window.onCenter) === "function")
+                        window.onCenter();
                 
                 uno++;
                 $('#logs').empty().append(uno);
@@ -406,6 +411,23 @@ function prox()
 function ante()
 {
 	validAnte();
+}
+
+window.onpopstate = function()
+{
+        if(!___android)
+                executeBackTask();
+};
+
+function executeBackTask()
+{
+        if(___backTask !== null && typeof(___backTask) === "function")
+                ___backTask();
+}
+
+function setBackTask(func)
+{
+        ___backTask = func;
 }
 
 /* COOKIES */

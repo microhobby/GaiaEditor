@@ -7,7 +7,9 @@ import Gaia.model.Field;
 import Gaia.model.Layout;
 import Gaia.model.Projeto;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mpro.MproEntity.MproEntity;
 
 /**
@@ -268,10 +270,10 @@ public class ProjectSources
                 }
                 
                 ret += "var ____ID_FETCH = 0;\n var ____ID_FETCH_OK = 0;\n var ____LOAD_THREAD = new Thread(function(){ if(____ID_FETCH == ____ID_FETCH_OK){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); ____LOAD_THREAD.stop(); } });\n"
-                        + "function showLoading(){ if($(\"#blackOut\").css(\"display\") != \"block\"){\n"
+                        + "function showLoading(){ markZero(); centra('page'); if($(\"#blackOut\").css(\"display\") != \"block\"){\n"
                         + "$(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);  }"
                         + " ____ID_FETCH++; ____LOAD_THREAD.run(); }\n";
-                ret += "function hideLoading(){ ____ID_FETCH_OK++; if(____ID_FETCH == ____ID_FETCH_OK){"
+                ret += "function hideLoading(){ ____ID_FETCH_OK++; if(____ID_FETCH <= ____ID_FETCH_OK){"
                         + "$(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); }}\n";
                 
                 ret += "function ____loadMidias(){\n " + calls + "\n";
@@ -292,6 +294,8 @@ public class ProjectSources
                         "		 if(document.documentElement.clientWidth < document.documentElement.clientHeight)\n" +
                         "		 {\n" +
                         "		 	scale = (document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ";\n" +
+                        "                                                               /*scale = Math.min((document.documentElement.clientHeight) / " + projeto.AlturaPaginas + ",\n" +
+                        "			(document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ");\n*/" + 
                         "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
                         " 		 }\n" +
                         "	 	 else\n" +
@@ -322,7 +326,9 @@ public class ProjectSources
                         " 		 }\n" +
                         "	 	 else\n" +
                         "	 	 {*/\n" +
-                        "	 	 	scale = (document.documentElement.clientHeight) / " + (projeto.AlturaPaginas) + ";\n" +
+                        "	 	 	//scale = (document.documentElement.clientHeight) / " + (projeto.AlturaPaginas) + ";\n" +
+                        "                                                               scale = Math.min((document.documentElement.clientHeight) / " + projeto.AlturaPaginas + ",\n" +
+                        "			(document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ");\n" + 
                         "		 	$('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n" +
                         "	 	 //}\n";
                         break;
@@ -330,7 +336,7 @@ public class ProjectSources
                 return ret;
         }
         
-        public String getAppJs()
+        public String getAppJs(String user)
         {
                 String js = "";
                 
@@ -347,8 +353,10 @@ public class ProjectSources
                         " var scale = 1.0;\n" +
                         " var uScale = 0.0;\n" +
                         " var enableGest = true;\n" +
-                        " var timer = null;\n"
-                        + "var __webType = " + (projeto.layout.get(0).Tipo == 5 ? "true;\n" : "false;\n") +
+                        " var timer = null;\n" +
+                        " var __projectCod__ = " + projeto.cod + ";\n" +
+                        " var __projectUser__ = '" + user + "';\n" +
+                        " var __webType = " + (projeto.layout.get(0).Tipo == 5 ? "true;\n" : "false;\n") +
                         "var ___pages__ = new Array();\n  var __badWolf = null;\n" + 
                         "\n" +
                         /*"//carrega as imagens que precisam de carregamento imediato\n" +
@@ -402,30 +410,65 @@ public class ProjectSources
                         " }\n" +
                         " \n" +
                         " //função que leva ao marco zero novamente\n" +
+                        "//função que leva ao marco zero novamente\n" +
                         " function markZero()\n" +
                         " {\n" +
                         "	 uScale = 0.0;\n" +
                         "	 $(\"#page\").css(\"left\", 0);\n" +
                         "	 $(\"#page\").css(\"top\", 0);\n" +
-                        "	 $('#blackOut').css('left', 0);\n" +
-                        "	 $('#blackOut').css('top', 0);\n" +
+                        "	 //$('#blackOut').css('left', 0);\n" +
+                        "	 //$('#blackOut').css('top', 0);\n" +
+                        "	$('#blackOut').offset({top: $('#blackOut').offset().top * -1});\n" +
+                        "	$('#blackOut').offset({top: 0});\n" +
+                        "	$('#blackOut').offset({left: $('#blackOut').offset().left * -1});\n" +
+                        "	 $('#blackOut').offset({left: 0});\n" +
+                        "	 setTimeout(function(){\n" +
+                        "	 	$('#blackOut').offset({top: $('#blackOut').offset().top * -1});\n" +
+                        "		$('#blackOut').offset({top: 0});\n" +
+                        "		$('#blackOut').offset({left: $('#blackOut').offset().left * -1});\n" +
+                        "	 $('#blackOut').offset({left: 0});\n" +
+                        "		setTimeout(function(){\n" +
+                        "	 		$('#blackOut').offset({top: $('#blackOut').offset().top * -1});\n" +
+                        "			$('#blackOut').offset({top: 0});\n" +
+                        "			$('#blackOut').offset({left: $('#blackOut').offset().left * -1});\n" +
+                        "	 $('#blackOut').offset({left: 0});\n" +
+                        "	 	}, 50);\n" +
+                        "	 }, 50);\n" +
                         " }\n" +
+                        /*" function markZero()\n" +
+                        " {\n" +
+                        "	 uScale = 0.0;\n" +
+                        "	 $(\"#page\").css(\"left\", 0);\n" +
+                        "	 $(\"#page\").css(\"top\", 0);\n" +
+                        "	 $('#blackOut').css('left', 0);\n" +
+                        "	 //$('#blackOut').css('top', 0);\n" +
+                        "                    $('#blackOut').offset({top: $('#blackOut').offset().top * -1});\n" +
+                        "	 $('#blackOut').offset({top: 0});\n" +
+                        "	 setTimeout(function(){\n" +
+                        "	 	$('#blackOut').offset({top: $('#blackOut').offset().top * -1});\n" +
+                        "		$('#blackOut').offset({top: 0});\n" +
+                        "		setTimeout(function(){\n" +
+                        "	 		$('#blackOut').offset({top: $('#blackOut').offset().top * -1});\n" +
+                        "			$('#blackOut').offset({top: 0});\n" +
+                        "	 	}, 50);\n" +
+                        "	 }, 50);\n" +
+                        " }\n" +*/
                         " \n" +
                         " //função que recalcula a escala\n" +
                         " function recalcScale()\n" +
                         " {\n" +
-                        "	 markZero();\n" +
+                        "  markZero();\n" +
                         getScalePattern() +
                         " }\n" +
                         "\n" +
-                        "function magic(){ \n"
-                        + " if($(\"body\").scrollTop() != 0) $(\"body\").animate({ scrollTop: 0}, 500); \n"
+                        "function magic(scroll){ \n"
+                        + " if(!scroll) if($(\"body\").scrollTop() != 0) $(\"body\").animate({ scrollTop: 0}, 500); ; \n"
                         /*+ "if(___pages__[pgInd] === undefined){\n"
                         + "$(\"#pg\" + pgInd).css(\"height\", (document.body.scrollHeight / scale) - ($(\".header\").height() / scale)); ___pages__[pgInd] = true;\n"
                         + " } else { \n"
                         + " $(\"#pg\" + pgInd).css(\"height\", (document.body.scrollHeight / scale) - ($(\".header\").height() / scale) - ($(\".footer\").height() / scale)); }\n"*/
                         + "__badWolf = null;\n"
-                        + "$(\"#pg\" + pgInd).find(\".badWolf\").each(function(i){ this.__Soma = ($(this).offset().top / scale) + $(this)[0].scrollHeight; if((__badWolf === null) || (__badWolf.__Soma < this.__Soma)){ __badWolf = this;}});\n"
+                        + "$(\"#pg\" + pgInd).find(\".badWolf\").each(function(i){ if($(this).css(\"overflow\") == \"visible\"){ this.__Soma = ($(this).offset().top / scale) + $(this)[0].scrollHeight; if((__badWolf === null) || (__badWolf.__Soma < this.__Soma)){ __badWolf = this;}}});\n"
                         + "$(\"#pg\" + pgInd).css(\"height\", (__badWolf.__Soma) - ($(\".header\").height()) + 10);\n"+  
                         "$('#blackOut').css('left', 0);\n" +
                         "$('#blackOut').css('top', 0);\n" +
@@ -585,6 +628,7 @@ public class ProjectSources
                         " }\n" +
                         " \n" +
                         "//Eventos de toque de saidas do slide\n" +
+                        (this.projeto.layout.get(0).Tipo == 2 ? 
                         "$(\"#content\").live('swipeleft',function(event){\n" +
                         "	if(goProx && (enableGest))\n" +
                         "	{\n" +
@@ -597,7 +641,7 @@ public class ProjectSources
                         "	{\n" +
                         "		pageOutAnt();\n" +
                         "	}\n" +
-                        "});\n" +
+                        "});\n" : "") +
                         " \n" +
                         " //função que apaga lixo\n" +
                         " function garbCollect(id)\n" +
@@ -645,9 +689,10 @@ public class ProjectSources
                         "//espera pra arrumar\n" +
                         "function lazyScreen()\n" +
                         "{\n" +
-                        "	recalcScale();\n" +
+                        " if(!($(\"input:focus\").length >= 1 && $(\"input:focus\").hasClass(\"form-control\"))){	recalcScale();\n" +
                         "	centra('page'); \n"+
                         "	blackHell();\n" +
+                         "	if(window.onScale) window.onScale(); }\n" +
                         "}\n" +
                         "\n" +
                         "//arruma pagina\n" +
@@ -657,8 +702,8 @@ public class ProjectSources
                         "	timer = setTimeout(lazyScreen, 500);\n" +
                         "}\n"+
                         "window.addEventListener(\"message\", receiveMessage, false);\n" +
-                        "function receiveMessage(event){ var str = eval(event.data);  if(window.opener.postMessage !== undefined){ "
-                        + "window.opener.postMessage(\"eval|\" + str, \"*\");} }\n" +
+                        "function receiveMessage(event){ try{ var str = eval(event.data);  if(window.opener.postMessage !== undefined){ "
+                        + "window.opener.postMessage(\"eval|\" + str, \"*\");} }catch(e){}}\n" +
                         "window.onerror = function(message, url, line){ if(window.opener.postMessage !== undefined){ "
                         + "window.opener.postMessage(message + \"|\" + url + \"|\" + line, \"*\"); "
                         + " } };\n"+
@@ -682,6 +727,7 @@ public class ProjectSources
                                                 "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
                                                 "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
                                                 "	background-color: #EAEAEA;\n" +
+                                                //"	background-color: transparent;\n" +
                                                 "	top: 109px;\n" + 
                                                 "}\n"
                                         + ".header{\n" +
@@ -777,9 +823,10 @@ public class ProjectSources
                                                 "	opacity: 0.0;\n" +
                                                 "	width: " + projeto.LarguraPaginas + "px; /*default: 799px*/\n" +
                                                 "	height: " + projeto.AlturaPaginas + "px; /*default: 394px*/\n" +
-                                                "	background-color: #EAEAEA;\n" +
+                                                //"	background-color: #EAEAEA;\n" +
+                                                "	background-color: transparent;\n" +
                                                 "	top: 0px;\n" + 
-                                                "}\n" +
+                                                "}\n #main{ background-color: transparent; }\n" +
                                                 "body\n"
                                                 + "{\n" +
                                                 "               overflow-y: hidden;\n"
@@ -829,33 +876,79 @@ public class ProjectSources
         
         public String getUserEntities()
         {
+                Map<String, Integer> entitiesInUse = new HashMap<String, Integer>();
                 boolean joined = false;
                 String js = "";
+                String jsClassUtil = "";
                 
                 Entities entities = MproEntity.fromJson(this.projeto.JsonEntities, Entities.class);
-                
+
                 for(Entity entity : entities.Entities)
                 {
                         js += "\nfunction " + entity.Name + "(){\n";
+                        int refCount = 1;
+                        
                         for(Field field : entity.Fields)
                         {
                                 if((field.Type.equals("TEXT")) || (field.Type.equals("NUMERIC")))
                                 {
                                         js += "this." + field.Name + " = " + (field.Type.equals("TEXT") ? "\"\"" : "2147483647") + ";\n";
+                                        js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
+                                        js += "this.set" + field.Name + " = function(arg){ this." + field.Name + " = arg; };\n";
                                 }
                                 else //relation
                                 {
+                                        if(!entitiesInUse.containsKey(field.Type))
+                                        {
+                                                entitiesInUse.put(field.Type, 1);
+                                        }
+                                        else
+                                        {
+                                                entitiesInUse.put(field.Type, entitiesInUse.get(field.Type)+1);
+                                        }
+                                        
                                         joined = true;
-                                        js += "this.Entity" + field.Type + " = new Array();\n";
-                                        js += "this." + field.Name + " = " + "this.Entity" + field.Type + ";";
+                                        js += "this.Entity"+ entitiesInUse.get(field.Type) + "" + field.Type + " = new Array();\n";
+                                        js += "this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + ";\n";
+                                        
+                                        js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
+                                        js += "this.set" + field.Name + " = function(arg){ this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = arg;\n"
+                                                + " this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + "; };\n";
+                                        
+                                        refCount++;
                                 }
                         }
+                        
                         js += "this.class = '" + entity.Name + "';\n";
                         js += "MproEntity.call(this);\n";
                         js += "}\n " + entity.Name + ".prototype = new MproEntity();\n";
                         
+                        js += "" + entity.Name + ".class = {};\n";
+                        
+                        for(Field field : entity.Fields)
+                        {
+                                if((field.Type.equals("TEXT")) || (field.Type.equals("NUMERIC")))
+                                {
+                                        jsClassUtil += "" + entity.Name + ".class." + field.Name + " = {field: '" + field.Name + "', class: '"
+                                                + entity.Name +"'};\n";
+                                }
+                                else // relation
+                                {
+                                        joined = true;
+                                        jsClassUtil += "" + entity.Name + ".class." + field.Name + " = {field: '" + field.Name + "', class: '"
+                                                + entity.Name +"', ref: " + field.Type + ".class};\n";
+                                }
+                        }
+                        
+                        if(entity.Fields.size() > 0)
+                        {
+                                jsClassUtil += "" + entity.Name + ".class.cod = {field:'cod', class: '" + entity.Name + "'}; \n";
+                        }
+                        
                         joined = false;
                 }
+                
+                js += jsClassUtil;
                 
                 return js;
         }
@@ -872,7 +965,7 @@ public class ProjectSources
                                         "\n" +
                                         "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
                                         "\n" +
-                                        "<!-- PÁGINA PRINCIPAL DO NED TEMPLATE -->\n" +
+                                        //"<!-- PÁGINA PRINCIPAL DO NED TEMPLATE -->\n" +
                                         "\n" +
                                         "<head>\n" +
                                         "	<!-- METAS -->\n" +
@@ -897,20 +990,21 @@ public class ProjectSources
                                         "	<!--[if !IE]><!-->\n" +
                                         "		<link rel=\"stylesheet\" href=\"../css/exMain.css\" type=\"text/css\" />\n" +
                                         "	<!--<![endif]-->\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />\n" +
-                                        " <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet' type='text/css' />\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=Creepster' rel='stylesheet' type='text/css' />\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=Fondamento' rel='stylesheet' type='text/css' />\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=Oleo Script' rel='stylesheet' type='text/css' />\n" +
-                                        "<link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />" +
+                                        "<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />\n" +
+                                        "<link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />\n" +
+                                        " <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />\n" +
+                                        "<link href='https://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet' type='text/css' />\n" +
+                                        "<link href='https://fonts.googleapis.com/css?family=Creepster' rel='stylesheet' type='text/css' />\n" +
+                                        "<link href='https://fonts.googleapis.com/css?family=Fondamento' rel='stylesheet' type='text/css' />\n" +
+                                        "<link href='https://fonts.googleapis.com/css?family=Oleo Script' rel='stylesheet' type='text/css' />\n" +
+                                        "<link href='https://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />" +
                                         "                               <!-- Bootstrap core CSS -->\n" +
                                         "                              <link href=\"../dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n" +
                                         "                               <link href=\"../dist/css/summernote.css\" rel=\"stylesheet\">\n <link href=\"../dist/css/awesome.css\" rel=\"stylesheet\">\n"+
                                         "                              <!-- Bootstrap theme -->\n" +
                                         "                              <link href=\"../dist/css/bootstrap-theme.min.css\" rel=\"stylesheet\">" +
                                         "    <link rel=\"stylesheet\" href=\"../css/aulas.css\" type=\"text/css\" />\n" +
+                                        " <link rel=\"stylesheet\" href=\"../css/jquery.fileupload.css\">\n" +
                                         "    \n" +
                                         "    <!-- SCRIPTS -->\n" +
                                         "    <script src=\"../js/crypt.js\" type=\"text/javascript\"> </script>\n" +
@@ -919,7 +1013,7 @@ public class ProjectSources
                                         "	<script src=\"../js/jqueryUI.js\" type=\"text/javascript\"> </script>\n" +
                                         "    <script src=\"../js/jQueryRotate.js\" type=\"text/javascript\"> </script>\n" +
                                         "    <!--<script src=\"../js/jqueryWheel.js\" type=\"text/javascript\"> </script>-->\n" +
-                                        "    <script src=\"../js/Anima.js\" type=\"text/javascript\"> </script>\n" +
+                                        "    <script src=\"../js/utils.js\" type=\"text/javascript\"> <script src=\"../js/Anima.js\" type=\"text/javascript\"> </script>\n" +
                                         "    <script type=\"text/javascript\" src=\"../js/jquerycsstransform.js\"> </script>\n" +
                                         "	<script type=\"text/javascript\" src=\"../js/rotate3Di.js\"> </script>\n" +
                                         "    <script type=\"text/javascript\" src=\"../js/iscroll.js\"> </script>\n" +
@@ -931,19 +1025,35 @@ public class ProjectSources
                                         "	<script src=\"../js/UserEntities.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/Lista.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/List.js\" type=\"text/javascript\"> </script>\n" +
-                                 "	<script src=\"../js/gaiaView/Combobox.js\" type=\"text/javascript\"> </script>\n" +
-                                "	<script src=\"../js/gaiaView/Repeater.js\" type=\"text/javascript\"> </script>\n" +
-                                "	<script src=\"../js/gaiaView/Table.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/Combobox.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/Repeater.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/Table.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/Chart.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/MproChart.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n" +
-                                "	<script src=\"../js/gaiaView/FormCreator.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/gaiaView/FormCreator.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../lib/app.js\" type=\"text/javascript\"> </script>\n" +
-                                        "	<script src=\"../js/utils.js\" type=\"text/javascript\"> </script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n<script src=\"../dist/js/summernote.min.js\"></script>\n" +
+                                        "	</script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n<script src=\"../dist/js/summernote.min.js\"></script>\n" +
                                         "	<script src=\"../js/looper.js\" type=\"text/javascript\"> </script>\n" +
+                                        " <script src=\"../js/gaiaView/FileUpload.js\" type=\"text/javascript\"> </script>\n" +
+                                        " <style> .dropdown-backdrop {\n" +
+                                        "  position: static;\n" +
+                                        "}\n" +
+                                        "</style>" +
                                         "</head>\n" +
                                         "\n" +
                                         "<!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->\n" +
-                                        "<body style=\"background-image: url(../img/fundo.jpg); background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.layout.get(0).Tipo == 6 ? (projeto.paginas.size()) : (projeto.paginas.size() - 2)) + "'); enableProx(false); pageIn('1');\">\n" +
+                                        "<body style=\" background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.layout.get(0).Tipo == 6 ? (projeto.paginas.size()) : (projeto.paginas.size() - 2)) + "'); enableProx(false); pageIn('1');\">\n" +
+                                        "<!--FACEBOOK-->" +
+                                        /*" <div id=\"fb-root\"></div>\n" +
+                                        "<script>(function(d, s, id) {\n" +
+                                        "  var js, fjs = d.getElementsByTagName(s)[0];\n" +
+                                        "  if (d.getElementById(id)) return;\n" +
+                                        "  js = d.createElement(s); js.id = id;\n" +
+                                        "  js.src = \"//connect.facebook.net/pt_BR/sdk.js#xfbml=1&appId=321332621270587&version=v2.0\";\n" +
+                                        "  fjs.parentNode.insertBefore(js, fjs);\n" +
+                                        "}(document, 'script', 'facebook-jssdk'));</script> " + */
                                         "<!--PAGE-->\n" +
                                         "<div id=\"page\" class=\"web\">\n" +
                                         "<!--HEADER-->\n" +

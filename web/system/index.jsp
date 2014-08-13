@@ -4,6 +4,7 @@
     Author          : Matheus de Barros Castello  
 --%> 
 
+<%@page isThreadSafe="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" import="Gaia.controller.*, Gaia.model.*, mpro.MproEntity.*"%>
 
@@ -36,6 +37,11 @@
         }
         
         pageContext.setAttribute("isLoged", isLoged);
+
+        Cookie cookie = new Cookie("openshift", "sim");
+        cookie.setMaxAge(60*60*24);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 %>
 
 <c:choose>
@@ -72,14 +78,15 @@
                             <!--[if !IE]><!-->
                             <link rel="stylesheet" href="../css/exMain.css" type="text/css" />
                             <!--<![endif]-->
-                            <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=Creepster' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=Fondamento' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=Oleo Script' rel='stylesheet' type='text/css' />
-                            <link href='http://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />
+                            <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+                            <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=Creepster' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=Fondamento' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=Oleo Script' rel='stylesheet' type='text/css' />
+                            <link href='https://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />
                             <link rel="stylesheet" href="../css/aulas.css" type="text/css" />
                             <link rel="stylesheet" type="text/css" href="../js/css/smoothness/jqueryUIcss.css"/>
                             <!--<link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />-->
@@ -127,6 +134,7 @@
                             <script src="../js/bootstrap-colorpicker.js"></script>
                             
                             
+                            
                             <!-- MODEL -->
                             <script src="../js/gaiaModel/User.js" type="text/javascript"> </script>
                             <script src="../js/gaiaModel/Projeto.js" type="text/javascript"> </script>
@@ -147,6 +155,8 @@
                             <script src="../js/gaiaController/GDivStatic.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GImage.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GButton.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GUpload.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GAudio.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GAudioHide.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/FonteDados.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GList.js" type="text/javascript"> </script>
@@ -154,9 +164,11 @@
                             <script src="../js/gaiaController/GRepeater.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GTable.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GInput.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GCheckBox.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GTextArea.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GTextEditor.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/GForm.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaController/GGraph.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/Chatterbot.js" type="text/javascript"> </script>
                             
                             <!-- VIEW -->
@@ -173,6 +185,7 @@
                             <script src="../js/gaiaView/StackUndo.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/ScriptError.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/Table.js" type="text/javascript"> </script>
+                            <script src="../js/gaiaView/MproChart.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/main.js" type="text/javascript"> </script>
                             <script src="../js/gaiaController/VoiceActions.js" type="text/javascript"> </script>
                             <script src="../js/gaiaView/EntitysCmds.js" type="text/javascript"> </script>
@@ -259,6 +272,11 @@
                                                         Fecha
                                                 </button>
                                                 <br>
+                                                <button id="savePage" class="btn btn-default" style="width: 190px;" title="Salvar Projeto">
+                                                        <i class="glyphicon "><img src="../img/grava.png" /></i>
+                                                        Salva
+                                                </button>
+                                                <br>
                                                 <button id="debugPage" class="btn btn-default" style="width: 190px;" title="Testar página">
                                                         <i class="glyphicon "><img src="../img/bug.png" /></i>
                                                         Debug
@@ -294,10 +312,10 @@
                                                 <br>
                                                 <!-- altura -->
                                                 <span style="color:  #333333; font-size: 11px;">Altura Páginas:</span>
-                                                <input id="projAltura" type="text" class="form-control" style="height: 25px; padding: 5px;" placeholder="Altura" disabled>  
+                                                <input id="projAltura" type="text" class="form-control" style="height: 25px; padding: 5px;" placeholder="Altura" >  
                                                 <!-- largura -->
                                                 <span style="color:  #333333; font-size: 11px;">Largura Páginas:</span>
-                                                <input id="projLargura" type="text" class="form-control" style="height: 25px; padding: 5px;" placeholder="Largura" disabled>  
+                                                <input id="projLargura" type="text" class="form-control" style="height: 25px; padding: 5px;" placeholder="Largura" >  
                                                 <!-- layouts -->
                                                 <span style="color:  #333333; font-size: 11px;">Layout:</span>
                                                 <div id="projLayout" class="btn-group dropup">
@@ -314,7 +332,7 @@
                                                 <!-- efeitos -->
                                                 <span style="color:  #333333; font-size: 11px;">Efeito:</span>
                                                 <div id="projEfeito" class="btn-group dropup">
-                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown" disabled>
+                                                        <button type="button" class="btn btn-default dropdown-toggle" style="width: 190px;" data-toggle="dropdown" >
                                                                 Efeito <span class="caret"></span>
                                                         </button>
                                                         <ul class="dropdown-menu" style="width: 190px;" role="menu">          
@@ -349,7 +367,7 @@
                                                 </button>
                                                 <br>
                                                 <!-- imagem de fundo -->
-                                                <span style="color:  #333333; font-size: 11px">Imagem:</span>
+                                                <!--<span style="color:  #333333; font-size: 11px">Imagem:</span>
                                                 <span id="fileBack2" class="btn btn-default fileinput-button" style="width: 180px;">
                                                         <i class="glyphicon "><img src="../img/img.png" /></i>
                                                         <span class="fileDesc">Selecione Imagem ...</span>
@@ -357,7 +375,7 @@
                                                         <div class="progress progress-striped active" style="display: none; margin-bottom: 0px;">
                                                                 <div class="progress-bar"></div>
                                                         </div>
-                                                </span>
+                                                </span> -->
                                         </div>
                                 </div>
                         </div>
@@ -744,8 +762,10 @@
                                                   Ok
                                      </button>
                                      <br><br>
-                                     <table id="entityTable" class="table table-hover" style="border-collapse:  initial; border-color: rgb(189, 189, 189); border-style:solid; border-width:1px; width: 100%; height: auto; border-radius: 4px; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.075); box-shadow: 0 1px 2px rgba(0,0,0,0.075);">
-                                     </table>
+                                     <div id="entityContainer" style="overflow-y: scroll;">
+                                        <table id="entityTable" class="table table-hover" style="border-collapse:  initial; border-color: rgb(189, 189, 189); border-style:solid; border-width:1px; width: 100%; height: auto; border-radius: 4px; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.075); box-shadow: 0 1px 2px rgba(0,0,0,0.075);">
+                                        </table>
+                                     </div>
                                      <br>
                                      <input id="collEntityNome" type="text" class="form-control" placeholder="Nova Coluna" style="height: 25px; padding: 5px;
                                                width: 70%; float: left;">
@@ -823,7 +843,7 @@
                                         </div>
                                       <img id="iconConfig" style="position: absolute; top: 10px; left:  370px;" src="../img/script.png" />
                                       <!-- frame -->
-                                      <iframe id="IDE" src="IDE.htm"></iframe>
+                                      <iframe id="IDE" src="IDE.jsp"></iframe>
                                       <!-- MAIS COISAS -->
                                       <div id="scriptTools">
                                       <div style="margin-left: 15px;">

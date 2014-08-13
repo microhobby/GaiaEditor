@@ -39,10 +39,13 @@ function GList(largura, altura, topo, esquerda, visivel)
         //@override
         this.resolveSpecialFields = function()
         {
-                var privateAttrsTmp = JSON.parse(this.SpecialFields);
-                for(var i = 0; i < privateAttrsTmp.length; i++)
+                if(this.SpecialFields !== "")
                 {
-                        privateAttrs[i] = privateAttrsTmp[i];
+                        var privateAttrsTmp = JSON.parse(this.SpecialFields);
+                        for(var i = 0; i < privateAttrsTmp.length; i++)
+                        {
+                                privateAttrs[i] = privateAttrsTmp[i];
+                        }
                 }
         };
         
@@ -145,6 +148,9 @@ function GList(largura, altura, topo, esquerda, visivel)
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px;\n' +
+                                                ' border-style: solid;\n' +
+                                                ' border-color: ' + this.Cbb + ';\n' +
+                                                ' border-width: ' + this.B + 'px;\n' +
                                                 ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -moz-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -o-transform: rotate(' + this.A + 'deg);\n' +
@@ -173,6 +179,7 @@ function GList(largura, altura, topo, esquerda, visivel)
                         vars +=           'var ' + this.Name + ' = new List();\n' +
                                                 'var model' + this.Name + ' = new ItemModel();\n';
                                         
+                        instructs += '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
                         instructs +=    '' + this.Name + '.setElement("#GList' + this.Id + 'Items");\n' +
                                                 '' + this.Name + '.setModel(model' + this.Name + ');\n' +
                                                 '' + (this.getPrivateAttrs()[3].Data !== "" ? this.Name + '.setInputFilter("' +this.getPrivateAttrs()[3].Data+ 'input");\n' : "");

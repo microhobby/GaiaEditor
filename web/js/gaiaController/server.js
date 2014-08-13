@@ -28,7 +28,7 @@ function makePackage()
         ajax.setData({user: LogedUser.cod, filesSrc: JSON.stringify(ret), projectCod: ptrProject.cod, method: "makePackage"});
         ajax.onSucces(function(data)
         {
-                $("#debugPage").find("img").attr("src", "../img/script_binary.png");
+                $("#packagePage").find("img").attr("src", "../img/script_binary.png");
                 var objData = JSON.parse(data);
                 
                 GLOBALURL = objData.data.url;
@@ -52,6 +52,19 @@ function makePackage()
                                 }, 0);
                         }
                 }, 0);*/
+        });
+        ajax.execute();
+}
+
+function makeUserEntities()
+{
+        var srcPages = new FileFactory();
+        var ret = srcPages.makeStrign();
+        ajax.setData({user: LogedUser.cod, filesSrc: JSON.stringify(ret), projectCod: ptrProject.cod, method: "makeUserEntities"});
+        ajax.onSucces(function(data)
+        {
+                //data = JSON.stringify(data);
+                IDE.setUserEntities(JSON.parse(data).data.entities);
         });
         ajax.execute();
 }
@@ -98,6 +111,23 @@ function makeProject()
                 }, 0);*/
         });
         ajax.execute();
+}
+
+function saveProject()
+{
+        var ajaxi = new Ajax();
+        ajaxi.Url = slice_url + "server.jsp";
+        
+        var dados = new Projeto("dados", ptrProject.AlturaPaginas, ptrProject.LarguraPaginas, "");
+        dados.cod = ptrProject.cod;
+        
+        ajaxi.setData({user: LogedUser.cod, projeto: JSON.stringify(dados), projectCod: ptrProject.cod, method: "saveProject"});
+        ajaxi.onSucces(function()
+        {
+                confirmados++;
+        });
+        ajaxi.execute();
+        envios++;  
 }
 
 function newProject()
@@ -151,7 +181,8 @@ function newResource(rec)
         ptrProject.recursos.push(rec);
         fileUp3.clear("Selecione Midia...");
         if((rec.Arquivo.indexOf(".jpg") !== -1) || (rec.Arquivo.indexOf(".png") !== -1) || (rec.Arquivo.indexOf(".jpeg") !== -1) || (rec.Arquivo.indexOf(".gif") !== -1))
-                modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
+                modelRecursos.add(new Item(rec.Nome, rec, "../dados/" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
+                //modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
         else
                 modelRecursos.add(new Item(rec.Nome, rec, "../img/clipping_sound.png", 120));
         $("#recursoNome").val("");

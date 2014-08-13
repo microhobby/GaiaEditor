@@ -7,6 +7,7 @@
 <%@page import="mpro.MproEntity.MproEntity"%>
 <%@page import="Gaia.controller.GaiaController"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page isThreadSafe="false" %>
 
 <%
             response.setHeader("Access-Control-Allow-Origin", "*");

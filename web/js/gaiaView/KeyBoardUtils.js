@@ -17,7 +17,7 @@ function KeyBoardUtils()
         
         window.onkeyup = function(event)
         {
-                if((event.target.nodeName !== "INPUT") && (event.target.nodeName !== "TEXTAREA"))
+                if((event.target.nodeName !== "INPUT") && (event.target.nodeName !== "TEXTAREA") && (event.target.nodeName !== "SELECT"))
                 {
                         //console.log(event);
                         if(event.keyCode === 46) // delete
@@ -65,9 +65,10 @@ function KeyBoardUtils()
         
         window.onkeydown = function(event)
         {
-                if((event.target.nodeName !== "INPUT") && (event.target.nodeName !== "TEXTAREA"))
+                if((event.target.nodeName !== "INPUT") && (event.target.nodeName !== "TEXTAREA") && (event.target.nodeName !== "SELECT"))
                 {
-                        if(event.keyIdentifier === "Down")
+                        //if(event.keyIdentifier === "Down")
+                        if(event.keyCode === 40)
                         {
                                 console.log("BAIXO");
                                 for(var i = 0; i < _eventsDown.length; i++)
@@ -75,7 +76,7 @@ function KeyBoardUtils()
                                         _eventsDown[i]();
                                 }
                         }
-                        else if(event.keyIdentifier === "Up")
+                        else if(event.keyCode === 38) //if(event.keyIdentifier === "Up")
                         {
                                 console.log("CIMA");
                                 for(var i = 0; i < _eventsUp.length; i++)
@@ -83,7 +84,7 @@ function KeyBoardUtils()
                                         _eventsUp[i]();
                                 }
                         }
-                        else if(event.keyIdentifier === "Left")
+                        else if(event.keyCode === 37) //if(event.keyIdentifier === "Left")
                         {
                                 console.log("ESQUERDA");
                                 for(var i = 0; i < _eventsLeft.length; i++)
@@ -91,7 +92,7 @@ function KeyBoardUtils()
                                         _eventsLeft[i]();
                                 }
                         }
-                        else if(event.keyIdentifier === "Right")
+                        else if(event.keyCode === 39) //if(event.keyIdentifier === "Right")
                         {
                                 console.log("DIREITA");
                                 for(var i = 0; i < _eventsRight.length; i++)

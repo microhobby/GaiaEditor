@@ -1,7 +1,11 @@
 package Gaia.controller;
 
 import Gaia.model.User;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpro.MproEntity.MproEntity;
 
 /**
@@ -12,6 +16,19 @@ public class Login
 {
         public User LogedUser = null;
         
+        static String sha1(String input) throws NoSuchAlgorithmException 
+        {
+                MessageDigest mDigest = MessageDigest.getInstance("SHA1");
+                byte[] result = mDigest.digest(input.getBytes());
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < result.length; i++) 
+                {
+                    sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+                }
+
+                return sb.toString();
+        }
+        
         public Login()
         {}
         
@@ -21,7 +38,11 @@ public class Login
                 {
                         User us = new User();
                         us.UserName = user;
-                        us.Chave = key;
+                        try {
+                                us.Chave = Login.sha1(key);
+                        } catch (NoSuchAlgorithmException ex) {
+                                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         int numus = 0;
 
                         ArrayList<User> thisus = MproEntity.getWhere(us);

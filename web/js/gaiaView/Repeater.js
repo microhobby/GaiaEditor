@@ -7,6 +7,7 @@
 function Repeater(elem)
 {
         // Campos privados
+        var __arrangeAno;
         
         /**
          * @type DBsource
@@ -74,8 +75,14 @@ function Repeater(elem)
                                                                         oTmp = oTmp(objRef);
                                                                 }
                                                         }
-
+                                                        
+                                                        if(typeof(oTmp) === "function")
+                                                        {
+                                                                oTmp = oTmp(me.Source.Data[j]);
+                                                        }
+                                                        
                                                         var rx = new RegExp("@{" + clearTagTmp + "}", "g");
+                                                        elemC.addClass(me.Elem.attr("id"));
                                                         elemC.attr("id", me.Source.Data[j].cod);
                                                         elemC.html(elemC.html().replace(rx, oTmp));
                                                 }
@@ -96,7 +103,7 @@ function Repeater(elem)
         
         this.reArrange = function()
         {
-                arrange();
+                arrange(this);
         };
         
         /**
@@ -109,6 +116,7 @@ function Repeater(elem)
                 this.Source.setListener(function()
                 {
                         arrange(me);
+                        __arrangeAno = arguments.callee;
                 });
                 //this.Source.getData();
                 //arrange();
@@ -117,5 +125,10 @@ function Repeater(elem)
         this.addCompleteListener = function(func)
         {
                 this.completeListener = func;
+        };
+        
+        this.removeCompleteListener = function(func)
+        {
+                this.Source.removeListener(__arrangeAno);
         };
 }

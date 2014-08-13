@@ -5,14 +5,40 @@
  */
 function GText(largura, altura, topo, esquerda, visivel)
 {
+        var instructs = "";
+        var vars = "";
+        
         this.init(largura, altura, topo, esquerda, visivel);
 
         this.ClassType = "GText";
         this.JqueryId = "#text" + this.Id;
         this.Text = "Seu Texto aqui...";
+        this.Name = "GText" + this.Id;
+        
+        //@override
+        this.returnCodeInstructs = function()
+        {
+                return instructs;
+        };
+        
+        //@override
+        this.returnCodeVars = function()
+        {
+                return vars;
+        };
+        
+        //@override
+        this.canCreateVar = function()
+        {
+                return false;
+        };
         
         this.returnCode = function(flag, isPreview)
         {
+                // zera
+                vars = "";
+                instructs = "";
+                
                 if(flag == undefined)
                         flag = false;
                 if(isPreview == undefined)
@@ -56,6 +82,9 @@ function GText(largura, altura, topo, esquerda, visivel)
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px; opacity: ' + (this.Opacity / 100) + ';\n' +
+                                                ' border-style: solid;\n' +
+                                                ' border-color: ' + this.Cbb + ';\n' +
+                                                ' border-width: ' + this.B + 'px;\n' +
                                                 ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -moz-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -o-transform: rotate(' + this.A + 'deg);\n' +
@@ -71,6 +100,13 @@ function GText(largura, altura, topo, esquerda, visivel)
                                                 ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + '">\n' +
                                                         this.Text +
                                         '\n</div>\n';
+                                
+                                
+                                if(!flag)
+                                {
+                                        vars += 'var ' + this.Name + ' = $("' + this.JqueryId + '");\n';
+                                        instructs += '' + this.Name + '.text = function(t){ return (t != undefined ? $("' + this.JqueryId + '").html(t) : $("' + this.JqueryId + '").html()); };\n';
+                                }
 			
                 return code;
         };

@@ -30,8 +30,10 @@
                 File file ;
                 int maxFileSize = 50000 * 1024;
                 int maxMemSize = 50000 * 1024;
+                String context = (System.getenv("OPENSHIFT_DATA_DIR") != null ? 
+                        System.getenv("OPENSHIFT_DATA_DIR") : getServletContext().getRealPath("/"));
                 //String filePath = "/home/matheus/gaiaData/User_" + u.UserName + "_" + u.cod + "/";
-                String filePath = getServletContext().getRealPath("/") + u.UserName + "_" + u.cod + "/";
+                String filePath = context + "/" +  u.UserName + "_" + u.cod + "/";
                 new File(filePath).mkdir();
                 String retJSON = "{\"files\":[";
 

@@ -61,12 +61,18 @@ function GTable(largura, altura, topo, esquerda, visivel)
         //@override
         this.canCreateVar = function()
         {
-                return true;
+                return false;
         };
         
         this.getPrivateAttrs().push(new SpecialAttrs("Fonte", "objText", "setFonteDados", ""));
         this.getPrivateAttrs().push(new SpecialAttrs("Colunas", "objText", "setCollums", "Coluna1;Coluna2"));
         this.getPrivateAttrs().push(new SpecialAttrs("Input Filtro", "objText", "setFilterElement", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("MproTag", "objText", "setMproTag", ""));
+        
+        this.setMproTag = function(tag)
+        {
+                this.getPrivateAttrs()[3].Data = tag;
+        };
         
         this.setFilterElement = function(nameElement)
         {
@@ -110,6 +116,9 @@ function GTable(largura, altura, topo, esquerda, visivel)
                 var position = "absolute";
                 var width = "";
                 var height = "";
+                var italico = "italic";
+                var negrito = "bold";
+                var subline = "underline";
                 
                 if(this.StaticPos)
                 {
@@ -131,6 +140,13 @@ function GTable(largura, altura, topo, esquerda, visivel)
                 else
                         display = "block";
                 
+                if(!this.Italico)
+                        italico = "normal";
+                if(!this.Negrito)
+                        negrito = "normal";
+                if(!this.Subline)
+                        subline = "normal";
+                
                 code =	'\n<div id="GTable' + this.Id + '"\n' +
                                                 ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
@@ -149,6 +165,8 @@ function GTable(largura, altura, topo, esquerda, visivel)
                                                 ' -o-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -ms-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + '; opacity: ' + (this.Opacity / 100) + ';' +
+                                                ' color: ' + this.Cf + '; font-size: ' + this.SizeFont + 'px; font-family: ' + this.Font + ';\n' +
+                                                ' font-style: ' + italico + '; font-weight: ' + negrito + '; text-decoration: ' + subline + ';\n' +
                                                 ' z-index: '+this.Zindex+';">\n' +
                                                 '<table id="GTable' + this.Id + 'Items" class="table table-hover" style="border-collapse:  initial; border-color: rgb(189, 189, 189); border-style:solid; border-width:1px; width: 100%; height: auto; border-radius: 4px; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.075); box-shadow: 0 1px 2px rgba(0,0,0,0.075);">' +
                                                 '</table>'+
@@ -158,23 +176,27 @@ function GTable(largura, altura, topo, esquerda, visivel)
                                                 
                         if(!flag)
                         {
-                                vars +=         'var table' + this.Name + ' = new Table("' + this.JqueryId + 'Items");\n' +
-                                         'var ' + this.JqueryId.replace("#", "util") + ' = {};\n';
+                                vars += 'var ' + this.Name + ' = new Table("' + this.JqueryId + 'Items");\n' +
+                                                'var ' + this.JqueryId.replace("#", "util") + ' = {};\n';
+                                        
+                                        instructs += '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
+                                        
                                 if(this.getPrivateAttrs()[0].Data !== "" && this.getPrivateAttrs()[0].Data.indexOf("@") === -1)
                                 {
-                                        instructs +=    'table' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ');\n';
+                                        instructs +=    '' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ');\n';
                                 }
                                 else
                                         instructs += '' +  this.JqueryId.replace("#", "util") + '.Fonte = "' + this.getPrivateAttrs()[0].Data  + '";\n';
                                 if(minhasColuna.length > 0)
                                 {
-                                        instructs +=  'table' + this.Name + '.setCollums('+ JSON.stringify(minhasColuna) + ');\n';
+                                        instructs +=  '' + this.Name + '.setCollums('+ JSON.stringify(minhasColuna) + ');\n';
                                 }
                                 if(this.getPrivateAttrs()[2].Data !== "")
                                 {
-                                        instructs += 'table' + this.Name + '.setInputFilter("'+ this.getPrivateAttrs()[2].Data+'input");\n';
+                                        instructs += '' + this.Name + '.setInputFilter("'+ this.getPrivateAttrs()[2].Data+'input");\n';
                                 }
-                                instructs += '' +  this.JqueryId.replace("#", "util") + '.Table = table' + this.Name  + ';\n';
+                                instructs += '' +  this.JqueryId.replace("#", "util") + '.Table = ' + this.Name  + ';\n';
+                                instructs += '' +  this.JqueryId.replace("#", "util") + '.MproTag = "' + this.getPrivateAttrs()[3].Data  + '";\n';
                         }
                         
                         var me = this;

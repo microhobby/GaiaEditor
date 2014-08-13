@@ -61,12 +61,16 @@ var modelEventos = new ItemModel();
 var modelActions = new ItemModel();
 var modelEstados = new ItemModel();
 var modelEntities = new ItemModel();
+var modelInputTypes = new ItemModel();
+var modelOverflowTypes = new ItemModel();
+var modelChartTypes = new ItemModel();
 var modelTypes = new ItemModel();
 var objs = new ItemModel();
 var verifica = null;
-var slice_url = "http://localhost:8084/GaiaEditor/system/";
+var slice_url = "http://gaia.mpro3.com.br/system/";
+//var slice_url = "http://localhost:8084/GaiaEditor/system/";
 //var slice_url = "http://nut.unifenas.br:8080/GaiaEditor/system/";
-//var slice_url = "http://mpro3.com.br:8080/GaiaEditor/system/";
+//var slice_url = "http://mpro3.com.br/java/system/";
 var ajax = new Ajax();
 var thread = null;
 var canSetTimeout = true;
@@ -144,6 +148,7 @@ $(document).ready(function()
         comboTool1Paginas.setModel(modelPaginas);
         comboTool1Paginas.addMouseActionListener(function()
         {
+                saveAfter(true, true);
                 openPage(comboTool1Paginas.getSelectIndex());
         });
         
@@ -165,6 +170,7 @@ $(document).ready(function()
         comboTool1Layouts.setModel(modelLayoutsPages);
         comboTool1Layouts.addMouseActionListener(function()
         {
+                saveAfter(true, true);
                 openLayout(comboTool1Layouts.getSelectIndex());
         });
         
@@ -198,6 +204,29 @@ $(document).ready(function()
         
         modelTypes.add(new Item("TEXT", "TEXT"));
         modelTypes.add(new Item("NUMERIC", "NUMERIC"));
+        
+        modelInputTypes.add(new Item("text", "text"));
+        modelInputTypes.add(new Item("color", "color"));
+        modelInputTypes.add(new Item("date", "date"));
+        modelInputTypes.add(new Item("datetime-local", "datetime-local"));
+        modelInputTypes.add(new Item("number", "number"));
+        modelInputTypes.add(new Item("range", "range"));
+        modelInputTypes.add(new Item("time", "time"));
+        modelInputTypes.add(new Item("week", "week"));
+        
+        modelOverflowTypes.add(new Item("visible", "visible"));
+        modelOverflowTypes.add(new Item("hidden", "hidden"));
+        modelOverflowTypes.add(new Item("scroll", "scroll"));
+        modelOverflowTypes.add(new Item("scroll-x", "scroll-x"));
+        modelOverflowTypes.add(new Item("scroll-y", "scroll-y"));
+        modelOverflowTypes.add(new Item("auto", "auto"));
+        
+        modelChartTypes.add(new Item("Line", "Line"));
+        modelChartTypes.add(new Item("Bar", "Bar"));
+        modelChartTypes.add(new Item("Radar", "Radar"));
+        modelChartTypes.add(new Item("PolarArea", "PolarArea"));
+        modelChartTypes.add(new Item("Pie", "Pie"));
+        modelChartTypes.add(new Item("Doughnut", "Doughnut"));
         
         projEntities.addMouseActionListener(function(obj)
         {
@@ -237,6 +266,58 @@ $(document).ready(function()
         objCorBorda.setElement("#objCorBorda");
         objCorFonte.setElement("#objCorFonte");
         
+        colorPick2.onColorChange(function(val)
+        {
+                if(ptrProject)
+                {
+                        ptrProject.layout[0].BackgroundColor = val;
+                }
+        });
+        
+        $("#projAltura").change(function()
+        {
+                if(ptrProject)
+                {
+                        ptrProject.AlturaPaginas = parseFloat($("#projAltura").val());
+                        $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                        "px; height: " + ptrProject.AlturaPaginas + "px; background-color: #EAEAEA; }");
+                
+                        if(ptrProject.layout[0].Tipo === Layout.WEB)
+                        {
+                                $("#main").css("top", 5);
+                                $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                                "px; height: " + $(document).height() + "px; background-color: #EAEAEA; }");
+                        }
+                
+                        goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
+                }
+        });
+        
+        $("#projLargura").change(function()
+        {
+                if(ptrProject)
+                {
+                        ptrProject.LarguraPaginas = parseFloat($("#projLargura").val());
+                        $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                        "px; height: " + ptrProject.AlturaPaginas + "px; background-color: #EAEAEA; }");
+                
+                        if(ptrProject.layout[0].Tipo === Layout.WEB)
+                        {
+                                $("#main").css("top", 5);
+                                $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                                "px; height: " + $(document).height() + "px; background-color: #EAEAEA; }");
+                        }
+                
+                        goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
+                }
+        });
+        
+        comboTool1Efeitos.addMouseActionListener(function(obj)
+        {
+                if(ptrProject)
+                        ptrProject.layout[0].Efeito = obj.obj;
+        });
+        
         /**
          * SETA FILE UPLOAD
          */
@@ -259,7 +340,8 @@ $(document).ready(function()
         listRecursos.addMouseActionListener(function(obj)
         {
                 var rec = obj.obj;
-                window.open("../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo);
+                window.open("../dados/" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo);
+                //window.open("../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo);
         });
         
         listDebug.setElement("#debugErros");
@@ -289,21 +371,25 @@ $(document).ready(function()
                 }
         });
         
-        modelObjects.add(new Item("Texto", function(){ return new GText(153, 52, 0, 0, true); }, "../img/ui_labels.png"));
-        modelObjects.add(new Item("Container", function(){ return new GDiv(153, 52, 0, 0, true); }, "../img/div.png"));
-        modelObjects.add(new Item("Container Dinamico", function(){ return new GDivStatic(153, 52, 0, 0, true); }, "../img/div.png"));
-        modelObjects.add(new Item("Container Repetidor", function(){ return new GRepeater(153, 52, 0, 0, true); }, "../img/div.png"));
-        modelObjects.add(new Item("Lista", function(){ return new GList(153, 183, 0, 0, true); }, "../img/ui_list_box_blue.png"));
-        modelObjects.add(new Item("ComboBox", function(){ return new GComboBox(190, 40, 0, 0, true); }, "../img/ui_combo_box_blue.png"));
-        modelObjects.add(new Item("Tabela", function(){ return new GTable(190, 190, 0, 0, true); }, "../img/ui_scroll_pane_table.png"));
-        modelObjects.add(new Item("Imagem", function(){ return new GImage(64, 64, 0, 0, true); }, "../img/img.png"));
-        modelObjects.add(new Item("Botão", function(){ return new GButton(67, 28, 0, 0, true); }, "../img/button.png"));
-        modelObjects.add(new Item("Input", function(){ return new GInput(153, 52, 0, 0, true); }, "../img/input.png"));
-        modelObjects.add(new Item("Text Area", function(){ return new GTextArea(153, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png"));
-        modelObjects.add(new Item("Text Editor", function(){ return new GTextEditor(300, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png"));
-        modelObjects.add(new Item("Auto Form", function(){ return new GForm(300, 153, 0, 0, true); }, "../img/list.png"));
-        modelObjects.add(new Item("HAudio", function(){ return new GAudioHide(16, 16, -20, -20, true); }, "../img/ui-audio.png"));
-        modelObjects.add(new Item("FonteDados", function(){ return new FonteDados(1, 1, -20, -20, true); }, "../img/db_blank16.png"));
+        modelObjects.add(new Item("Texto", function(){ return new GText(153, 52, 0, 0, true); }, "../img/ui_labels.png")); //0
+        modelObjects.add(new Item("Container", function(){ return new GDiv(153, 52, 0, 0, true); }, "../img/div.png")); //1
+        modelObjects.add(new Item("Container Dinamico", function(){ return new GDivStatic(153, 52, 0, 0, true); }, "../img/div.png")); //2
+        modelObjects.add(new Item("Container Repetidor", function(){ return new GRepeater(153, 52, 0, 0, true); }, "../img/div.png")); //3
+        modelObjects.add(new Item("Lista", function(){ return new GList(153, 183, 0, 0, true); }, "../img/ui_list_box_blue.png")); //4
+        modelObjects.add(new Item("ComboBox", function(){ return new GComboBox(190, 40, 0, 0, true); }, "../img/ui_combo_box_blue.png")); //5
+        modelObjects.add(new Item("Tabela", function(){ return new GTable(190, 190, 0, 0, true); }, "../img/ui_scroll_pane_table.png")); //6
+        modelObjects.add(new Item("Gráfico", function(){ return new GGraph(190, 190, 0, 0, true); }, "../img/chart.png")); //7
+        modelObjects.add(new Item("Imagem", function(){ return new GImage(64, 64, 0, 0, true); }, "../img/img.png")); //8
+        modelObjects.add(new Item("Botão", function(){ return new GButton(67, 28, 0, 0, true); }, "../img/button.png")); //9
+        modelObjects.add(new Item("Input", function(){ return new GInput(153, 52, 0, 0, true); }, "../img/input.png")); //10
+        modelObjects.add(new Item("Botão Upload", function(){ return new GUpload(67, 28, 0, 0, true); }, "../img/button.png")); //11
+        modelObjects.add(new Item("CheckBox", function(){ return new GCheckBox(153, 52, 0, 0, true); }, "../img/input.png")); //12
+        modelObjects.add(new Item("Text Area", function(){ return new GTextArea(153, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png")); //13
+        modelObjects.add(new Item("Text Editor", function(){ return new GTextEditor(300, 153, 0, 0, true); }, "../img/ui_scroll_pane_both.png")); //14
+        modelObjects.add(new Item("Auto Form", function(){ return new GForm(300, 153, 0, 0, true); }, "../img/list.png")); //15
+        modelObjects.add(new Item("Audio", function(){ return new GAudio(200, 35, 0, 0, true); }, "../img/ui-audio.png")); //16
+        modelObjects.add(new Item("HAudio", function(){ return new GAudioHide(16, 16, -20, -20, true); }, "../img/ui-audio.png")); //17
+        modelObjects.add(new Item("FonteDados", function(){ return new FonteDados(1, 1, -20, -20, true); }, "../img/db_blank16.png")); //18
         
         comboTool1Recurso.setElement("#projRecurso");
         objRecurso.setElement("#objRecurso");
@@ -336,7 +422,10 @@ $(document).ready(function()
                 $(ptrObject.JqueryId).addClass("anima");
                 $(obj.obj.JqueryId).click();
                 $(obj.obj.JqueryId).remove();
-                newElem(obj.obj.returnCode(true, false));
+                if(obj.obj.FatherId === "0")
+                        newElem(obj.obj.returnCode(true, false));
+                else
+                        newElemD(obj.obj.FatherId, obj.obj.returnCode(true, false));
                 obj.obj.implementGaiaEvents();
                 $(obj.obj.JqueryId).mousedown();
         });
@@ -372,10 +461,39 @@ $(document).ready(function()
         }));
         modelEventos.add(new Item("Mudou", function(id, code)
         {
-                return '$("' + id + '").change(function()\n' +
+                if(id.indexOf("GComboBox") !== -1)
+                {
+                        return '' + id.replace("#", "") + '.addMouseActionListener(function(argumento)\n' +
                                 '{\n' +
                                         code + "\n" +
-                                '});\n';
+                                '})\n;';
+                }
+                else if(id.indexOf("GInput") !== -1)
+                {
+                        return '$("' + id + '").find("input").change(function()\n' +
+                                        '{\n' +
+                                                code + "\n" +
+                                        '});\n';
+                }
+                else if(id.indexOf("GCheckBox") !== -1)
+                {
+                        return '$("' + id + '").find("input").change(function()\n' +
+                                        '{\n' +
+                                                code + "\n" +
+                                        '});\n';
+                }
+                else if(id.indexOf("GTextArea") !== -1)
+                {
+                        return '$("' + id + '").find("input").find("textarea").bind("input propertychange", function()\n' +
+                                        '{\n' +
+                                                code + "\n" +
+                                        '});\n';
+                }
+                else
+                        return '$("' + id + '").change(function()\n' +
+                                        '{\n' +
+                                                code + "\n" +
+                                        '});\n';
         }));
         
         objEventosActions.setElement("#objEventosAction");
@@ -688,9 +806,10 @@ $(document).ready(function()
         {
                 return 'StopAudio("' + id + '"); \n';
         }));			//39
-        modelActions.add(new Item("Anima ID", function(id)
+        modelActions.add(new Item("Anima ID", function(id, show)
         {
-                return 'PlayBlock("' + id + '", 1000);\n';
+                if(!show)
+                        return 'PlayBlock("' + id + '", 1000);\n';
         }));
         
         objEventosTarget.setElement("#objEventosTarget");
@@ -747,7 +866,8 @@ $(document).ready(function()
                 $("#IDE").width($("#containerWindowScript").width() - 220);
                 $("#IDE").height($("#containerWindowScript").height() - 50);
                 /*$("#entityTable").width();*/
-                $("#entityTable").height($("#windowResources").height() - 255);
+                //$("#entityTable").height($("#windowResources").height() - 255);
+                $("#entityContainer").height($("#windowResources").height() - 255);
                 
                 goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
         }
@@ -832,6 +952,7 @@ $(document).ready(function()
                 
                 stackObjs.makeMomentumZ(ptrPage.Elementos);
                 ptrPage.Elementos.push(objTmp);
+                checkObjs.add(new Item("Ocultar " + objTmp.JqueryId, objTmp, "check"));
                 
                 // salva
                 window.onbeforeunload = onBefore;
@@ -886,23 +1007,26 @@ $(document).ready(function()
                                                         $(lastJquerySelected).addClass("ui-multidraggable");
                                                 }
                                         }
-
-                                        // carrega a lista de estados
-                                        modelEstados.clear();
-                                        modelEstados.add(new Item("Estado Primario", obj));
-                                        for(var i = 0; i < obj.estados.length; i++)
-                                        {
-                                                /** @type Objetos */
-                                                var tmpState = obj.estados[i];
-                                                modelEstados.add(new Item(tmpState.Name, tmpState));
-                                        }
-                                        objAnimas.setSelectIndex(0, false);
                                 }
                         }
                         else
                         {
                                 if(ptrObject !== null)
                                         obj = ptrObject;
+                        }
+
+                        // carrega a lista de estados
+                        if(lastJquerySelected !== obj.JqueryId)
+                        {
+                                modelEstados.clear();
+                                modelEstados.add(new Item("Estado Primario", obj));
+                                for(var i = 0; i < obj.estados.length; i++)
+                                {
+                                        /** @type Objetos */
+                                        var tmpState = obj.estados[i];
+                                        modelEstados.add(new Item(tmpState.Name, tmpState));
+                                }
+                                objAnimas.setSelectIndex(0, false);
                         }
 
                         lastJquerySelected = obj.JqueryId;
@@ -931,7 +1055,10 @@ $(document).ready(function()
                         objCorBorda.setColor(ptrObject.Cbb);
                         $("#objOpacity").val(ptrObject.Opacity);
 
-                        if((ptrObject.ClassType === "GImage") || (ptrObject.ClassType === "GAudioHide") || (ptrObject.ClassType === "GButton"))
+                        if((ptrObject.ClassType === "GImage") 
+                                || (ptrObject.ClassType === "GAudioHide")
+                                || (ptrObject.ClassType === "GAudio")
+                                || (ptrObject.ClassType === "GButton"))
                         {
                                 $("#objRecurso").find("button").prop("disabled", false);
                                 var ixSelectRecurso = 0;
@@ -990,7 +1117,7 @@ $(document).ready(function()
                                                 {
                                                         return function(obj)
                                                         {
-                                                                method.call(ptr, obj.string);
+                                                                method.call(ptr, obj.string, obj);
                                                         };
                                                 }(ptrObject, method));
                                         break;
@@ -1142,6 +1269,7 @@ $(document).ready(function()
           $("#okEntity").click(function()
           {
                   scalePanels("windowEntity", true);
+                  makeUserEntities();
           });
           
           $("#objEventoScript").click(function()
@@ -1162,6 +1290,8 @@ $(document).ready(function()
                                 break;
                         }
                 }
+                var f = new FileFactory();
+                IDE.setHtmlPageParsed(f.makeStrign());
           });
           
           $("#scriptPage").click(function()
@@ -1170,6 +1300,8 @@ $(document).ready(function()
                   scalePanels("windowScript");
                   IDE.setText(ptrPage.ScriptGeral);
                   eventGeral = true;
+                  var f = new FileFactory();
+                  IDE.setHtmlPageParsed(f.makeStrign());
           });
           
           $("#elementoPage").click(function()
@@ -1231,7 +1363,13 @@ $(document).ready(function()
           {
                   scalePanels("windowCompleted", true);
                   winRef = window.open(GLOBALURL, "_blank");
-                  scalePanels("windowDebug");
+                  if(GLOBALURL.indexOf(".zip") === -1)
+                        scalePanels("windowDebug");
+          });
+          
+          $("#savePage").click(function()
+          {
+                        saveAfter(true, true);
           });
           
           $("#debugPage").click(function()
@@ -1530,14 +1668,26 @@ function saveAfter(dontStack, gogo)
                 {
                         canSetTimeout = false;
                         window.onbeforeunload = onBefore;
+                        $("#savePage").find("img").attr("src", "../img/loading.gif");
                         setTimeout(function()
                         {
                                 canSetTimeout = true;
+                                saveLayout();
+                                saveProject();
                                 savePage(function()
                                 {
                                         //window.onbeforeunload = null;
                                         confirmados++;
-                                        verificaSaves();
+                                        var t = new Thread(function()
+                                        {
+                                                if(confirmados === envios)
+                                                {
+                                                        t.stop();
+                                                }
+                                                verificaSaves();
+                                        });
+                                        t.run();
+                                        //verificaSaves();
                                 });
                         }, 10000);
                 }
@@ -1550,6 +1700,7 @@ function verificaSaves()
         {
                 // tudo salvadinho
                 window.onbeforeunload = null;
+                $("#savePage").find("img").attr("src", "../img/grava.png");
         }
 }
 
@@ -1590,6 +1741,11 @@ function openProject(proj)
                         modelLayoutsPages.add(new Item("Topo", proj.paginas[0]));
                         modelLayoutsPages.add(new Item("Rodapé", proj.paginas[1]));
                 break;
+                default :
+                        modelLayoutsPages.clear();
+                        modelLayoutsPages.add(new Item("Topo", proj.paginas[0]));
+                        modelLayoutsPages.add(new Item("Rodapé", proj.paginas[1]));
+                break;
         }
         
         modelPaginas.clear();
@@ -1605,16 +1761,21 @@ function openProject(proj)
                         var pg = proj.paginas[i];
                         modelPaginas.add(new Item("Página " + (pg.Indice -1), pg));
                 }
+                else if(proj.layout[0].Tipo === Layout.WEBAPP)
+                {
+                        var pg = proj.paginas[i];
+                        modelPaginas.add(new Item("Página " + (pg.Indice -1), pg));
+                }
         }
         
-        if(proj.layout[0].Tipo === Layout.WEBAPP)
+        /*if(proj.layout[0].Tipo === Layout.WEBAPP)
         {
                 for(var i = 0; i < proj.paginas.length; i++)
                 {
                         var pg = proj.paginas[i];
                         modelPaginas.add(new Item("Página " + (pg.Indice -1), pg));
                 }
-        }
+        }*/
         
         modelRecursos.clear();
         modelRecursos.add(new Item("Padrão", new Objetos(), "../img/question5.png", 120));
@@ -1623,7 +1784,8 @@ function openProject(proj)
                 /** @type Recursos */
                 var rec = proj.recursos[i];
                 if((rec.Arquivo.indexOf(".jpg") !== -1) || (rec.Arquivo.indexOf(".png") !== -1) || (rec.Arquivo.indexOf(".jpeg") !== -1) || (rec.Arquivo.indexOf(".gif") !== -1))
-                        modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
+                        modelRecursos.add(new Item(rec.Nome, rec, "../dados/" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
+                        //modelRecursos.add(new Item(rec.Nome, rec, "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo, 120));
                 else
                         modelRecursos.add(new Item(rec.Nome, rec, "../img/clipping_sound.png", 120));
         }
@@ -1631,7 +1793,7 @@ function openProject(proj)
         // e mostra a página
         $("#main").show();
         goCenter(document.documentElement.clientHeight, document.documentElement.clientWidth - 180);
-        openPage(0);
+        //openPage(0);
         
         // atualiza objectsID
         var tmpId = 0;
@@ -1640,13 +1802,17 @@ function openProject(proj)
                 /** @type Paginas */
                 var refPage =  ptrProject.paginas[j];
                 for(var k = 0; k < refPage.Elementos.length; k++)
-                {
+                {             
                         /** @type Objetos */
                         var refElem = refPage.Elementos[k];
                         if(tmpId < refElem.Id)
                                 tmpId = refElem.Id;
                 }
+                openPage(j);
         }
+        
+        openPage(0);
+        
         Objetos.counterId = tmpId + 1;
         
         // entidades
@@ -1657,6 +1823,8 @@ function openProject(proj)
                 modelEntities.add(new Item(ptrProject.getEntities().Entities[i].Name, ptrProject.getEntities().Entities[i]));
                 modelTypes.add(new Item(ptrProject.getEntities().Entities[i].Name, ptrProject.getEntities().Entities[i]));
         }
+        
+        makeUserEntities();
 }
 
 function openPage(pgI)

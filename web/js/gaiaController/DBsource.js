@@ -11,41 +11,86 @@ function DBsource(entity, max, begin, where, ord)
         var __begin = begin;
         var __dataLoaded = false;
         var __funcMouseListener = [];
+        var __internData = false;
+        var __iData = [];
         
         this.EntityName = entity;
         this.Data = new Array();
         this.Where = where;
+        this.Rules = [];
         this.OrdBy = ord;
         
         function dispatch(me)
         {
-                setTimeout(function()
+                if(!__internData)
                 {
-                        //me.Data = MproEntity.getAll(me.EntityName, [__begin, __max], undefined, me.Where, me.OrdBy);
-                        showLoading();
-                        MproEntity.getAll(me.EntityName, function(data)
+                        setTimeout(function()
                         {
-                                me.Data = data;
-                                addDataToModel(me);
-                                __dataLoaded = true;
-                                for(var i = 0; i < __funcMouseListener.length; i++)
-                                        __funcMouseListener[i]();
-                                hideLoading();
-                                magic();
-                        }, [__begin, __max], undefined, me.Where, me.OrdBy);
-                }, 100);
+                                //me.Data = MproEntity.getAll(me.EntityName, [__begin, __max], undefined, me.Where, me.OrdBy);
+                                showLoading();
+                                MproEntity.getAll(me.EntityName, function(data)
+                                {
+                                        me.Data = data;
+                                        addDataToModel(me);
+                                        __dataLoaded = true;
+                                        for(var i = 0; i < __funcMouseListener.length; i++)
+                                                __funcMouseListener[i]();
+                                        hideLoading();
+                                        magic();
+                                }, [__begin, __max], undefined, me.Where, me.OrdBy);
+                        }, 100);
+                }
+                else
+                {
+                        addDataToModel(me);
+                        __dataLoaded = true;
+                        for(var i = 0; i < __funcMouseListener.length; i++)
+                                __funcMouseListener[i]();
+                }
         }
         
         function addDataToModel(me)
         {
-                for(var i = 0; i < __linkedObjs.length; i++)
+                if(!__internData)
                 {
-                        var mdTmp = __linkedObjs[i];
-                        mdTmp.model.clear();
-
-                        for(var j = 0; j < me.Data.length; j++)
+                        for(var i = 0; i < __linkedObjs.length; i++)
                         {
-                                mdTmp.model.add(new Item(me.Data[j][mdTmp.collum], me.Data[j]));
+                                var mdTmp = __linkedObjs[i];
+                                mdTmp.model.clear();
+
+                                for(var j = 0; j < me.Data.length; j++)
+                                {
+                                        mdTmp.model.add(new Item(me.Data[j][mdTmp.collum], me.Data[j]));
+                                }
+                        }
+                }
+                else
+                {
+                        if((__begin) < __iData.length)
+                        {
+                                me.Data = [];
+                                for(var i = 0, j = __begin; j < (__begin + __max); j++, i++)
+                                {
+                                        if(i < __max)
+                                                me.Data.push(__iData[j]);
+                                        else
+                                                break;
+                                }
+                                
+                                for(var i = 0; i < __linkedObjs.length; i++)
+                                {
+                                        var mdTmp = __linkedObjs[i];
+                                        mdTmp.model.clear();
+
+                                        for(var j = __begin; j < me.Data.length; j++)
+                                        {
+                                                mdTmp.model.add(new Item(me.Data[j][mdTmp.collum], me.Data[j]));
+                                        }
+                                }
+                        }
+                        else
+                        {
+                                __begin -= __max;
                         }
                 }
         }
@@ -75,14 +120,21 @@ function DBsource(entity, max, begin, where, ord)
         
         this.setWhere = function(wh, can)
         {
+                __internData = false;
                 this.Where = wh;
                 __begin = 0;
                 if(can === undefined || can === true)
                         dispatch(this);
         };
         
+        this.addRule = function(entity, field, value)
+        {
+                this.Rules.push([entity, field, value]);
+        };
+        
         this.setOrdBy = function(ord, can)
         {
+                __internData = false;
                 this.OrdBy = ord;
                 if(can === undefined || can === true)
                         dispatch(this);
@@ -91,6 +143,18 @@ function DBsource(entity, max, begin, where, ord)
         this.setListener = function(func)
         {
                 __funcMouseListener.push(func);
+        };
+        
+        this.removeListener = function(func)
+        {
+                for(var i = 0; i < __funcMouseListener.length; i++)
+                {
+                        if(__funcMouseListener[i] == func)
+                        {
+                                __funcMouseListener.splice(i, 1);
+                        }
+                        console.log(__funcMouseListener.length);
+                }
         };
         
         this.prox = function()
@@ -109,7 +173,32 @@ function DBsource(entity, max, begin, where, ord)
         
         this.getData = function()
         {
+                __internData = false;
                 dispatch(this);
+        };
+        
+        this.setData = function(data)
+        {
+                __iData = data;
+                this.Data = [];
+                __begin = 0;
+                __internData = true;
+                
+                for(var i = 0; i < __iData.length; i++)
+                {
+                        if(i < __max)
+                                this.Data.push(__iData[i]);
+                        else
+                                break;
+                }
+        };
+        
+        this.refresh = function()
+        {
+                addDataToModel(this);
+                __dataLoaded = true;
+                for(var i = 0; i < __funcMouseListener.length; i++)
+                        __funcMouseListener[i]();
         };
         
         //dispatch(this);

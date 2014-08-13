@@ -69,7 +69,7 @@ function Looper(obj)
                         }
                 }
                 
-                if(childs.length)
+                if(childs.length && childs.length > 1)
                         childs[0].funTime.exec();
         };
         

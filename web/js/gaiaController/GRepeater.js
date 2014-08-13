@@ -55,14 +55,21 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
         //@override
         this.canCreateVar = function()
         {
-                return true;
+                return false;
         };
         
         this.getPrivateAttrs().push(new SpecialAttrs("Fonte", "objText", "setFonteDados", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("Overflow", "objCombo", "setType", null, "modelOverflowTypes"));
         
         this.setFonteDados = function(nameFonte)
         {
                  this.getPrivateAttrs()[0].Data = nameFonte;
+        };
+        
+        this.setType = function(type)
+        {
+                this.getPrivateAttrs()[0].Data = type;
+                $(this.JqueryId).css("overflow", type);
         };
         
         this.returnCode = function(flag, isPreview)
@@ -81,6 +88,7 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
                 var position = "absolute";
                 var width = "";
                 var height = "";
+                var over = null;
                 
                 if(this.StaticPos)
                 {
@@ -102,6 +110,25 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
                 else
                         display = "block";
                 
+                if(this.getPrivateAttrs()[0] !== undefined)
+                        over = this.getPrivateAttrs()[0].Data;
+                
+                if(over)
+                {
+                        if(over.indexOf("-x") !== -1)
+                        {
+                                over = "overflow-x: " + over.replace("-x", "");
+                        }
+                        else if(over.indexOf("-y") !== -1)
+                        {
+                                over = "overflow-y: " + over.replace("-y", "");
+                        }
+                        else
+                        {
+                                over = "overflow: " + over;
+                        }
+                }
+                
                 code =	'\n<div id="divStatic' + this.Id + '"\n' +
                                                 ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
@@ -109,11 +136,15 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
                                                 ' background-color: ' + this.Cb + '; ' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px;\n' +
+                                                ' border-style: solid;\n' +
+                                                ' border-color: ' + this.Cbb + ';\n' +
+                                                ' border-width: ' + this.B + 'px;\n' +
                                                 ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -moz-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -o-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -ms-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' transform: rotate(' + this.A + 'deg);\n' +
+                                                ' ' + (over ? over :  'overflow: visible') + ';\n' +
                                                 'box-sizing: initial; \n' +
                                                 ' -webkit-box-shadow: 9px 20px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
                                                 ' -moz-box-shadow: 9px 14px 18px ' + this.S + 'px ' + this.Cs + ';\n' +
@@ -126,10 +157,11 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
                                                 
                         if(!flag)
                         {
-                                vars +=         'var repeater' + this.Name + ' = new Repeater("' + this.JqueryId + '");\n';
+                                vars += 'var ' + this.Name + ' = new Repeater("' + this.JqueryId + '");\n';
+                                instructs += '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
                                 if(this.getPrivateAttrs()[0].Data !== "")
                                 {
-                                        instructs +=    'repeater' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ');\n';
+                                        instructs +=    '' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ');\n';
                                 }
                         }
                         

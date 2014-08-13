@@ -152,17 +152,25 @@ function Objetos()
         this.setBackgroundColor = function(hex)
         {
                 this.Cb = hex;
-                if(this.ClassType === "GButton" || this.ClassType === "GComboBox")
+                if(this.ClassType === "GButton" || this.ClassType === "GComboBox" || this.ClassType === "GUpload")
                         $("#btDinamic" + this.Id).text('#myItems' + this.Id + ' > li > a:hover { background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); } #bt' + this.Id + '{ text-shadow: initial; background-image: linear-gradient(to bottom, #' + this.calculeHexHUE() + ' 0, ' + this.Cb + ' 100%); border-radius: 4px; -webkit-border-radius: 4px; -mox-border-radius: 4px; } #bt' + this.Id + ':active { background-color: ' + this.Cb + '; background-image: none;} border-radius: 4px; -webkit-border-radius: 4px; -mox-border-radius: 4px;');
                 else if(this.ClassType === "GInput")
                         $("#inputDinamic" + this.Id).text('#GInput' + this.Id + 'input:focus{\n' +
                                                 'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
-                                                'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                //'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'outline: 0 none;}\n');
+                else if(this.ClassType === "GCheckBox")
+                        $("#inputDinamic" + this.Id).text('#GCheckBox' + this.Id + 'input:focus{\n' +
+                                                'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
+                                                //'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
                                                 'outline: 0 none;}\n');
                 else if(this.ClassType === "GTextArea")
                         $("#inputDinamic" + this.Id).text('#GTextArea' + this.Id + 'input:focus{\n' +
                                                 'border-color: rgba(' + this.parseRGB() + ', 0.8);\n' +
-                                                'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                //'box-shadow: 0 1px 1px rgba(#000, 0.075) inset, 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
+                                                'box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(' + this.parseRGB() + ', 0.6);\n' +
                                                 'outline: 0 none;}\n');
                 else
                 {
@@ -231,6 +239,8 @@ function Objetos()
                         $(this.JqueryId).find("textarea").attr("placeholder", this.Text);
                 else if(this.JqueryId.indexOf("GTextEditor") !== -1)
                         $("#GTextEditor" + this.Id + "Container").code(this.Text);
+                else if(this.JqueryId.indexOf("GCheckBox") !== -1)
+                        $(this.JqueryId).find("#label").html(this.Text);
                 else if((this.JqueryId.indexOf("bt") === -1) && (this.JqueryId.indexOf("ComboBox") === -1))
                         changeT(this.JqueryId, val);
                 else
@@ -265,7 +275,11 @@ function Objetos()
         
         this.GetFileResource = function(recursoInt)
         {
-                return "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function(element)
+                /*return "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function(element)
+                {
+                        return element.cod === recursoInt;
+                })[0].Arquivo;*/
+                return "../dados/" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function(element)
                 {
                         return element.cod === recursoInt;
                 })[0].Arquivo;
@@ -320,9 +334,18 @@ function Objetos()
          */
         this.implementGaiaEvents = function()
         {
+                var me = this;
+                
                 if(!this.StaticPos)
                 {
-                        $(this.JqueryId).multidraggable({cancel:false});
+                        $(this.JqueryId).multidraggable({drag: function() 
+                        {
+                                $(me.JqueryId).removeClass('gaiaFocused');
+                                setTimeout(function()
+                                {
+                                        $(me.JqueryId).addClass('gaiaFocused');
+                                }, 100);
+                        }, cancel:false});
                         $(this.JqueryId).resizable();
                 }
                 
@@ -338,7 +361,6 @@ function Objetos()
                         $(Objetos.jqueryLabel).hide();
                 });
                 // seleciona o cara
-                var me = this;
                 $(this.JqueryId).bind("mousedown",function(event)
                 {
                         //event.preventDefault();

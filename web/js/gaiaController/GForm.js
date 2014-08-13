@@ -127,7 +127,8 @@ function GForm(largura, altura, topo, esquerda, visivel)
                                                 
                         if(!flag)
                         {
-                                vars +=         'var ' + this.Name + ' = new FormCreator(' + this.getPrivateAttrs()[0].Data + ', "' + this.JqueryId + '");\n';
+                                vars += 'var ' + this.Name + ' = new FormCreator(' + this.getPrivateAttrs()[0].Data + ', "' + this.JqueryId + '");\n';
+                                instructs += '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
                         }
                         
                 return code;

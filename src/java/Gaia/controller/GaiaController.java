@@ -28,19 +28,31 @@ import mpro.MproEntity.MproEntity;
  */
 public class GaiaController 
 {
-        public static String PHP_CONTEXT = "/var/www";
-        public static String PHP_URL = "http://localhost";
+        /*public static String PHP_CONTEXT = "/var/www";
+        public static String PHP_URL = "http://localhost:8084/GaiaEditor";*/
+        
+        /*public static String PHP_CONTEXT = "C:\\Data\\domains\\mpro3.com.br\\wwwroot";
+        public static String PHP_URL = "http://mpro3.com.br";*/
+        
+        public static String PHP_CONTEXT = "";
+        public static String PHP_URL = "http://gaia.mpro3.com.br/dados";
         
         User userContext;
         HttpServletRequest request;
         JspWriter out;
-        ServletContext context;
+        //ServletContext context;
+        String context;
+        String realContext;
         
         public GaiaController(String userCod, HttpServletRequest _request, JspWriter _out, ServletContext _context)
         {
                 this.request = _request;
                 this.out = _out;
-                this.context = _context;
+                //this.context = _context;
+                this.context = (System.getenv("OPENSHIFT_DATA_DIR") != null ? 
+                        System.getenv("OPENSHIFT_DATA_DIR") : _context.getRealPath("/"));
+                this.realContext = (System.getenv("OPENSHIFT_REPO_DIR") != null ? 
+                        System.getenv("OPENSHIFT_REPO_DIR") + "/src/main/webapp/" : _context.getRealPath("/"));
                 User tmpU = new User();
                 tmpU.cod = Integer.parseInt(userCod);
                 ArrayList<User> users = MproEntity.getWhere(tmpU);
@@ -80,11 +92,11 @@ public class GaiaController
                 ProjectSources proSrc = MproEntity.fromJson(this.request.getParameter("filesSrc"), ProjectSources.class);
                 Projeto ptrProjeto = filterProjeto(projectCod);
                 proSrc.setProjeto(ptrProjeto);
-                String sandBox = this.context.getRealPath("/") + this.userContext.UserName + "_" + this.userContext.cod + "/";
+                String sandBox = this.context + this.userContext.UserName + "_" + this.userContext.cod + "/";
                 FileWriter fileWriter = new FileWriter();
-                fileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.context.getRealPath("/"));
-                fileWriter.FolderZip(ptrProjeto, this.userContext, sandBox, this.context.getRealPath("/"));
-                writeStream("Sucesso", "{\"url\": \"" + ("../" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/" + ptrProjeto.Nome + ".zip") + "\"}", false);
+                fileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.realContext);
+                fileWriter.FolderZip(ptrProjeto, this.userContext, sandBox, this.context);
+                writeStream("Sucesso", "{\"url\": \"" + (PHP_URL + "/" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/" + ptrProjeto.Nome + ".zip") + "\"}", false);
         }
         
         public void makeProject()
@@ -93,11 +105,21 @@ public class GaiaController
                 ProjectSources proSrc = MproEntity.fromJson(this.request.getParameter("filesSrc"), ProjectSources.class);
                 Projeto ptrProjeto = filterProjeto(projectCod);
                 proSrc.setProjeto(ptrProjeto);
-                String sandBox = this.context.getRealPath("/") + this.userContext.UserName + "_" + this.userContext.cod + "/";
+                String sandBox = this.context + this.userContext.UserName + "_" + this.userContext.cod + "/";
                 FileWriter fileWriter = new FileWriter();
-                fileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.context.getRealPath("/"));
+                fileWriter.FileWriter(ptrProjeto, this.userContext, proSrc, sandBox, this.realContext);
                 //writeStream("Sucesso", "{\"url\": \"" + ("../" + this.userContext.UserName + "_" + this.userContext.cod + "/" + "sandbox/" + ptrProjeto.cod + "/html/index.htm") + "\"}", false);
-                writeStream("Sucesso", "{\"url\": \"" + (PHP_URL + "/" + this.userContext.UserName + "_" + this.userContext.cod + "/" + ptrProjeto.cod + "/html/index.php") + "\"}", false);
+                writeStream("Sucesso", "{\"url\": \"" + (PHP_URL + "/" + this.userContext.UserName + "_" + this.userContext.cod + "/sandbox/" + ptrProjeto.cod + "/html/index.html") + "\"}", false);
+        }
+        
+        public void makeUserEntities()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                ProjectSources proSrc = MproEntity.fromJson(this.request.getParameter("filesSrc"), ProjectSources.class);
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                proSrc.setProjeto(ptrProjeto);
+                Gson g = new Gson();
+                writeStream("Sucesso", "{\"entities\": " + g.toJson(proSrc.getUserEntities()) + "}", false);
         }
         
         public void newProject() 
@@ -183,6 +205,18 @@ public class GaiaController
                 ptrProjeto.layout = layouts;
                 ptrProjeto.Save();
                 this.writeStream("Layout salvo", "", false);
+        }
+        
+        public void saveProject()
+        {
+                int projectCod = Integer.parseInt(this.request.getParameter("projectCod"));
+                Projeto ptrProjeto = filterProjeto(projectCod);
+                Projeto dados = MproEntity.fromJson(this.request.getParameter("projeto"), Projeto.class);
+                ptrProjeto.AlturaPaginas = dados.AlturaPaginas;
+                ptrProjeto.LarguraPaginas = dados.LarguraPaginas;
+                ptrProjeto.Save();
+                
+                this.writeStream("Projeto salvo", "", false);
         }
         
         public void saveEntity()

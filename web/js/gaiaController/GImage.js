@@ -62,7 +62,7 @@ function GImage(largura, altura, topo, esquerda, visivel)
         //@override
         this.canCreateVar = function()
         {
-                return true;
+                return false;
         };
         
         this.getPrivateAttrs().push(new SpecialAttrs("Float", "objText", "setFloat", "none"));
@@ -125,6 +125,9 @@ function GImage(largura, altura, topo, esquerda, visivel)
                                                 ' width: ' + width + '; height: ' + height + ';\n' +
                                                 ' -webkit-border-radius: ' + this.R + 'px;\n' +
                                                 ' border-radius: ' + this.R + 'px; opacity: ' + (this.Opacity / 100) + ';\n' +
+                                                ' border-style: solid;\n' +
+                                                ' border-color: ' + this.Cbb + ';\n' +
+                                                ' border-width: ' + this.B + 'px;\n' +
                                                 ' -webkit-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -moz-transform: rotate(' + this.A + 'deg);\n' +
                                                 ' -o-transform: rotate(' + this.A + 'deg);\n' +
@@ -143,6 +146,12 @@ function GImage(largura, altura, topo, esquerda, visivel)
                                                 ' width="100%" height="100%" ' +
                                                 ' ondragstart="return false" onselectstart="return false" />\n' +
                                                 '</div>\n';
+                
+                if(!flag)
+                {
+                        vars += '' + this.Name + ' = $("' + this.JqueryId + '");\n';
+                        instructs += '' + this.Name + '.image = function(i){ return (i != undefined ? $("' + this.JqueryId + '").find("#cont_img' + this.Id + '").attr("src", i) : $("' + this.JqueryId + '").find("#cont_img' + this.Id + '").attr("src")); };\n';
+                }
                 
                 
                 return code;
