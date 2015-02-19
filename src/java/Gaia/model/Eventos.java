@@ -14,6 +14,7 @@ public class Eventos extends MproEntityRelation
         public String TargetJqueryId;
         public String Script;
         public boolean Deleted;
+        public String NumApoio;
         
         public Eventos(){}
         

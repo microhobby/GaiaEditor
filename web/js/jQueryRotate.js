@@ -9,7 +9,7 @@
 // Documentation removed from script file (was kinda useless and outdated)
 
 (function($) {
-var supportedCSS,styles=document.getElementsByTagName("head")[0].style,toCheck="transformProperty WebkitTransform OTransform msTransform MozTransform".split(" ");
+var supportedCSS,styles=document.getElementsByTagName("head")[0].style,toCheck="transformProperty WebkitTransform OTransform msTransform MozTransform transform".split(" ");
 for (var a=0;a<toCheck.length;a++) if (styles[toCheck[a]] !== undefined) supportedCSS = toCheck[a];
 // Bad eval to preven google closure to remove it from code o_O
 // After compresion replace it back to var IE = 'v' == '\v'

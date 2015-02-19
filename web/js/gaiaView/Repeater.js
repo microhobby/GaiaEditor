@@ -122,6 +122,13 @@ function Repeater(elem)
                 //arrange();
         };
         
+        this.setSourceArray = function(data)
+        {
+                this.Source = {};
+                this.Source.Data = data;
+                arrange(this);
+        };
+        
         this.addCompleteListener = function(func)
         {
                 this.completeListener = func;

@@ -2,10 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/matheus/NetBeansProjects/GaiaEditor/web/js/gaiaModel/User.js</file>
-            <file>file:/home/matheus/NetBeansProjects/GaiaEditor/web/js/gaiaController/VoiceActions.js</file>
-            <file>file:/home/matheus/NetBeansProjects/GaiaEditor/web/js/gaiaView/main.js</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

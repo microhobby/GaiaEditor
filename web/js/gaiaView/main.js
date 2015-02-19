@@ -89,6 +89,8 @@ var envios = 0;
 var confirmados = 0;
 var safira = new Chatterbot("http://localhost/botServer");
 var gaiaVoiceId = "fimfdcmkbpidncilmcpjihejngmbmped";
+var __badWolf = null; 
+var scale = 1;
 /*var errList = new Lista();
 errList.init();*/
 
@@ -213,6 +215,7 @@ $(document).ready(function()
         modelInputTypes.add(new Item("range", "range"));
         modelInputTypes.add(new Item("time", "time"));
         modelInputTypes.add(new Item("week", "week"));
+        modelInputTypes.add(new Item("password", "password"));
         
         modelOverflowTypes.add(new Item("visible", "visible"));
         modelOverflowTypes.add(new Item("hidden", "hidden"));
@@ -419,15 +422,30 @@ $(document).ready(function()
         objAnimas.addMouseActionListener(function(obj)
         {
                 ptrObject = obj.obj;
-                $(ptrObject.JqueryId).addClass("anima");
+                
                 $(obj.obj.JqueryId).click();
                 $(obj.obj.JqueryId).remove();
-                if(obj.obj.FatherId === "0")
-                        newElem(obj.obj.returnCode(true, false));
+                if(obj.obj.FatherId == "0")
+                {
+                         newElem(obj.obj.returnCode(true, false));
+                        if(obj.obj.JqueryId.indexOf("div") !== -1)
+                        {
+                                for(var i in objs.lista_)
+                                { 
+                                        var obji = objs.lista_[i].obj;
+                                        if(obji)
+                                        {
+                                                if(obji.FatherId === obj.obj.JqueryId)
+                                                        newElemD(obj.obj.JqueryId, obji.returnCode(true, false));
+                                        }
+                                }
+                        }
+                }
                 else
                         newElemD(obj.obj.FatherId, obj.obj.returnCode(true, false));
                 obj.obj.implementGaiaEvents();
                 $(obj.obj.JqueryId).mousedown();
+                $(ptrObject.JqueryId).addClass("anima");
         });
         
         modelEventos.add(new Item("Evento"));
@@ -501,7 +519,10 @@ $(document).ready(function()
         objScriptAction.setElement("#scriptAction");
         objScriptAction.setModel(modelActions);
         
-        modelActions.add(new Item("Ação"));
+        modelActions.add(new Item("Nenhum", function(id)
+        {
+                return "";
+        }));                                                    // 0
         modelActions.add(new Item("Esconder", function(id)
         {
                 return "$('" + id + "').hide();";
@@ -513,23 +534,23 @@ $(document).ready(function()
                 else
                         return "$('" + id + "').show();";
         })); 			//2
-        modelActions.add(new Item("Fade In", function(id, show)
+        modelActions.add(new Item("Fade In", function(id, show, n)
         {
                 if(show === true)
-                        return "$('" + id + "').hide(); $('" + id + "').fadeIn(1000);"; 
+                        return "$('" + id + "').hide(); $('" + id + "').fadeIn(" + (n <= 0 ? 1000 : n) + ");"; 
                 else
-                        return "$('" + id + "').fadeIn(1000);";
+                        return "$('" + id + "').fadeIn(" + (n <= 0 ? 1000 : n) + ");";
         })); 			//3
-        modelActions.add(new Item("Fade Out", function(id)
+        modelActions.add(new Item("Fade Out", function(id, show, n)
         {
-                return "$('" + id + "').fadeOut(1000);"; 
+                return "$('" + id + "').fadeOut(" + (n <= 0 ? 1000 : n) + ");"; 
         })); 			//4
-        modelActions.add(new Item("Toogle", function(id, show)
+        modelActions.add(new Item("Toogle", function(id, show, n)
         {
                 if(show === true)
-                        return "$('" + id + "').hide(); $('" + id + "').toggle(1000);";
+                        return "$('" + id + "').hide(); $('" + id + "').toggle(" + (n <= 0 ? 1000 : n) + ");";
                 else
-                        return "$('" + id + "').toggle(1000);";
+                        return "$('" + id + "').toggle(" + (n <= 0 ? 1000 : n) + ");";
         })); 			//5
         modelActions.add(new Item("Zoom In", function(id, show)
         {
@@ -542,257 +563,257 @@ $(document).ready(function()
         {
                 return "$('" + id + "').iin();"; 
         }));			//7
-        modelActions.add(new Item("Slide In Up", function(id, show)
+        modelActions.add(new Item("Slide In Up", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
                                         "direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('slide', {\n" +
                                         "direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));                                               //8
-        modelActions.add(new Item("Slide In Down", function(id, show)
+        modelActions.add(new Item("Slide In Down", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
                                         "direction: 'down'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('slide', {\n" +
                                         "direction: 'down'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//9
-        modelActions.add(new Item("Slide Out Up", function(id, show)
+        modelActions.add(new Item("Slide Out Up", function(id, show, n)
         {
                         return "$('" + id + "').hide('slide', {\n" +
                                         "direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//10
-        modelActions.add(new Item("Slide Out Down", function(id, show)
+        modelActions.add(new Item("Slide Out Down", function(id, show, n)
         {
                         return "$('" + id + "').hide('slide', {\n" +
                                         " direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//11
-        modelActions.add(new Item("Slide In Left", function(id, show)
+        modelActions.add(new Item("Slide In Left", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
                                         " direction: 'left'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('slide', {\n" +
                                         " direction: 'left'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));                                             //12
-        modelActions.add(new Item("Slide In Right", function(id, show)
+        modelActions.add(new Item("Slide In Right", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('slide', {\n" +
                                         " direction: 'right'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('slide', {\n" +
                                         " direction: 'right'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//13
-        modelActions.add(new Item("Slide Out Left", function(id)
+        modelActions.add(new Item("Slide Out Left", function(id, show, n)
         {
                         return "$('" + id + "').hide('slide', {\n" +
                                         " direction: 'left'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//14
-        modelActions.add(new Item("Slide Out Right", function(id)
+        modelActions.add(new Item("Slide Out Right", function(id, show, n)
         {
                         return "$('" + id + "').hide('slide', {\n" +
                                         " direction: 'right'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));	                      //15
-        modelActions.add(new Item("Explode In", function(id, show)
+        modelActions.add(new Item("Explode In", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('explode', {\n" +
                                         "	pieces: 50\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('explode', {\n" +
                                         "	pieces: 50\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//16
-        modelActions.add(new Item("Explode Out", function(id)
+        modelActions.add(new Item("Explode Out", function(id, show, n)
         {
                         return "$('" + id + "').hide('explode', {\n" +
                                         "	pieces: 50\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//17
-        modelActions.add(new Item("Drop In Up", function(id, show)
+        modelActions.add(new Item("Drop In Up", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
                                         " direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('drop', {\n" +
                                         " direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//18
-        modelActions.add(new Item("Drop In Down", function(id, show)
+        modelActions.add(new Item("Drop In Down", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
                                         " direction: 'down'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('drop', {\n" +
                                         " direction: 'down'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//19
-        modelActions.add(new Item("Drop Out Up", function(id)
+        modelActions.add(new Item("Drop Out Up", function(id, show, n)
         {
                         return "$('" + id + "').hide('drop', {\n" +
                                         " direction: 'up'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//20
-        modelActions.add(new Item("Drop Out Down", function(id)
+        modelActions.add(new Item("Drop Out Down", function(id, show, n)
         {
                         return "$('" + id + "').hide('drop', {\n" +
                                         " direction: 'down'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//21
-        modelActions.add(new Item("Drop In Left", function(id, show)
+        modelActions.add(new Item("Drop In Left", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
                                         " direction: 'left'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('drop', {\n" +
                                         " direction: 'left'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		                      //22
-        modelActions.add(new Item("Drop In Right", function(id, show)
+        modelActions.add(new Item("Drop In Right", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('drop', {\n" +
                                         " direction: 'right'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('drop', {\n" +
                                         " direction: 'right'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//23
-        modelActions.add(new Item("Drop Out Left", function(id)
+        modelActions.add(new Item("Drop Out Left", function(id, show, n)
         {
                         return "$('" + id + "').hide('drop', {\n" +
                                         " direction: 'left'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//24
-        modelActions.add(new Item("Drop Out Right", function(id)
+        modelActions.add(new Item("Drop Out Right", function(id, show, n)
         {
                         return "$('" + id + "').hide('drop', {\n" +
                                         " direction: 'right'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		//25
-        modelActions.add(new Item("Clip In V", function(id, show)
+        modelActions.add(new Item("Clip In V", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('clip', {\n" +
                                         " direction: 'vertical'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('clip', {\n" +
                                         " direction: 'vertical'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//26
-        modelActions.add(new Item("Clip Out V", function(id)
+        modelActions.add(new Item("Clip Out V", function(id, show, n)
         {
                         return "$('" + id + "').hide('clip', {\n" +
                                         " direction: 'vertical'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//27
-        modelActions.add(new Item("Clip In H", function(id, show)
+        modelActions.add(new Item("Clip In H", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('clip', {\n" +
                                         " direction: 'horizontal'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('clip', {\n" +
                                         " direction: 'horizontal'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//28
-        modelActions.add(new Item("Clip Out H", function(id)
+        modelActions.add(new Item("Clip Out H", function(id, show, n)
         {
                         return "$('" + id + "').hide('clip', {\n" +
                                         " direction: 'horizontal'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//29
-        modelActions.add(new Item("Blind In V", function(id, show)
+        modelActions.add(new Item("Blind In V", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('blind', {\n" +
                                         " direction: 'vertical'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('blind', {\n" +
                                         " direction: 'vertical'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//30
-        modelActions.add(new Item("Blind Out V", function(id)
+        modelActions.add(new Item("Blind Out V", function(id, show, n)
         {
                         return "$('" + id + "').hide('blind', {\n" +
                                         " direction: 'vertical'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		                      //31
-        modelActions.add(new Item("Blind In H", function(id, show)
+        modelActions.add(new Item("Blind In H", function(id, show, n)
         {
                 if(show === true)
                         return "$('" + id + "').hide(); $('" + id + "').show('blind', {\n" +
                                         " direction: 'horizontal'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
                 else
                         return "$('" + id + "').show('blind', {\n" +
                                         " direction: 'horizontal'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//32
-        modelActions.add(new Item("Blind Out H", function(id)
+        modelActions.add(new Item("Blind Out H", function(id, show, n)
         {
                         return "$('" + id + "').hide('blind', {\n" +
                                         " direction: 'horizontal'\n" +
-                                        "}, 1000);";
+                                        "}, " + (n <= 0 ? 1000 : n) + ");";
         }));		                      //33
-        modelActions.add(new Item("Puff In", function(id, show)
+        modelActions.add(new Item("Puff In", function(id, show, n)
         {
                 if(show === true)
-                        return "$('" + id + "').hide(); $('" + id + "').show('puff', {}, 1000);";
+                        return "$('" + id + "').hide(); $('" + id + "').show('puff', {}, " + (n <= 0 ? 1000 : n) + ");";
                 else
-                        return "$('" + id + "').show('puff', {}, 1000);";
+                        return "$('" + id + "').show('puff', {}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//34
-        modelActions.add(new Item("Puff Out", function(id)
+        modelActions.add(new Item("Puff Out", function(id, show, n)
         {
-                        return "$('" + id + "').hide('puff', {}, 1000);";
+                        return "$('" + id + "').hide('puff', {}, " + (n <= 0 ? 1000 : n) + ");";
         }));			//35
-        modelActions.add(new Item("Flip In", function(id, show)
+        modelActions.add(new Item("Flip In", function(id, show, n)
         {
                 if(show === true)
                         return     '$("' + id + '").hide();\n' +
                                         '$("'+ id +'").css("opacity", 0); \n'+
                                         '$("'+ id +'").rotate3Di("flip"); \n'+
                                         '$("' + id + '").show(); \n'+
-                                        '$("' + id + '").rotate3Di("unflip", 1000, {opacity: 1}); \n';
+                                        '$("' + id + '").rotate3Di("unflip", ' + (n <= 0 ? 1000 : n) + ', {opacity: 1}); \n';
                 else
                         return '$("'+ id +'").css("opacity", 0); \n'+
                                         '$("'+ id +'").rotate3Di("flip"); \n'+
                                         '$("' + id + '").show(); \n'+
-                                        '$("' + id + '").rotate3Di("unflip", 1000, {opacity: 1}); \n';
+                                        '$("' + id + '").rotate3Di("unflip", ' + (n <= 0 ? 1000 : n) + ', {opacity: 1}); \n';
         }));			//36
-        modelActions.add(new Item("Flip Out", function(id)
+        modelActions.add(new Item("Flip Out", function(id, show, n)
         {
-                        return '$("' + id + '").rotate3Di("flip", 1000, {opacity: 0}); \n';
+                        return '$("' + id + '").rotate3Di("flip", ' + (n <= 0 ? 1000 : n) + ', {opacity: 0}); \n';
         }));			//37
-        modelActions.add(new Item("Play Audio", function(id, show)
+        modelActions.add(new Item("Play Audio", function(id, show, n)
         {
                 if(show)
                 {
@@ -806,11 +827,44 @@ $(document).ready(function()
         {
                 return 'StopAudio("' + id + '"); \n';
         }));			//39
-        modelActions.add(new Item("Anima ID", function(id, show)
+        modelActions.add(new Item("Anima ID", function(id, show, n)
         {
                 if(!show)
-                        return 'PlayBlock("' + id + '", 1000);\n';
-        }));
+                        return 'PlayBlock("' + id + '", ' + (n <= 0 ? 1000 : n) + ');\n';
+        }));                                                    //40
+        modelActions.add(new Item("Anima Estado", function(id, show, n)
+        {
+                if(!show)
+                {
+                        if(("" + n).indexOf(":") !== -1)
+                        {
+                                n = ("" + n).split(":");
+                                return '$("'+ id + '").playAnimationState(' + n[0] + ', ' + (n[1] <= 0 ? 1000 : n[1]) + ');\n';
+                        }
+                        return '$("'+ id + '").playAnimationState(' + n + ', 1000);\n';
+                }
+        }));                                                    //41
+        modelActions.add(new Item("Carrega Estado", function(id, show, n)
+        {
+                if(!show)
+                {
+                      return '$("'+ id + '").toState(' + n + ');\n';  
+                }
+        }));                                                    //42
+        modelActions.add(new Item("Animação Loop", function(id, show, n)
+        {
+                if(!show)
+                {
+                        return '$("' + id + '").playAnimationLoop(' + (n <= 0 ? 1000 : n)  + ');\n';
+                }
+        }));                                                    //43
+        modelActions.add(new Item("Animação Loop Z", function(id, show, n)
+        {
+                if(!show)
+                {
+                        return '$("' + id + '").playAnimationLoopZero(' + (n <= 0 ? 1000 : n)  + ');\n';
+                }
+        }));                                                    //44
         
         objEventosTarget.setElement("#objEventosTarget");
         objEventosTarget.setModel(objs);
@@ -1478,6 +1532,7 @@ $(document).ready(function()
           {
                 if(ptrObject !== null)
                 {
+                        var mySoma = 0;
                         // verifica se tem multidrag
                         if(_stack().length > 0)
                         {
@@ -1494,6 +1549,9 @@ $(document).ready(function()
                                                         ptrPage.Elementos[j].H = objTmp.height();
                                                         ptrPage.Elementos[j].T = parseFloat(objTmp.css("top"));
                                                         ptrPage.Elementos[j].L = parseFloat(objTmp.css("left"));
+                                                        var nowSoma = ($(ptrPage.Elementos[j].JqueryId).offset().top / scale) + $(ptrPage.Elementos[j].JqueryId)[0].scrollHeight;
+                                                        if(mySoma < nowSoma)
+                                                                mySoma = nowSoma;
                                               }
                                         }
                                 }
@@ -1507,6 +1565,20 @@ $(document).ready(function()
                                 ptrObject.H = objTmp.height();
                                 ptrObject.T = parseFloat(objTmp.css("top"));
                                 ptrObject.L = parseFloat(objTmp.css("left"));
+                                mySoma = ($(ptrObject.JqueryId).offset().top / scale) + $(ptrObject.JqueryId)[0].scrollHeight;
+                        }
+                        
+                        if(ptrProject.layout[0].Tipo === Layout.WEB)
+                        {
+                                if(__badWolf.__Soma < mySoma)
+                                {
+                                        __badWolf.__Soma = mySoma;
+                                        if($(document).height() < mySoma)
+                                        {
+                                                $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                                                "px; height: " + mySoma + "px; background-color: #EAEAEA; }");
+                                        }
+                                }
                         }
                 }
           });
@@ -1880,6 +1952,33 @@ function openPage(pgI)
                         objTmp.implementGaiaEvents();
                 }
         }
+        
+        /*
+         * run magic for web type
+         */
+        if(ptrProject.layout[0].Tipo === Layout.WEB)
+        {
+                $("#main").find(".badWolf").each(
+                        function(i)
+                        { 
+                                if($(this).css("overflow") === "visible")
+                                { 
+                                        this.__Soma = ($(this).offset().top / scale) + $(this)[0].scrollHeight; 
+                                        if((__badWolf === null) || (__badWolf.__Soma < this.__Soma))
+                                        { 
+                                                __badWolf = this;
+                                        }
+                                }
+                        }
+                );
+        
+                if($(document).height() < __badWolf.__Soma)
+                {
+                        $("#pgDinamic").text(".pg_sub { position: absolute; width: " + ptrProject.LarguraPaginas + 
+                        "px; height: " + __badWolf.__Soma + "px; background-color: #EAEAEA; }");
+                }
+        }
+        
         ptrPage.ResolveObjectsSpecialFields();
         window.onresize();
 }
@@ -2043,6 +2142,7 @@ function changeEvents()
                                 if(evTmp.TargetJqueryId === objEventosTarget.getSelectedItem().obj.JqueryId)
                                 {
                                         objEventosActions.setSelectIndex(evTmp.idAction, false);
+                                        $("#objEventosApoio").val(evTmp.NumApoio);
                                         novo = false;
                                         eventChange = evTmp;
                                         break;
@@ -2063,7 +2163,8 @@ function changeEvents()
                 }
                         
                 
-                if((objEventosTarget.getSelectIndex() > 0) && (objEventosActions.getSelectIndex() > 0))
+                //if((objEventosTarget.getSelectIndex() > 0) && (objEventosActions.getSelectIndex() > 0))
+                if((objEventosTarget.getSelectIndex() > 0))
                 {
                         eval(obj.obj(objEventosTarget.getSelectedItem().obj.JqueryId, true));
                         setTimeout(function()
@@ -2079,6 +2180,7 @@ function changeEvents()
                         if(novo)
                         {
                                 var evento = new Eventos(objEventosTipo.getSelectIndex(), objEventosTarget.getSelectedItem().obj.JqueryId, objEventosActions.getSelectIndex());
+                                evento.NumApoio = $("#objEventosApoio").val();
                                 newEvento(evento);
                                 novo = false;
                         }
@@ -2088,6 +2190,15 @@ function changeEvents()
                                 eventChange.TargetJqueryId = objEventosTarget.getSelectedItem().obj.JqueryId;
                                 saveAfter();
                         }
+                }
+        });
+        
+        $("#objEventosApoio").change(function()
+        {
+                if(eventChange !== null)
+                {
+                        eventChange.NumApoio = $("#objEventosApoio").val();
+                        saveAfter();
                 }
         });
 }

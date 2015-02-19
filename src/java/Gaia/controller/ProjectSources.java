@@ -469,7 +469,7 @@ public class ProjectSources
                         + " $(\"#pg\" + pgInd).css(\"height\", (document.body.scrollHeight / scale) - ($(\".header\").height() / scale) - ($(\".footer\").height() / scale)); }\n"*/
                         + "__badWolf = null;\n"
                         + "$(\"#pg\" + pgInd).find(\".badWolf\").each(function(i){ if($(this).css(\"overflow\") == \"visible\"){ this.__Soma = ($(this).offset().top / scale) + $(this)[0].scrollHeight; if((__badWolf === null) || (__badWolf.__Soma < this.__Soma)){ __badWolf = this;}}});\n"
-                        + "$(\"#pg\" + pgInd).css(\"height\", (__badWolf.__Soma) - ($(\".header\").height()) + 10);\n"+  
+                        + "$(\"#pg\" + pgInd).css(\"height\", (__badWolf.__Soma) - ($(\".header\").height()));\n"+  
                         "$('#blackOut').css('left', 0);\n" +
                         "$('#blackOut').css('top', 0);\n" +
                         "blackHell();\n"
@@ -1021,6 +1021,7 @@ public class ProjectSources
                                         "	<script src=\"../js/gaiaController/Thread.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaController/DBsource.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/MproEntity.js\" type=\"text/javascript\"> </script>\n" +
+                                        "	<script src=\"../js/MproEntityRemote.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/MproEntityRelation.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/UserEntities.js\" type=\"text/javascript\"> </script>\n" +
                                         "	<script src=\"../js/gaiaView/Lista.js\" type=\"text/javascript\"> </script>\n" +
@@ -1044,7 +1045,7 @@ public class ProjectSources
                                         "</head>\n" +
                                         "\n" +
                                         "<!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->\n" +
-                                        "<body style=\" background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.layout.get(0).Tipo == 6 ? (projeto.paginas.size()) : (projeto.paginas.size() - 2)) + "'); enableProx(false); pageIn('1');\">\n" +
+                                        "<body style=\" background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.paginas.size() - 2) + "'); enableProx(false); pageIn('1');\">\n" +
                                         "<!--FACEBOOK-->" +
                                         /*" <div id=\"fb-root\"></div>\n" +
                                         "<script>(function(d, s, id) {\n" +

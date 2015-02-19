@@ -247,5 +247,67 @@ $.fn.fontUnderline = function(bool)
 
 $.fn.playAnimation = function(tempo, call)
 {
-        PlayBlock($(this).attr("id"), (tempo ? tempo : 1000), (call ? call : null));
+        PlayBlock("#" + $(this).attr("id"), (tempo ? tempo : 1000), (call ? call : null));
+};
+
+$.fn.playAnimationLoop = function(tempo)
+{
+        var jid = "#" + $(this).attr("id");
+        var funcRet = function(t)
+        {
+                return function()
+                { 
+                        $(jid).playAnimation(t, funcRet(t)); 
+                }
+        };
+        $(jid).playAnimation(tempo, funcRet(tempo));
+};
+
+$.fn.playAnimationLoopZero = function(tempo)
+{
+        var jid = "#" + $(this).attr("id");
+        var funcRet = function(t)
+        {
+                return function()
+                { 
+                        $(jid).toOriginalState();
+                        $(jid).playAnimation(t, funcRet(t)); 
+                }
+        };
+        $(jid).playAnimation(tempo, funcRet(tempo));
+};
+
+$.fn.playAnimationState = function(ix, tempo, call)
+{
+        if(ix === undefined)
+                throw new Error("Passe o indice do estado!");
+        else
+                Anima("#" + $(this).attr("id"), $(this).getState(ix), tempo, call);
+};
+
+$.fn.toOriginalState = function()
+{
+        instantState("#" + $(this).attr("id"), $(this).getState(0));
+};
+
+$.fn.toState = function(ix)
+{
+         if(ix === undefined)
+                throw new Error("Passe o indice do estado!");
+        else
+                instantState("#" + $(this).attr("id"), $(this).getState(ix));
+};
+
+$.fn.getState = function(ix)
+{
+        if(ix === undefined)
+                throw new Error("Passe o indice do estado!");
+        else if(ix === 0)
+        {
+                return window[$(this).attr("id") + "Original"];
+        }
+        else
+        {
+                return window[$(this).attr("id") + "Estado" + ix];
+        }
 };

@@ -763,8 +763,8 @@ public abstract class MproEntity
                                     {
                                             if(this._class.getFields()[i].get(this) != null)
                                                     json += "\"" + this._class.getFields()[i].get(this).toString().replaceAll("\n", "\\\\n")
-                                                            .replaceAll("\"", "\\\\\"")
-                                                            .replaceAll("\'", "\\'") + "\",";
+                                                            .replaceAll("\"", "\\\\\\\"")
+                                                            .replaceAll("\\'", "'") + "\",";
                                             else
                                                     json += "null,";
                                     }

@@ -57,7 +57,7 @@ function GGraph(largura, altura, topo, esquerda, visivel)
         //@override
         this.canCreateVar = function()
         {
-                return true;
+                return false;
         };
         
         this.getPrivateAttrs().push(new SpecialAttrs("Fonte", "objText", "setFonteDados", ""));
@@ -69,7 +69,7 @@ function GGraph(largura, altura, topo, esquerda, visivel)
                  this.getPrivateAttrs()[0].Data = nameFonte;
         };
         
-        this.setCollums = function(collums)
+        this.setField = function(collums)
         {
                 this.getPrivateAttrs()[1].Data = collums;
         };
@@ -163,12 +163,12 @@ function GGraph(largura, altura, topo, esquerda, visivel)
 
                                 if(this.getPrivateAttrs()[0].Data !== "" && this.getPrivateAttrs()[0].Data.indexOf("@") === -1)
                                 {
-                                        instructs +=    '' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ');\n';
+                                        instructs +=    '' + this.Name + '.setDBsource(' + this.getPrivateAttrs()[0].Data + ', 0);\n';
                                 }
                                 
                                 if(this.getPrivateAttrs()[1].Data !== "")
                                 {
-                                        instructs += '' + this.Name + '.setFieldMap("' + this.getPrivateAttrs()[1].Data + '")';
+                                        instructs += '' + this.Name + '.setFieldMap("' + this.getPrivateAttrs()[1].Data + '");\n';
                                 }
                         }
                         

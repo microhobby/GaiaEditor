@@ -11,6 +11,16 @@ function FormCreator(classe, elem)
         // Campos privados
         
         /**
+         * @type String
+         */
+        this.saveReload = null;
+        
+        /**
+         * @type function
+         */
+        this.onSaveFunction = null;
+        
+        /**
          * @type MProEntity
          */
         this.Source = null;
@@ -45,6 +55,16 @@ function FormCreator(classe, elem)
         }
         
         // Metodos publicos
+        
+        this.onSave = function(func)
+        {
+                this.onSaveFunction = func;
+        };
+        
+        this.setDataSourceReload = function(varName)
+        {
+                this.saveReload = varName;
+        };
         
         /**
          *  Seta o dado a ser editado
@@ -137,6 +157,7 @@ function FormCreator(classe, elem)
         this.New = function()
         {
                 this.Source = new this.Classe();
+                var focus = false;
                 
                 // gogogo
                 for(var i = 0; i < this.ElemsClone.length; i++)
@@ -167,6 +188,11 @@ function FormCreator(classe, elem)
                                         {
                                                 this.Elem.find("#" + elemC.attr("id")).find("input").prop('checked', true);
                                         }
+                                }
+                                if(!focus)
+                                {
+                                        elemC.focus();
+                                        focus = true;
                                 }
                         }
                         else
@@ -261,5 +287,18 @@ function FormCreator(classe, elem)
                 }
                 
                 this.Source.Save();
+                
+                if(this.saveReload)
+                {
+                        /**
+                         * @type DBsource
+                         */
+                        window[this.saveReload].getData();
+                }
+                
+                if(this.onSaveFunction)
+                {
+                        this.onSaveFunction();
+                }
         };
 }

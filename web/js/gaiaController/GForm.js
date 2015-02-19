@@ -60,10 +60,28 @@ function GForm(largura, altura, topo, esquerda, visivel)
         };
         
         this.getPrivateAttrs().push(new SpecialAttrs("Entidade", "objCombo", "setEntidade", null, "modelEntities"));
+        this.getPrivateAttrs().push(new SpecialAttrs("Botão Novo", "objText", "setButtonNew", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("Botão Salva", "objText", "setButtonSave", ""));
+        this.getPrivateAttrs().push(new SpecialAttrs("Recarrega", "objText", "setDBsource", ""));
         
         this.setEntidade = function(entityName)
         {
                 this.getPrivateAttrs()[0].Data = entityName;
+        };
+        
+        this.setButtonNew = function(buttonNew)
+        {
+                this.getPrivateAttrs()[1].Data = buttonNew;
+        };
+        
+        this.setButtonSave = function(buttonSave)
+        {
+                this.getPrivateAttrs()[2].Data = buttonSave;
+        };
+        
+        this.setDBsource = function(dbsource)
+        {
+                this.getPrivateAttrs()[3].Data = dbsource;
         };
         
         this.returnCode = function(flag, isPreview)
@@ -129,6 +147,12 @@ function GForm(largura, altura, topo, esquerda, visivel)
                         {
                                 vars += 'var ' + this.Name + ' = new FormCreator(' + this.getPrivateAttrs()[0].Data + ', "' + this.JqueryId + '");\n';
                                 instructs += '' + this.Name + ' = $.extend({}, ' + this.Name + ', $("' + this.JqueryId + '"));\n';
+                                if(this.getPrivateAttrs()[1].Data !== "")
+                                        instructs += '' + this.getPrivateAttrs()[1].Data + '.click(function(){ ' + this.Name + '.New(); });\n';
+                                if(this.getPrivateAttrs()[2].Data !== "")
+                                        instructs += '' + this.getPrivateAttrs()[2].Data + '.click(function(){ ' + this.Name + '.Save(); });\n';
+                                if(this.getPrivateAttrs()[3].Data !== "")
+                                        instructs += '' + this.Name + '.setDataSourceReload("' + this.getPrivateAttrs()[3].Data + '");\n';
                         }
                         
                 return code;

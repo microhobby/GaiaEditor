@@ -141,9 +141,19 @@ function FileFactory()
                                                         }
 
                                                         if(objTmp.JqueryId.indexOf("div") !== -1)
-                                                                source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 8);
+                                                        {
+                                                                if(objTmp.FatherId == 0)
+                                                                        source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 8) + "\n";
+                                                                else
+                                                                        source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 8).replace("badWolf", "") + "\n";
+                                                        }
                                                         else
-                                                                source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 16);
+                                                        {
+                                                                if(objTmp.FatherId == 0)
+                                                                        source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 16) + "\n";
+                                                                else
+                                                                        source += objTmp.returnCode().substr(0, objTmp.returnCode().length - 16).replace("badWolf", "") + "\n";
+                                                        }
 
                                                         for(j = 0; j < filhos.length; j++)
                                                         {
@@ -163,7 +173,7 @@ function FileFactory()
                                                                                         var eventTmp = objFilho.eventos[e];
                                                                                         if(eventTmp.idAction !== 0)
                                                                                                 java += modelEventos.get(eventTmp.idEvento).obj(
-                                                                                                        objFilho.JqueryId, modelActions.get(eventTmp.idAction).obj(eventTmp.TargetJqueryId) + "\n"
+                                                                                                        objFilho.JqueryId, modelActions.get(eventTmp.idAction).obj(eventTmp.TargetJqueryId, false, eventTmp.NumApoio) + "\n"
                                                                                                 );
                                                                                         else
                                                                                                java += modelEventos.get(eventTmp.idEvento).obj(
@@ -213,7 +223,11 @@ function FileFactory()
                                                 }
                                                 else
                                                 {
-                                                        source += objTmp.returnCode() + "\n";
+                                                        /* VAMOS VERIFICAR SE É FILHO */
+                                                        if(objTmp.FatherId == 0)
+                                                                source += objTmp.returnCode() + "\n";
+                                                        else
+                                                                source += objTmp.returnCode().replace("badWolf", "") + "\n";
                                                         objTmp.returned = true;
                                                 }
 
@@ -270,7 +284,7 @@ function FileFactory()
                                                                 var eventTmp = objTmp.eventos[e];
                                                                 if(eventTmp.idAction !== 0)
                                                                         java += modelEventos.get(eventTmp.idEvento).obj(
-                                                                                objTmp.JqueryId, modelActions.get(eventTmp.idAction).obj(eventTmp.TargetJqueryId) + "\n"
+                                                                                objTmp.JqueryId, modelActions.get(eventTmp.idAction).obj(eventTmp.TargetJqueryId, undefined, eventTmp.NumApoio) + "\n"
                                                                         );
                                                                 else
                                                                        java += modelEventos.get(eventTmp.idEvento).obj(

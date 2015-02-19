@@ -21,6 +21,7 @@ function MproChart(elem, type)
         
         var Source = [];
         var Field = "";
+        var me = this;
         
         var __charOptions = { bezierCurve : false};
         
@@ -110,16 +111,17 @@ function MproChart(elem, type)
         };
         
         function arrange(datasetIndex)
-        {
+        {      
                 if(Source[datasetIndex] && Source[datasetIndex].Data.length)
                 {
-                        clearPoints();
+                        me.clearPoints();
+                         _data[datasetIndex] = new Array();
                         for(var i = 0; i < Source[datasetIndex].Data.length; i++)
                         {
-                                _labels.push(1);
-                                 _data[datasetIndex].push(Source.Data[i][Field]);
+                                _labels.push(i);
+                                 _data[datasetIndex].push(Source[datasetIndex].Data[i][Field]);
                         }
-                        DrawChart();
+                        me.drawChart();
                 }
         }
         
@@ -128,12 +130,19 @@ function MproChart(elem, type)
          */
         this.setDBsource = function(model, datasetIndex)
         {
-                Source[datasetIndex](model);
+                Source[datasetIndex] = model;
+                //Source[datasetIndex](model);
                 //var this = this;
-                Source.setListener(function()
+                Source[datasetIndex].setListener(function()
                 {
                         arrange(datasetIndex);
                 });
+        };
+        
+        this.setSourceArray = function(data, datasetIndex)
+        {
+                Source[datasetIndex] = data;
+                arrange(datasetIndex);
         };
         
         this.setFieldMap = function(field)

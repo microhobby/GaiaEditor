@@ -324,6 +324,73 @@ var ___android = false;
          }
  }
  
+  /**
+  * 
+  * @param {String} jqueryId
+  * @param {Objetos} objDest
+  * @returns {undefined}
+  */
+ function instantState(jqueryId, objDest)
+ {
+         $(jqueryId).rotate(objDest.A);
+         if((objDest.Cb === "transparent" ? true : false))
+         {
+                $(jqueryId).css(
+                {
+                        width: objDest.W,
+                        height: objDest.H,
+                        top: objDest.T,
+                        left: objDest.L,
+                        'padding-top' : objDest.P,
+                       'padding-right' : objDest.P,
+                       'padding-bottom' : objDest.P,
+                       'padding-left' : objDest.P,
+                       //'background-color': (objDest.Cb === "transparent" ? "rgba(255, 255, 255, 255)" : objDest.Cb),
+                       'border-radius': objDest.R,
+                       'box-shadow': '9px 20px 18px ' + objDest.S + 'px ' + objDest.Cs,
+                       'border-top-color': objDest.Cbb,
+                       'border-right-color': objDest.Cbb,
+                       'border-bottom-color': objDest.Cbb,
+                       'border-left-color': objDest.Cbb,
+                       'border-top-width': objDest.B,
+                       'border-right-width': objDest.B,
+                       'border-bottom-width': objDest.B,
+                       'border-left-width': objDest.B,
+                       fontSize: objDest.SizeFont,
+                       'color': objDest.Cf,
+                       opacity: (objDest.Opacity / 100)
+                });
+        }
+        else
+        {
+                $(jqueryId).css(
+                {
+                        width: objDest.W,
+                        height: objDest.H,
+                        top: objDest.T,
+                        left: objDest.L,
+                        'padding-top' : objDest.P,
+                       'padding-right' : objDest.P,
+                       'padding-bottom' : objDest.P,
+                       'padding-left' : objDest.P,
+                       'background-color': objDest.Cb,
+                       'border-radius': objDest.R,
+                       'box-shadow': '9px 20px 18px ' + objDest.S + 'px ' + objDest.Cs,
+                       'border-top-color': objDest.Cbb,
+                       'border-right-color': objDest.Cbb,
+                       'border-bottom-color': objDest.Cbb,
+                       'border-left-color': objDest.Cbb,
+                       'border-top-width': objDest.B,
+                       'border-right-width': objDest.B,
+                       'border-bottom-width': objDest.B,
+                       'border-left-width': objDest.B,
+                       fontSize: objDest.SizeFont,
+                       'color': objDest.Cf,
+                       opacity: (objDest.Opacity / 100)
+                });
+        }
+ }
+ 
  /**
   * 
   * @param {String} jqueryId
@@ -405,6 +472,23 @@ var ___android = false;
 function prox()
 {
 	validProx();
+                      pageOutProx();
+}
+
+function prev()
+{
+        validAnte();
+        pageOutAnt();
+}
+
+function enableSwipe()
+{
+        enableGest = true;
+}
+
+function disableSwipe()
+{
+        enableGest = false;
 }
 
 //mostra o icone de anterior

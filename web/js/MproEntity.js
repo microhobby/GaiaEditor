@@ -9,23 +9,41 @@ function MproEntity()
         var joined = false;
         var namesRelation = new Array();
         this.cod = 2147483647;
-        this.superCod = 2147483647;
         this.RefObject = null;
-        MproEntity.scriptExecution = "";
-        MproEntity.scriptQuery = "";
+        // get name of class
+        this.class = this.constructor.name;
+        
+        /*
+         * Construct static help for fields in "class"
+         */
+        if(window[this.class].class === undefined)
+        {
+            window[this.class].class = {};
+            for(var f in me)
+            {
+                if((f !== "class") && (f !== "RefObject") && (typeof (me[f]) !== "function"))
+                {
+                    window[this.class].class[f] = {field: f, class: this.class};
+                }
+            }
+        }
+        
         var openshift = getCookie("openshift") === "sim" ? true : false;
         
-        if(openshift)
+        if(!MproEntity.serverSeted)
         {
-                MproEntity.scriptExecution = "http://gaia.mpro3.com.br/system/Executions.jsp";
-                MproEntity.scriptQuery = "http://gaia.mpro3.com.br/system/Query.jsp"; 
-                /*MproEntity.scriptExecution = "http://localhost:8084/GaiaEditor/system/Executions.jsp";
-                MproEntity.scriptQuery = "http://localhost:8084/GaiaEditor/system/Query.jsp";  */
-        }
-        else
-        {
-                MproEntity.scriptExecution = "../MproEntity/Executions.php";
-                MproEntity.scriptQuery = "../MproEntity/Query.php"
+                if(openshift)
+                {
+                        MproEntity.scriptExecution = "http://gaia.mpro3.com.br/system/Executions.jsp";
+                        MproEntity.scriptQuery = "http://gaia.mpro3.com.br/system/Query.jsp"; 
+                        /*MproEntity.scriptExecution = "http://localhost:8084/GaiaEditor/system/Executions.jsp";
+                        MproEntity.scriptQuery = "http://localhost:8084/GaiaEditor/system/Query.jsp";  */
+                }
+                else
+                {
+                        MproEntity.scriptExecution = "../MproEntity/Executions.php";
+                        MproEntity.scriptQuery = "../MproEntity/Query.php"
+                }
         }
         
         if(this.class === undefined)
@@ -960,11 +978,16 @@ MproEntity.getAll = function(classe, callBack, limiter, superFilter, where, ordB
         return elems;
 };
 
+MproEntity.scriptExecution = "";
+MproEntity.scriptQuery = "";
+MproEntity.serverSeted = false;
+
 MproEntity.setServer = function(url, tec)
 {     
         window.mproEntityBridge = undefined;
         MproEntity.scriptExecution =  url + "/Executions" + (tec == undefined ? "" : ("." + tec));
         MproEntity.scriptQuery =  url + "/Query" + (tec == undefined ? "" : ("." + tec));
+        MproEntity.serverSeted = true;
 };
 
 MproEntity.Logic = function(val, comparator, logicNext)

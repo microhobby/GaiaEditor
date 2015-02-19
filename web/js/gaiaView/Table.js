@@ -97,16 +97,17 @@ function Table(elem)
                                 $(".remEnti"+myId).click(function(evt)
                                 {
                                         evt.stopPropagation();
-                                        if(Source.Data[parseInt($(this).attr("id"))].Delete)
+                                        
+                                        if(!OverrideDelete && Source.Data[parseInt($(this).attr("id"))].Delete)
                                         {
-                                                if(!OverrideDelete)
-                                                {
-                                                        Source.Data[parseInt($(this).attr("id"))].Delete();
-                                                        Source.Data.splice(parseInt($(this).attr("id")), 1);
-                                                }
-                                                else
-                                                        OverrideDelete(Source.Data[parseInt($(this).attr("id"))]);
+                                                Source.Data[parseInt($(this).attr("id"))].Delete();
+                                                Source.Data.splice(parseInt($(this).attr("id")), 1);
                                         }
+                                        else if(!OverrideDelete)
+                                            Source.Data.splice(parseInt($(this).attr("id")), 1);
+                                        else
+                                                OverrideDelete(Source.Data[parseInt($(this).attr("id"))]);
+                                            
                                         $(this).closest("tr").remove();
                                 });
 
