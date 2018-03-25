@@ -13,6 +13,7 @@ import com.google.gson.stream.JsonWriter;
 import com.mongodb.MongoClient;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.UnknownHostException;
 import org.bson.types.ObjectId;
@@ -140,7 +141,7 @@ public abstract class MproEntity
     }
     
     public String toJson()
-    {
+    {   
         String json = "{";
 
         for (Field field : this._class.getFields())
@@ -167,7 +168,11 @@ public abstract class MproEntity
                 {
                     if (field.get(this) != null)
                     {
-                        json += "\"" + field.get(this).toString().replaceAll("\n", "\\\\n").replaceAll("\"", "\\\\\\\"").replaceAll("\\'", "'") + "\",";
+                        json += "\"" + field.get(this).toString()
+                                .replaceAll("\n", "\\\\n")
+                                .replaceAll("\t", "\\\\t")
+                                .replaceAll("\"", "\\\\\\\"")
+                                .replaceAll("\\'", "'") + "\",";
                     } 
                     else
                     {
