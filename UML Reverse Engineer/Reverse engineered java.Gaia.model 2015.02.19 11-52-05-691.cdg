@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Reverse engineered java.Gaia.model 2015.02.19 11-52-05-691">
+  <ClassDiagramComponents>
+    <Class xPosition="20.0" yPosition="20.0" package="Gaia.model" name="LayoutEventosRodape" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutEventosRodape" visibility="public"/>
+        <Constructor name="LayoutEventosRodape" visibility="public">
+          <Argument type="int" name="id"/>
+          <Argument type="String" name="target"/>
+          <Argument type="int" name="action"/>
+        </Constructor>
+      </Constructors>
+      <Fields/>
+      <Methods/>
+    </Class>
+    <Class xPosition="320.0" yPosition="20.0" package="Gaia.model" name="Entity" visibility="public">
+      <Constructors>
+        <Constructor name="Entity" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="Name" visibility="public" type="String"/>
+        <Field name="Fields" visibility="public" type="List&lt;Field&gt;"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="620.0" yPosition="20.0" package="Gaia.model" name="LayoutRecursosTopo" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutRecursosTopo" visibility="public"/>
+        <Constructor name="LayoutRecursosTopo" visibility="public">
+          <Argument type="String" name="nome"/>
+          <Argument type="int" name="tipo"/>
+          <Argument type="String" name="arquivo"/>
+        </Constructor>
+      </Constructors>
+      <Fields/>
+      <Methods/>
+    </Class>
+    <Class xPosition="920.0" yPosition="20.0" package="Gaia.model" name="LayoutObjetosTopo" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutObjetosTopo" visibility="public"/>
+        <Constructor name="LayoutObjetosTopo" visibility="public">
+          <Argument type="int" name="id"/>
+          <Argument type="String" name="jqueryId"/>
+          <Argument type="double" name="w"/>
+          <Argument type="double" name="h"/>
+          <Argument type="double" name="t"/>
+          <Argument type="double" name="l"/>
+          <Argument type="double" name="b"/>
+          <Argument type="double" name="p"/>
+          <Argument type="double" name="r"/>
+          <Argument type="double" name="s"/>
+          <Argument type="String" name="cb"/>
+          <Argument type="String" name="cs"/>
+          <Argument type="String" name="font"/>
+          <Argument type="int" name="fontid"/>
+          <Argument type="String" name="cf"/>
+          <Argument type="int" name="sizefont"/>
+          <Argument type="boolean" name="negrito"/>
+          <Argument type="boolean" name="italico"/>
+          <Argument type="boolean" name="subline"/>
+          <Argument type="boolean" name="visible"/>
+          <Argument type="int" name="zindex"/>
+          <Argument type="double" name="opacity"/>
+          <Argument type="String" name="text"/>
+          <Argument type="String" name="fatherId"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="recursos" visibility="public" type="List&lt;LayoutRecursosTopo&gt;" isTransient="true"/>
+        <Field name="eventos" visibility="public" type="List&lt;LayoutEventosTopo&gt;" isTransient="true"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="20.0" yPosition="420.0" package="Gaia.model" name="Objetos" visibility="public">
+      <Constructors>
+        <Constructor name="Objetos" visibility="public"/>
+        <Constructor name="Objetos" visibility="public">
+          <Argument type="double" name="largura"/>
+          <Argument type="double" name="altura"/>
+          <Argument type="double" name="topo"/>
+          <Argument type="double" name="esquerda"/>
+          <Argument type="boolean" name="visivel"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="counterId" visibility="private" type="int" isStatic="true"/>
+        <Field name="Id" visibility="public" type="int"/>
+        <Field name="JqueryId" visibility="public" type="String"/>
+        <Field name="W" visibility="public" type="double"/>
+        <Field name="H" visibility="public" type="double"/>
+        <Field name="T" visibility="public" type="double"/>
+        <Field name="L" visibility="public" type="double"/>
+        <Field name="A" visibility="public" type="double"/>
+        <Field name="B" visibility="public" type="double"/>
+        <Field name="P" visibility="public" type="double"/>
+        <Field name="R" visibility="public" type="double"/>
+        <Field name="S" visibility="public" type="double"/>
+        <Field name="Cb" visibility="public" type="String"/>
+        <Field name="Cbb" visibility="public" type="String"/>
+        <Field name="Cs" visibility="public" type="String"/>
+        <Field name="Font" visibility="public" type="String"/>
+        <Field name="FontId" visibility="public" type="int"/>
+        <Field name="Cf" visibility="public" type="String"/>
+        <Field name="SizeFont" visibility="public" type="int"/>
+        <Field name="Negrito" visibility="public" type="boolean"/>
+        <Field name="Italico" visibility="public" type="boolean"/>
+        <Field name="Subline" visibility="public" type="boolean"/>
+        <Field name="Visible" visibility="public" type="boolean"/>
+        <Field name="Zindex" visibility="public" type="int"/>
+        <Field name="Opacity" visibility="public" type="double"/>
+        <Field name="recurso" visibility="public" type="int"/>
+        <Field name="Text" visibility="public" type="String"/>
+        <Field name="FatherId" visibility="public" type="String"/>
+        <Field name="Vss" visibility="public" type="double"/>
+        <Field name="eventos" visibility="public" type="List&lt;Eventos&gt;"/>
+        <Field name="estados" visibility="public" type="List&lt;Estados&gt;"/>
+        <Field name="ClassType" visibility="public" type="String"/>
+        <Field name="Name" visibility="public" type="String"/>
+        <Field name="Deleted" visibility="public" type="boolean"/>
+        <Field name="SpecialFields" visibility="public" type="String"/>
+        <Field name="StaticPos" visibility="public" type="boolean"/>
+        <Field name="_recurso" visibility="private" type="Recursos"/>
+      </Fields>
+      <Methods>
+        <Method name="ClearObjectsCount" visibility="public" returnType="void"/>
+        <Method name="ResourceResolve" visibility="public" returnType="void"/>
+        <Method name="deleteDeleteds" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+    <Class xPosition="320.0" yPosition="420.0" package="Gaia.model" name="LayoutPaginaTopo" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutPaginaTopo" visibility="public"/>
+        <Constructor name="LayoutPaginaTopo" visibility="public">
+          <Argument type="String" name="script"/>
+          <Argument type="double" name="h"/>
+          <Argument type="double" name="w"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="ScriptGeral" visibility="public" type="String"/>
+        <Field name="Altura" visibility="public" type="double"/>
+        <Field name="Largura" visibility="public" type="double"/>
+        <Field name="Elementos" visibility="public" type="List&lt;LayoutObjetosTopo&gt;"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="620.0" yPosition="420.0" package="Gaia.model" name="Entities" visibility="public">
+      <Constructors>
+        <Constructor name="Entities" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="Entities" visibility="public" type="List&lt;Entity&gt;"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="920.0" yPosition="420.0" package="Gaia.model" name="LayoutObjetosRodape" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutObjetosRodape" visibility="public"/>
+        <Constructor name="LayoutObjetosRodape" visibility="public">
+          <Argument type="int" name="id"/>
+          <Argument type="String" name="jqueryId"/>
+          <Argument type="double" name="w"/>
+          <Argument type="double" name="h"/>
+          <Argument type="double" name="t"/>
+          <Argument type="double" name="l"/>
+          <Argument type="double" name="b"/>
+          <Argument type="double" name="p"/>
+          <Argument type="double" name="r"/>
+          <Argument type="double" name="s"/>
+          <Argument type="String" name="cb"/>
+          <Argument type="String" name="cs"/>
+          <Argument type="String" name="font"/>
+          <Argument type="int" name="fontid"/>
+          <Argument type="String" name="cf"/>
+          <Argument type="int" name="sizefont"/>
+          <Argument type="boolean" name="negrito"/>
+          <Argument type="boolean" name="italico"/>
+          <Argument type="boolean" name="subline"/>
+          <Argument type="boolean" name="visible"/>
+          <Argument type="int" name="zindex"/>
+          <Argument type="double" name="opacity"/>
+          <Argument type="String" name="text"/>
+          <Argument type="String" name="fatherId"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="recursos" visibility="public" type="List&lt;LayoutRecursosRodape&gt;" isTransient="true"/>
+        <Field name="eventos" visibility="public" type="List&lt;LayoutEventosRodape&gt;" isTransient="true"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="20.0" yPosition="820.0" package="Gaia.model" name="Estados" visibility="public">
+      <Constructors>
+        <Constructor name="Estados" visibility="public"/>
+        <Constructor name="Estados" visibility="public">
+          <Argument type="double" name="largura"/>
+          <Argument type="double" name="altura"/>
+          <Argument type="double" name="topo"/>
+          <Argument type="double" name="esquerda"/>
+          <Argument type="boolean" name="visivel"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="Id" visibility="public" type="int"/>
+        <Field name="JqueryId" visibility="public" type="String"/>
+        <Field name="W" visibility="public" type="double"/>
+        <Field name="H" visibility="public" type="double"/>
+        <Field name="T" visibility="public" type="double"/>
+        <Field name="L" visibility="public" type="double"/>
+        <Field name="A" visibility="public" type="double"/>
+        <Field name="B" visibility="public" type="double"/>
+        <Field name="P" visibility="public" type="double"/>
+        <Field name="R" visibility="public" type="double"/>
+        <Field name="S" visibility="public" type="double"/>
+        <Field name="Cb" visibility="public" type="String"/>
+        <Field name="Cbb" visibility="public" type="String"/>
+        <Field name="Cs" visibility="public" type="String"/>
+        <Field name="Font" visibility="public" type="String"/>
+        <Field name="FontId" visibility="public" type="int"/>
+        <Field name="Cf" visibility="public" type="String"/>
+        <Field name="SizeFont" visibility="public" type="int"/>
+        <Field name="Negrito" visibility="public" type="boolean"/>
+        <Field name="Italico" visibility="public" type="boolean"/>
+        <Field name="Subline" visibility="public" type="boolean"/>
+        <Field name="Visible" visibility="public" type="boolean"/>
+        <Field name="Zindex" visibility="public" type="int"/>
+        <Field name="Opacity" visibility="public" type="double"/>
+        <Field name="recurso" visibility="public" type="int"/>
+        <Field name="Text" visibility="public" type="String"/>
+        <Field name="FatherId" visibility="public" type="String"/>
+        <Field name="Vss" visibility="public" type="double"/>
+        <Field name="ClassType" visibility="public" type="String"/>
+        <Field name="Name" visibility="public" type="String"/>
+        <Field name="Deleted" visibility="public" type="boolean"/>
+      </Fields>
+      <Methods>
+        <Method name="deleteDeleteds" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+    <Class xPosition="320.0" yPosition="820.0" package="Gaia.model" name="LayoutEventosTopo" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutEventosTopo" visibility="public"/>
+        <Constructor name="LayoutEventosTopo" visibility="public">
+          <Argument type="int" name="id"/>
+          <Argument type="String" name="target"/>
+          <Argument type="int" name="action"/>
+        </Constructor>
+      </Constructors>
+      <Fields/>
+      <Methods/>
+    </Class>
+    <Class xPosition="620.0" yPosition="820.0" package="Gaia.model" name="Recursos" visibility="public">
+      <Constructors>
+        <Constructor name="Recursos" visibility="public"/>
+        <Constructor name="Recursos" visibility="public">
+          <Argument type="String" name="nome"/>
+          <Argument type="int" name="tipo"/>
+          <Argument type="String" name="arquivo"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="Nome" visibility="public" type="String"/>
+        <Field name="Tipo" visibility="public" type="int"/>
+        <Field name="Arquivo" visibility="public" type="String"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="920.0" yPosition="820.0" package="Gaia.model" name="Projeto" visibility="public">
+      <Constructors>
+        <Constructor name="Projeto" visibility="public"/>
+        <Constructor name="Projeto" visibility="public">
+          <Argument type="String" name="nome"/>
+          <Argument type="double" name="altura"/>
+          <Argument type="double" name="largura"/>
+          <Argument type="String" name="obs"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="Nome" visibility="public" type="String"/>
+        <Field name="AlturaPaginas" visibility="public" type="double"/>
+        <Field name="LarguraPaginas" visibility="public" type="double"/>
+        <Field name="layout" visibility="public" type="List&lt;Layout&gt;"/>
+        <Field name="paginas" visibility="public" type="List&lt;Paginas&gt;"/>
+        <Field name="recursos" visibility="public" type="List&lt;Recursos&gt;"/>
+        <Field name="Obs" visibility="public" type="String"/>
+        <Field name="JsonEntities" visibility="public" type="String"/>
+      </Fields>
+      <Methods>
+        <Method name="deleteDeleteds" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+    <Class xPosition="20.0" yPosition="1220.0" package="Gaia.model" name="LayoutPaginaRodape" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutPaginaRodape" visibility="public"/>
+        <Constructor name="LayoutPaginaRodape" visibility="public">
+          <Argument type="String" name="script"/>
+          <Argument type="double" name="h"/>
+          <Argument type="double" name="w"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="ScriptGeral" visibility="public" type="String"/>
+        <Field name="Altura" visibility="public" type="double"/>
+        <Field name="Largura" visibility="public" type="double"/>
+        <Field name="Elementos" visibility="public" type="List&lt;LayoutObjetosRodape&gt;"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="320.0" yPosition="1220.0" package="Gaia.model" name="Eventos" visibility="public">
+      <Constructors>
+        <Constructor name="Eventos" visibility="public"/>
+        <Constructor name="Eventos" visibility="public">
+          <Argument type="int" name="id"/>
+          <Argument type="String" name="target"/>
+          <Argument type="int" name="action"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="idEvento" visibility="public" type="int"/>
+        <Field name="idAction" visibility="public" type="int"/>
+        <Field name="TargetJqueryId" visibility="public" type="String"/>
+        <Field name="Script" visibility="public" type="String"/>
+        <Field name="Deleted" visibility="public" type="boolean"/>
+        <Field name="NumApoio" visibility="public" type="String"/>
+      </Fields>
+      <Methods>
+        <Method name="deleteDeleteds" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+    <Class xPosition="620.0" yPosition="1220.0" package="Gaia.model" name="LayoutRecursosRodape" visibility="public">
+      <Constructors>
+        <Constructor name="LayoutRecursosRodape" visibility="public"/>
+        <Constructor name="LayoutRecursosRodape" visibility="public">
+          <Argument type="String" name="nome"/>
+          <Argument type="int" name="tipo"/>
+          <Argument type="String" name="arquivo"/>
+        </Constructor>
+      </Constructors>
+      <Fields/>
+      <Methods/>
+    </Class>
+    <Class xPosition="920.0" yPosition="1220.0" package="Gaia.model" name="Field" visibility="public">
+      <Constructors>
+        <Constructor name="Field" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="Name" visibility="public" type="String"/>
+        <Field name="Type" visibility="public" type="String"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="20.0" yPosition="1620.0" package="Gaia.model" name="User" visibility="public">
+      <Constructors>
+        <Constructor name="User" visibility="public"/>
+        <Constructor name="User" visibility="public">
+          <Argument type="String" name="username"/>
+          <Argument type="String" name="key"/>
+          <Argument type="String" name="nome"/>
+          <Argument type="String" name="email"/>
+          <Argument type="String" name="datanascimento"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="Nome" visibility="public" type="String"/>
+        <Field name="UserName" visibility="public" type="String"/>
+        <Field name="Chave" visibility="public" type="String"/>
+        <Field name="Email" visibility="public" type="String"/>
+        <Field name="DataNascimento" visibility="public" type="String"/>
+        <Field name="Projetos" visibility="public" type="List&lt;Projeto&gt;"/>
+      </Fields>
+      <Methods>
+        <Method name="getIdade" visibility="public" returnType="int"/>
+        <Method name="deleteDeleteds" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+    <Class xPosition="320.0" yPosition="1620.0" package="Gaia.model" name="Layout" visibility="public">
+      <Constructors>
+        <Constructor name="Layout" visibility="public"/>
+        <Constructor name="Layout" visibility="public">
+          <Argument type="int" name="efeito"/>
+          <Argument type="int" name="tipo"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="SMARTPHONE" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="WEB" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="EAD" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="WEBAPP" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="SMARTPHONEAPP" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="BOOK" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="DESKTOP" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="PAGINA" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="ZOOM" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="NENHUM" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="Efeito" visibility="public" type="int"/>
+        <Field name="Tipo" visibility="public" type="int"/>
+        <Field name="BackgroundImage" visibility="public" type="String"/>
+        <Field name="BackgroundColor" visibility="public" type="String"/>
+        <Field name="Topo" visibility="public" type="List&lt;LayoutPaginaTopo&gt;"/>
+        <Field name="Rodape" visibility="public" type="List&lt;LayoutPaginaRodape&gt;"/>
+        <Field name="hasFooterTop" visibility="public" type="boolean"/>
+      </Fields>
+      <Methods>
+        <Method name="resolveHeaderFooter" visibility="public" returnType="List&lt;Paginas&gt;">
+          <Argument type="Projeto" name="p"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="620.0" yPosition="1620.0" package="Gaia.model" name="Paginas" visibility="public">
+      <Constructors>
+        <Constructor name="Paginas" visibility="public"/>
+        <Constructor name="Paginas" visibility="public">
+          <Argument type="String" name="script"/>
+          <Argument type="int" name="indice"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="ScriptGeral" visibility="public" type="String"/>
+        <Field name="Indice" visibility="public" type="int"/>
+        <Field name="Elementos" visibility="public" type="List&lt;Objetos&gt;"/>
+      </Fields>
+      <Methods>
+        <Method name="deleteDeleteds" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="Fields" source="Entity" target="Field" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <IsRelation name="is" source="LayoutEventosRodape" target="Eventos"/>
+    <HasRelation name="Entities" source="Entities" target="Entity" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="Projetos" source="User" target="Projeto" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="Topo" source="Layout" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="Rodape" source="Layout" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <IsRelation name="is" source="LayoutObjetosRodape" target="Objetos"/>
+    <UseRelation source="Layout" target="Paginas" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="Elementos" source="LayoutPaginaTopo" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <IsRelation name="is" source="LayoutObjetosTopo" target="Objetos"/>
+    <HasRelation name="eventos" source="LayoutObjetosTopo" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="recursos" source="LayoutObjetosTopo" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="Elementos" source="Paginas" target="Objetos" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="recursos" source="LayoutObjetosRodape" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="eventos" source="LayoutObjetosRodape" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="_recurso" source="Objetos" target="Recursos" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="Elementos" source="LayoutPaginaRodape" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="recursos" source="Projeto" target="Recursos" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <IsRelation name="is" source="LayoutEventosTopo" target="Eventos"/>
+    <HasRelation name="layout" source="Projeto" target="Layout" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="eventos" source="Objetos" target="Eventos" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <IsRelation name="is" source="LayoutRecursosTopo" target="Recursos"/>
+    <HasRelation name="estados" source="Objetos" target="Estados" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <HasRelation name="paginas" source="Projeto" target="Paginas" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <IsRelation name="is" source="LayoutRecursosRodape" target="Recursos"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

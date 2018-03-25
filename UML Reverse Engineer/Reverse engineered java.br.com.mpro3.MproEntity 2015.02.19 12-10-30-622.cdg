@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Reverse engineered java.br.com.mpro3.MproEntity 2015.02.19 12-10-30-622">
+  <ClassDiagramComponents>
+    <Class xPosition="20.0" yPosition="20.0" package="br.com.mpro3.MproEntity" name="LauDB" visibility="public">
+      <Constructors>
+        <Constructor name="LauDB" visibility="public">
+          <Argument type="String" name="file"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="connection" visibility="private" type="Connection"/>
+        <Field name="statement" visibility="private" type="Statement"/>
+        <Field name="sql" visibility="private" type="ResultSet"/>
+        <Field name="Err" visibility="public" type="boolean"/>
+        <Field name="Message" visibility="public" type="String"/>
+        <Field name="elems" visibility="private" type="String[][]"/>
+        <Field name="elem" visibility="private" type="String[]"/>
+        <Field name="numRows" visibility="private" type="int"/>
+        <Field name="numCollsI" visibility="private" type="int"/>
+      </Fields>
+      <Methods>
+        <Method name="query" visibility="public" returnType="String[][]">
+          <Argument type="String" name="cmd"/>
+        </Method>
+        <Method name="fetchAll" visibility="private" returnType="String[][]">
+          <Argument type="ResultSet" name="res"/>
+        </Method>
+        <Method name="unQuery" visibility="public" returnType="boolean">
+          <Argument type="String" name="cmd"/>
+        </Method>
+        <Method name="Row" visibility="private" returnType="String">
+          <Argument type="int" name="row"/>
+          <Argument type="int" name="table"/>
+        </Method>
+        <Method name="prox" visibility="public" returnType="String[]"/>
+        <Method name="getElem" visibility="public" returnType="String[]"/>
+        <Method name="execute" visibility="public" returnType="boolean">
+          <Argument type="String" name="cmd"/>
+        </Method>
+        <Method name="count" visibility="public" returnType="int"/>
+        <Method name="get_last_insert_rowid" visibility="public" returnType="int"/>
+        <Method name="close" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations/>
+</ClassDiagram>

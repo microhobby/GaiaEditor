@@ -48,14 +48,14 @@ function GAudio(largura, altura, topo, esquerda, visivel)
                 var fileTypes = null;
                 
                 
-                if((this.recurso !== -1) && (this.GetFileResource(recursoInt).indexOf(".mp3") !== -1))
-                        fileTypes = (this.recurso !== -1 ?  
+                if((this.recurso !== null) && (this.GetFileResource(recursoInt).indexOf(".mp3") !== -1))
+                        fileTypes = (this.recurso !== null ?  
                                                 this.GetFileResource(recursoInt) : "../audio/gaia.mp3").split(".mp3");
-                else if((this.recurso !== -1) && (this.GetFileResource(recursoInt).indexOf(".ogg") !== -1))
-                        fileTypes = (this.recurso !== -1 ?  
+                else if((this.recurso !== null) && (this.GetFileResource(recursoInt).indexOf(".ogg") !== -1))
+                        fileTypes = (this.recurso !== null ?  
                                                 this.GetFileResource(recursoInt) : "../audio/gaia.ogg").split(".ogg");
                 else
-                        fileTypes = (this.recurso !== -1 ?  
+                        fileTypes = (this.recurso !== null ?  
                                                 this.GetFileResource(recursoInt) : "../audio/gaia.mp3").split(".mp3");
                 
                 if(!flag)

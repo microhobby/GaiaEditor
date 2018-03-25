@@ -4,8 +4,6 @@ package br.com.mpro3.MproEntity;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,7 +19,8 @@ import java.util.logging.Logger;
  * @author matheus
  */
 public class LauDB
-{   
+{
+
     private Connection connection;
     private Statement statement;
     private ResultSet sql;
@@ -31,49 +30,47 @@ public class LauDB
     private String[] elem;
     private int numRows;
     private int numCollsI;
-    
+
     /**
-        * Código construtor </br>
-        * file: Caminho do arquivo de banco de dados a ser
-        * aberto
-        */
+     * Código construtor <br>
+     * file: Caminho do arquivo de banco de dados a ser aberto
+     */
     public LauDB(String file)
     {
-        try 
+        try
         {
             Class.forName("org.sqlite.JDBC");
             //Class.forName("com.mysql.jdbc.Driver");
-        }
+        } 
         catch (ClassNotFoundException ex)
         {
             System.err.println(ex.getMessage());
         }
-        
+
         connection = null;
-        
+
         // cria a conexão com o banco
         try
         {
             connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-            //connection = DriverManager.getConnection("jdbc:mysql://mysql5.hostingzone.com.br:3307/", "mpro3", "");
             statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timer out para 30 segundos
             statement.execute("PRAGMA synchronous=OFF");
             this.Err = true;
-        }
-        catch(SQLException e)
+        } 
+        catch (SQLException e)
         {
             System.err.println(e.getMessage());
             this.Message = "Mpro L.A.U DB ERROR: " + e.getMessage();
             this.Err = false;
         }
     }
-    
+
     /**
-        * Executa comando sql </br>
-        * cmd: String sql </br>
-        * String Matriz: Objeto com os dados retornados pela sql
-        */
+     * Executa comando sql <br>
+     * cmd: String sql <br>
+     * String Matriz: Objeto com os dados retornados pela sql
+     */
     public String[][] query(String cmd)
     {
         try
@@ -81,11 +78,15 @@ public class LauDB
             sql = statement.executeQuery(cmd);
             this.elems = this.fetchAll(sql);
             this.Err = true;
-            if(this.numRows > 0)
+            if (this.numRows > 0)
+            {
                 return this.elems;
+            } 
             else
-                    return null;
-        }
+            {
+                return null;
+            }
+        } 
         catch (SQLException ex)
         {
             System.err.println(ex.getMessage());
@@ -94,141 +95,146 @@ public class LauDB
         }
         return null;
     }
-    
+
     /**
-        * Funcao que implementa fetch All PDO
-        */
+     * Funcao que implementa fetch All PDO
+     */
     private String[][] fetchAll(ResultSet res) throws SQLException
     {
-                ResultSetMetaData rsmd = res.getMetaData();
-                this.numCollsI = rsmd.getColumnCount();
-                String[][] elemTmp = new String[1][this.numCollsI];
-                int count = 0;
-                while(res.next())
-                {
-                        elemTmp = Arrays.copyOf(elemTmp, count+1);
-                        elemTmp[count] = new String[this.numCollsI];
-                        for(int i = 0; i < rsmd.getColumnCount(); i++)
-                        {
-                                elemTmp[count][i] = res.getString(i+1);
-                        }
-                        count++;
-                }
-                this.numRows = count;
-                return elemTmp;
-    }
-    
-        /**
-        * Executa comando sql sem retornar todos os dados
-        */
-        public boolean unQuery(String cmd)
+        ResultSetMetaData rsmd = res.getMetaData();
+        this.numCollsI = rsmd.getColumnCount();
+        String[][] elemTmp = new String[1][this.numCollsI];
+        int count = 0;
+        while (res.next())
         {
-                boolean result = false;
-                try 
-                {
-                        sql = statement.executeQuery(cmd);
-                        ResultSetMetaData rsmd = sql.getMetaData();
-                        this.numCollsI = rsmd.getColumnCount();
-                        return true;
-                 } 
-                catch (SQLException ex)
-                {
-                        System.err.println(ex.getMessage()); 
-                        this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
-                        this.Err = false;
-                }
-                return result;
+            elemTmp = Arrays.copyOf(elemTmp, count + 1);
+            elemTmp[count] = new String[this.numCollsI];
+            for (int i = 0; i < rsmd.getColumnCount(); i++)
+            {
+                elemTmp[count][i] = res.getString(i + 1);
+            }
+            count++;
         }
-    
-       /**
-        * Função que aponta pra linha que quero
-        */
-       private String Row(int row, int table)
-       {
-               String tmp = "";
-               try
-               {
-                       tmp = this.elems[row][table];
-               }
-               catch(Exception e)
-               { /* erro de limite */ }
-               return tmp;
-       }
-        
-       /**
-        * Implementa o fetch do objetos de dados </br>
-        * É aconselhável que só se use esse método quando for implementa-lo em loop while
-        */
-       public String[] prox()
-       {
-               this.elem = new String[this.numCollsI];
-                try 
-                {
-                        this.sql.next();
-                        for(int i = 0; i < this.numCollsI; i++)
-                        {
-                                this.elem[i] = sql.getString(i);
-                        }
-                        return this.elem;
-                }
-                catch (SQLException ex) 
-                {
-                         System.err.println(ex.getMessage()); 
-                        this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
-                        this.Err = false;
-                }
-                return null;
-       }
-       
-       /**
-        * Retorna o objeto resgatado pelo prox() </br>
-        * É aconselhável que só se use esse método quando for implementa-lo em loop while
-        */
-       public String[] getElem()
-       {
-               return this.elem;
-       }
-       
+        this.numRows = count;
+        return elemTmp;
+    }
+
     /**
-        * Executa comando sql </br>
-        * cmd: String sql </br>
-        * return: Verdadeiro caso haja sucesso no comando e falso caso não
-        */
+     * Executa comando sql sem retornar todos os dados
+     */
+    public boolean unQuery(String cmd)
+    {
+        boolean result = false;
+        try
+        {
+            sql = statement.executeQuery(cmd);
+            ResultSetMetaData rsmd = sql.getMetaData();
+            this.numCollsI = rsmd.getColumnCount();
+            return true;
+        } 
+        catch (SQLException ex)
+        {
+            System.err.println(ex.getMessage());
+            this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
+            this.Err = false;
+        }
+        return result;
+    }
+
+    /**
+     * Função que aponta pra linha que quero
+     */
+    private String Row(int row, int table)
+    {
+        String tmp = "";
+        try
+        {
+            tmp = this.elems[row][table];
+        } 
+        catch (Exception e)
+        { /* erro de limite */ }
+        return tmp;
+    }
+
+    /**
+     * Implementa o fetch do objetos de dados <br>
+     * É aconselhável que só se use esse método quando for implementa-lo em loop
+     * while
+     */
+    public String[] prox()
+    {
+        this.elem = new String[this.numCollsI];
+        try
+        {
+            this.sql.next();
+            for (int i = 0; i < this.numCollsI; i++)
+            {
+                this.elem[i] = sql.getString(i);
+            }
+            return this.elem;
+        } 
+        catch (SQLException ex)
+        {
+            System.err.println(ex.getMessage());
+            this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
+            this.Err = false;
+        }
+        return null;
+    }
+
+    /**
+     * Retorna o objeto resgatado pelo prox() <br>
+     * É aconselhável que só se use esse método quando for implementa-lo em loop
+     * while
+     */
+    public String[] getElem()
+    {
+        return this.elem;
+    }
+
+    /**
+     * Executa comando sql <br>
+     * cmd: String sql <br>
+     * return: Verdadeiro caso haja sucesso no comando e falso caso não
+     */
     public boolean execute(String cmd)
     {
         boolean result = false;
         try
         {
             result = statement.execute(cmd);
-        }
+        } 
         catch (SQLException ex)
         {
-                System.err.println(ex.getMessage()); 
-                this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
-                this.Err = false;
+            System.err.println(ex.getMessage());
+            this.Message = "Mpro L.A.U DB ERROR: " + ex.getMessage();
+            this.Err = false;
         }
         return result;
     }
-    
+
     /**
-        * Retorna quantos elementos foram aplicados </br>
-        */
+     * Retorna quantos elementos foram aplicados <br>
+     */
     public int count()
     {
-            return this.numRows;
+        return this.numRows;
     }
-    
+
     public int get_last_insert_rowid()
     {
-              this.unQuery("SELECT last_insert_rowid();");
-              try {
-                        return this.sql.getInt(1);
-              } catch (SQLException ex) {
-                        Logger.getLogger(LauDB.class.getName()).log(Level.SEVERE, null, ex);
-              }
-              return 0;
+        this.unQuery("SELECT last_insert_rowid();");
+        try
+        {
+            return this.sql.getInt(1);
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(LauDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
-    
+
     /**
      * Fecha banco de Dados
      */
@@ -237,10 +243,10 @@ public class LauDB
         try
         {
             this.connection.close();
-        }
+        } 
         catch (SQLException ex)
         {
-           System.err.println(ex.getMessage()); 
+            System.err.println(ex.getMessage());
         }
     }
 }

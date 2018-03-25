@@ -3,17 +3,19 @@ package Gaia.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import mpro.MproEntity.MproEntityRelation;
+import mpro.MproEntity.MproEntity;
+import org.mongodb.morphia.annotations.Reference;
 
 /**
  *
  * @author matheus
  */
-public class LayoutPaginaRodape extends MproEntityRelation
+public class LayoutPaginaRodape extends MproEntity
 {
         public String ScriptGeral;
         public double Altura;
         public double Largura;
+        @Reference
         public List<LayoutObjetosRodape> Elementos = new ArrayList();
     
         public LayoutPaginaRodape(){}

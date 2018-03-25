@@ -5,8 +5,8 @@
  */
 function MproEntityRelation()
 {
-        this.superCod = 2147483647;
-        MproEntity.call(this);
+    this.superCod = 2147483647;
+    MproEntity.call(this);
 }
 
 MproEntityRelation.prototype = new MproEntity();

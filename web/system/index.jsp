@@ -1,26 +1,34 @@
 <%-- 
-    Document   : index
+    Document    : index
     Created on  : 04/09/2013, 20:52:33
-    Author          : Matheus de Barros Castello  
+    Author      : Matheus de Barros Castello  
 --%> 
 
 <%@page isThreadSafe="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" import="Gaia.controller.*, Gaia.model.*, mpro.MproEntity.*"%>
 
 <%
     /**
-     * CACHE
-     */
+    * CACHE
+    */
     HttpServletResponse httpResponse = (HttpServletResponse) response;
     httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     httpResponse.setHeader("Pragma", "No-cache"); // HTTP 1.0
     httpResponse.setDateHeader("Expires", 0); // Proxies.
 
-    //MproEntity.setBasePath("c:\\MproEntity\\");
+    // primeiro acesso
+    /*User u = new User();
+        u.UserName = "matheus";
+        u.Nome = "Matheus Castello";
+        u.Email = "matheus@mpro3.com.br";
+        u.DataNascimento = "14/11/1990";
+        u.Chave = "e164a6567b1a39e34ee35c4f8c14e9104aed6bdc";
+        u.Save();*/
+    
     Login login = new Login();
-    MproEntity.setBasePath("/home/matheus");
-    MproEntity.setProjectName("GaiaEditor");
+    //MproEntity.setBasePath("/home/matheus");
+    //MproEntity.setProjectName("GaiaEditor");
     String usu = request.getParameter("usu");
     String key = request.getParameter("key");
     boolean isLoged = login.canLog(usu, key);
@@ -47,7 +55,6 @@
         <!DOCTYPE html>
         <html>
 
-            <!-- PÁGINA PRINCIPAL DO NED TEMPLATE -->
 
             <head>
                 <!-- METAS -->
@@ -86,7 +93,6 @@
                 <link href='https://fonts.googleapis.com/css?family=Droid Sans' rel='stylesheet' type='text/css' />
                 <link rel="stylesheet" href="../css/aulas.css" type="text/css" />
                 <link rel="stylesheet" type="text/css" href="../js/css/smoothness/jqueryUIcss.css"/>
-                <!--<link rel="stylesheet" href="../themes/holo-dark/holo-dark.min.css" type="text/css" />-->
                 <!-- Bootstrap core CSS -->
                 <link href="../dist/css/bootstrap.css" rel="stylesheet">
                 <link href="../dist/css/summernote.css" rel="stylesheet">
@@ -101,29 +107,21 @@
 
                 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
                 <!--[if lt IE 9]>
-                  <script src="../assets/js/html5shiv.js"></script>
-                  <script src="../assets/js/respond.min.js"></script>
-                <![endif]-->
+                                <script src="../assets/js/html5shiv.js"></script>
+                                <script src="../assets/js/respond.min.js"></script>
+                             <![endif]-->
 
                 <!-- SCRIPTS -->
                 <script src="../js/crypt.js" type="text/javascript"></script>
                 <script src="../js/jquery.js" type="text/javascript"></script>
-                <!--<script src="../js/jqueryMobile.js" type="text/javascript"> </script>-->
-                <!-- <script src="../js/swipe.js" type="text/javascript"> </script> -->
-                <!-- <script type="text/javascript" src="../js/biscoito.js"> </script> -->
                 <script src="../js/jqueryUI.js" type="text/javascript"></script>
                 <script src="../js/ui.multidraggable.js" type="text/javascript"></script>
                 <script src="../js/jQueryRotate.js" type="text/javascript"></script>
-                <!--<script src="../js/jqueryWheel.js" type="text/javascript"> </script>-->
                 <script src="../js/Anima.js" type="text/javascript"></script>
                 <script type="text/javascript" src="../js/jquerycsstransform.js"></script>
                 <script type="text/javascript" src="../js/jqueryShadow.js"></script>
                 <script type="text/javascript" src="../js/rotate3Di.js"></script>
                 <script type="text/javascript" src="../js/jquery.flippy.min.js"></script>
-                <!--<script type="text/javascript" src="../js/iscroll.js"> </script>-->
-                <!--<script type="text/javascript" src="../js/iscroll-lite.js"> </script>-->
-                <!--<script src="../lib/app.js" type="text/javascript"> </script>
-                <script type="text/javascript" src="../js/KineticScroll.js"> </script>-->
                 <script src="../js/utils.js" type="text/javascript"></script>
                 <script src="../dist/js/bootstrap.min.js"></script>
                 <script src="../dist/js/summernote.min.js"></script>
@@ -189,7 +187,7 @@
 
                 <script type="text/javascript">
                     LogedUser = new User();
-                    LogedUser.cod = <% out.print(login.LogedUser.cod); %>
+                    LogedUser.cod = "<% out.print(login.LogedUser.cod); %>";
                     //LogedUser.cast();
                     //LogedUser = new User(LogedUser);
                 </script>
@@ -210,12 +208,7 @@
                             <style id="pgDinamic"> .pg_sub { position: absolute; width: 600px; height: 500px; background-color: #EAEAEA; } </style>
                             <script type="text/javascript">
                                 $(document).ready(function () {
-                                    /*$("button").bind("touchstart touchend", function(e) {
-                                     $(this).animate({});
-                                     $(this).toggleClass("hover_effect");
-                                     /*if(e.type == "touchend")
-                                     $(this).click();*/
-                                    //});
+                                    
                                     $(".scrolls").mousedown(function () {
                                         enableGest = false;
                                     }).mouseup(function () {

@@ -3,11 +3,12 @@
 package Gaia.model;
 
 
-import mpro.MproEntity.MproEntityRelation;
+import mpro.MproEntity.MproEntity;
+import org.bson.types.ObjectId;
 
 
 
-public class Estados extends MproEntityRelation
+public class Estados extends MproEntity
 {      
         public int Id;
         public String JqueryId;
@@ -34,7 +35,7 @@ public class Estados extends MproEntityRelation
         public int Zindex;
         public double Opacity;
         //public String Script;
-        public int recurso;
+        public ObjectId recurso;
         public String Text;
         public String FatherId;
         public double Vss;

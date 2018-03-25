@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Reverse engineered java.Gaia.controller 2015.02.19 12-10-37-002">
+  <ClassDiagramComponents>
+    <Class xPosition="20.0" yPosition="20.0" package="Gaia.controller" name="FileWriter" visibility="public">
+      <Constructors>
+        <Constructor name="FileWriter" visibility="public"/>
+      </Constructors>
+      <Fields/>
+      <Methods>
+        <Method name="WriteFile" visibility="public" returnType="void">
+          <Argument type="String" name="content"/>
+          <Argument type="String" name="path"/>
+        </Method>
+        <Method name="FolderZip" visibility="public" returnType="void">
+          <Argument type="Projeto" name="proj"/>
+          <Argument type="User" name="usu"/>
+          <Argument type="String" name="folder"/>
+          <Argument type="String" name="realFolder"/>
+        </Method>
+        <Method name="FileWriter" visibility="public" returnType="void">
+          <Argument type="Projeto" name="proj"/>
+          <Argument type="User" name="usu"/>
+          <Argument type="ProjectSources" name="proSrc"/>
+          <Argument type="String" name="folder"/>
+          <Argument type="String" name="realFolder"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="320.0" yPosition="20.0" package="Gaia.controller" name="ProjectSources" visibility="public">
+      <Constructors>
+        <Constructor name="ProjectSources" visibility="public"/>
+        <Constructor name="ProjectSources" visibility="public">
+          <Argument type="Projeto" name="proj"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="Paginas" visibility="public" type="List&lt;String&gt;"/>
+        <Field name="Midias" visibility="public" type="List&lt;ProjectMidias&gt;"/>
+        <Field name="Rodape" visibility="public" type="String"/>
+        <Field name="Topo" visibility="public" type="String"/>
+        <Field name="projeto" visibility="private" type="Projeto"/>
+      </Fields>
+      <Methods>
+        <Method name="setProjeto" visibility="public" returnType="void">
+          <Argument type="Projeto" name="proj"/>
+        </Method>
+        <Method name="getTurnEffectProx" visibility="private" returnType="String"/>
+        <Method name="getTurnEffectAnt" visibility="private" returnType="String"/>
+        <Method name="getPageIn" visibility="private" returnType="String"/>
+        <Method name="getPageGo" visibility="private" returnType="String"/>
+        <Method name="getPageInis" visibility="private" returnType="String"/>
+        <Method name="getMidiaFiles" visibility="private" returnType="String"/>
+        <Method name="getScalePattern" visibility="private" returnType="String"/>
+        <Method name="getAppJs" visibility="public" returnType="String">
+          <Argument type="String" name="user"/>
+        </Method>
+        <Method name="getAulaCss" visibility="public" returnType="String"/>
+        <Method name="getUserEntities" visibility="public" returnType="String"/>
+        <Method name="getIndex" visibility="public" returnType="String"/>
+      </Methods>
+    </Class>
+    <Class xPosition="620.0" yPosition="20.0" package="Gaia.controller" name="GaiaController" visibility="public">
+      <Constructors>
+        <Constructor name="GaiaController" visibility="public">
+          <Argument type="String" name="userCod"/>
+          <Argument type="HttpServletRequest" name="_request"/>
+          <Argument type="JspWriter" name="_out"/>
+          <Argument type="ServletContext" name="_context"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="PHP_CONTEXT" visibility="public" type="String" isStatic="true"/>
+        <Field name="PHP_URL" visibility="public" type="String" isStatic="true"/>
+        <Field name="userContext" visibility="package" type="User"/>
+        <Field name="request" visibility="package" type="HttpServletRequest"/>
+        <Field name="out" visibility="package" type="JspWriter"/>
+        <Field name="context" visibility="package" type="String"/>
+        <Field name="realContext" visibility="package" type="String"/>
+      </Fields>
+      <Methods>
+        <Method name="getUser" visibility="public" returnType="void"/>
+        <Method name="makePackage" visibility="public" returnType="void"/>
+        <Method name="makeProject" visibility="public" returnType="void"/>
+        <Method name="makeUserEntities" visibility="public" returnType="void"/>
+        <Method name="newProject" visibility="public" returnType="void"/>
+        <Method name="newRecurso" visibility="public" returnType="void"/>
+        <Method name="newLayout" visibility="public" returnType="void"/>
+        <Method name="newPage" visibility="public" returnType="void"/>
+        <Method name="newObjeto" visibility="public" returnType="void"/>
+        <Method name="deleteObjeto" visibility="public" returnType="void"/>
+        <Method name="savePagina" visibility="public" returnType="void"/>
+        <Method name="saveLayout" visibility="public" returnType="void"/>
+        <Method name="saveProject" visibility="public" returnType="void"/>
+        <Method name="saveEntity" visibility="public" returnType="void"/>
+        <Method name="newEvento" visibility="public" returnType="void"/>
+        <Method name="newState" visibility="public" returnType="void"/>
+        <Method name="replaceProjeto" visibility="private" returnType="void">
+          <Argument type="Projeto" name="candidate"/>
+        </Method>
+        <Method name="replacePagina" visibility="private" returnType="void">
+          <Argument type="Projeto" name="ptrProjeto"/>
+          <Argument type="Paginas" name="candidate"/>
+        </Method>
+        <Method name="writeStream" visibility="public" returnType="void">
+          <Argument type="String" name="response"/>
+          <Argument type="String" name="data"/>
+          <Argument type="boolean" name="error"/>
+        </Method>
+        <Method name="filterProjeto" visibility="private" returnType="Projeto">
+          <Argument type="int" name="cd"/>
+        </Method>
+        <Method name="filterPagina" visibility="private" returnType="Paginas">
+          <Argument type="int" name="pcd"/>
+          <Argument type="int" name="cd"/>
+        </Method>
+        <Method name="filterElemento" visibility="private" returnType="Objetos">
+          <Argument type="int" name="pcd"/>
+          <Argument type="int" name="gcd"/>
+          <Argument type="int" name="ecd"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="920.0" yPosition="20.0" package="Gaia.controller" name="Login" visibility="public">
+      <Constructors>
+        <Constructor name="Login" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="LogedUser" visibility="public" type="User"/>
+      </Fields>
+      <Methods>
+        <Method name="sha1" visibility="package" returnType="String" isStatic="true">
+          <Argument type="String" name="input"/>
+        </Method>
+        <Method name="canLog" visibility="public" returnType="boolean">
+          <Argument type="String" name="user"/>
+          <Argument type="String" name="key"/>
+        </Method>
+        <Method name="UserToJson" visibility="public" returnType="String"/>
+      </Methods>
+    </Class>
+    <Class xPosition="20.0" yPosition="420.0" package="Gaia.controller" name="ProjectMidias" visibility="public">
+      <Constructors>
+        <Constructor name="ProjectMidias" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="FileName" visibility="public" type="String"/>
+        <Field name="JqueryId" visibility="public" type="String"/>
+        <Field name="CallBack" visibility="public" type="String"/>
+        <Field name="Type" visibility="public" type="int"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="320.0" yPosition="420.0" package="Gaia.controller" name="MproZip" visibility="public">
+      <Constructors>
+        <Constructor name="MproZip" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="fileList" visibility="private" type="List&lt;String&gt;"/>
+        <Field name="zipFile" visibility="private" type="String"/>
+        <Field name="source" visibility="private" type="String"/>
+      </Fields>
+      <Methods>
+        <Method name="Zip" visibility="public" returnType="void">
+          <Argument type="String" name="folder"/>
+          <Argument type="String" name="zipFile"/>
+        </Method>
+        <Method name="getFile" visibility="private" returnType="String">
+          <Argument type="String" name="file"/>
+        </Method>
+        <Method name="recursiveFileList" visibility="private" returnType="void">
+          <Argument type="File" name="folder"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="620.0" yPosition="420.0" package="Gaia.controller" name="Utils" visibility="public">
+      <Constructors/>
+      <Fields/>
+      <Methods>
+        <Method name="gsonBuilderFactory" visibility="public" returnType="GsonBuilder" isStatic="true"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="Midias" source="ProjectSources" target="ProjectMidias" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+    <UseRelation source="FileWriter" target="ProjectSources" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

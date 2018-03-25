@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Reverse engineered java.mpro.MproEntity 2015.02.19 12-10-08-706">
+  <ClassDiagramComponents>
+    <Class xPosition="20.0" yPosition="20.0" package="mpro.MproEntity" isAbstract="true" name="MproEntityRelation" visibility="public">
+      <Constructors>
+        <Constructor name="MproEntityRelation" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="superCod" visibility="public" type="int"/>
+      </Fields>
+      <Methods/>
+    </Class>
+    <Class xPosition="320.0" yPosition="20.0" package="mpro.MproEntity" name="LauDB" visibility="public">
+      <Constructors>
+        <Constructor name="LauDB" visibility="public">
+          <Argument type="String" name="file"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="connection" visibility="private" type="Connection"/>
+        <Field name="sql" visibility="private" type="ResultSet"/>
+        <Field name="Err" visibility="public" type="boolean"/>
+        <Field name="Message" visibility="public" type="String"/>
+        <Field name="elems" visibility="private" type="String[][]"/>
+        <Field name="elem" visibility="private" type="String[]"/>
+        <Field name="numRows" visibility="private" type="int"/>
+        <Field name="numCollsI" visibility="private" type="int"/>
+      </Fields>
+      <Methods>
+        <Method name="query" visibility="public" returnType="String[][]">
+          <Argument type="String" name="cmd"/>
+        </Method>
+        <Method name="fetchAll" visibility="private" returnType="String[][]">
+          <Argument type="ResultSet" name="res"/>
+        </Method>
+        <Method name="unQuery" visibility="public" returnType="boolean">
+          <Argument type="String" name="cmd"/>
+        </Method>
+        <Method name="Row" visibility="private" returnType="String">
+          <Argument type="int" name="row"/>
+          <Argument type="int" name="table"/>
+        </Method>
+        <Method name="getElem" visibility="public" returnType="String[]"/>
+        <Method name="execute" visibility="public" returnType="int">
+          <Argument type="String" name="cmd"/>
+        </Method>
+        <Method name="count" visibility="public" returnType="int"/>
+        <Method name="get_last_insert_rowid" visibility="public" returnType="int"/>
+        <Method name="isClosed" visibility="public" returnType="boolean"/>
+        <Method name="close" visibility="public" returnType="void"/>
+      </Methods>
+    </Class>
+    <Class xPosition="620.0" yPosition="20.0" package="mpro.MproEntity" isAbstract="true" name="MproEntity" visibility="public">
+      <Constructors>
+        <Constructor name="MproEntity" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="ProjectName" visibility="private" type="String" isStatic="true"/>
+        <Field name="BasePath" visibility="private" type="String" isStatic="true"/>
+        <Field name="_conn" visibility="private" type="LauDB" isStatic="true"/>
+        <Field name="_class" visibility="private" type="Class"/>
+        <Field name="cod" visibility="public" type="int"/>
+        <Field name="joined" visibility="private" type="boolean"/>
+        <Field name="nameRelation" visibility="private" type="String"/>
+        <Field name="namesRelation" visibility="private" type="ArrayList&lt;String&gt;"/>
+      </Fields>
+      <Methods>
+        <Method name="setProjectName" visibility="public" returnType="void" isStatic="true">
+          <Argument type="String" name="project"/>
+        </Method>
+        <Method name="setBasePath" visibility="public" returnType="void" isStatic="true">
+          <Argument type="String" name="path"/>
+        </Method>
+        <Method name="fromJson" visibility="public" returnType="T" isStatic="true">
+          <Argument type="String" name="json"/>
+          <Argument type="Class&lt;T&gt;" name="classe"/>
+        </Method>
+        <Method name="getAll" visibility="public" returnType="ArrayList&lt;T&gt;" isStatic="true">
+          <Argument type="Class&lt;T&gt;" name="classe"/>
+        </Method>
+        <Method name="getSQL" visibility="public" returnType="ArrayList&lt;T&gt;" isStatic="true">
+          <Argument type="Class&lt;T&gt;" name="classe"/>
+          <Argument type="String" name="where"/>
+        </Method>
+        <Method name="getWhere" visibility="public" returnType="ArrayList&lt;T&gt;" isStatic="true">
+          <Argument type="T" name="filterObj"/>
+        </Method>
+        <Method name="getWhere" visibility="public" returnType="ArrayList&lt;T&gt;" isStatic="true">
+          <Argument type="T" name="filterObj"/>
+          <Argument type="boolean" name="enaB"/>
+        </Method>
+        <Method name="Save" visibility="public" returnType="void"/>
+        <Method name="Delete" visibility="public" returnType="void"/>
+        <Method name="toNull" visibility="private" returnType="void"/>
+        <Method name="initialConfig" visibility="private" returnType="void"/>
+        <Method name="getTableFields" visibility="private" returnType="String"/>
+        <Method name="changeTable" visibility="private" returnType="void">
+          <Argument type="ArrayList&lt;containField&gt;" name="arrcf"/>
+        </Method>
+        <Method name="getTableFieldsFromArrayList" visibility="private" returnType="ArrayList&lt;String&gt;">
+          <Argument type="ArrayList&lt;String&gt;" name="arrl"/>
+        </Method>
+        <Method name="getValues" visibility="private" returnType="String"/>
+        <Method name="getValuesUpdate" visibility="private" returnType="String"/>
+        <Method name="toJson" visibility="public" returnType="String"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <IsRelation name="is" source="MproEntityRelation" target="MproEntity"/>
+    <HasRelation name="_conn" source="MproEntity" target="LauDB" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

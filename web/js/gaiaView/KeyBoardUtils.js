@@ -100,6 +100,7 @@ function KeyBoardUtils()
                                         _eventsRight[i]();
                                 }
                         }
+                        event.preventDefault();
                 }
         };
         

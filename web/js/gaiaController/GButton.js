@@ -123,7 +123,7 @@ function GButton(largura, altura, topo, esquerda, visivel)
                                 '	<button id="bt'+this.Id+'" class="btn btn-primary buttonOk" style="'+
                                 'font-size: inherit; font-family: inherit; font-style: inherit; font-weight: inherit; text-decoration: inherit; ' +
                                 'color: inherit;"><i class="glyphicon "><img id="cont_img' + this.Id + '" src="' +
-                                                (this.recurso !== -1 ?  
+                                                (this.recurso !== null ?  
                                                 this.GetFileResource(recursoInt) : "../img/blank.gif") + '" width="100%" height="100%" /></i><span id="textHere">' + this.Text + '</span></button>\n' +
                                 '</div>\n\n';
                         

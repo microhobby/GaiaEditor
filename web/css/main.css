@@ -39,7 +39,7 @@ input, textarea{
     height: 100%;
 }
 
-.badWolf{ line-height: 160%; }
+/*.badWolf{ line-height: 160%; }*/
 
 div
 {
@@ -391,7 +391,7 @@ img{
     position: absolute;
     top: 0px;
     left: 0px;
-    z-index: 998;
+    z-index: 900;
     display: none;
     background-color: #666;
     filter: alpha(opacity=80);
@@ -574,7 +574,7 @@ img{
 {
         /*position: absolute;*/
         position: fixed;
-        top:  20px;
+        top:  5px;
         left:  20px;
         width: 280px;
         height: 370px;
@@ -592,7 +592,7 @@ img{
 {
         /*position: absolute;*/
         position: fixed;
-        top:  20px;
+        top:  5px;
         left:  20px;
         width: 280px;
         height: 120px;
