@@ -102,7 +102,7 @@ function escurece(ix)
             $('#blackOut').show();
         } else
         {
-            $('#blackOut').fadeIn(2000);
+            $('#blackOut').fadeIn(500);
         }
     } else
     {
@@ -111,7 +111,7 @@ function escurece(ix)
             $('#blackOut').hide();
         } else
         {
-            $('#blackOut').fadeOut();
+            $('#blackOut').fadeOut(500);
         }
     }
 }
