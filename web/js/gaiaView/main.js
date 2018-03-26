@@ -93,6 +93,7 @@ var __badWolf = null;
 var scale = 1;
 /*var errList = new Lista();
  errList.init();*/
+var __pages_copy = [];
 
 function sendMessageToExtension(msg)
 {
@@ -1755,6 +1756,57 @@ $(document).ready(function ()
                     newObjeto(objTmp);
                 }
             }
+        }
+    });
+
+    /* make a stack persistent between the pages */
+    keyboard.onCtrCPressed(function () {
+        __pages_copy = [];
+        var elems = _stack();
+
+        for (var i = 0; i < elems.length; i++)
+        {
+            for (var j = 0; j < ptrPage.Elementos.length; j++)
+            {
+                if (ptrPage.Elementos[j].JqueryId === elems[i])
+                {
+                    var objTmp = ptrPage.Elementos[j].copy();
+                    __pages_copy.push(objTmp);
+                }
+            }
+        }
+    });
+    
+    keyboard.onCtrNPressed(function () {
+        var elems = __pages_copy;
+        
+        for (var i = 0; i < elems.length; i++)
+        {
+            var objTmp = elems[i];
+            
+            objs.add(new Item(objTmp.JqueryId, objTmp));
+            var strTmp = newElem(objTmp.returnCode(true, false));
+            
+            // copia pra dentro stack
+            if (strTmp !== "")
+            {
+                objTmp.FatherId = strTmp;
+                if (objTmp.FatherId.indexOf("divStatic") !== -1)
+                {
+                    objTmp.StaticPos = true;
+                    $(objTmp.JqueryId).remove();
+                    newElem(objTmp.returnCode(true, false));
+                }
+            }
+            
+            objTmp.implementGaiaEvents();
+
+            stackObjs.makeMomentumZ(ptrPage.Elementos);
+            ptrPage.Elementos.push(objTmp);
+
+            // salva
+            window.onbeforeunload = onBefore;
+            newObjeto(objTmp);
         }
     });
 
