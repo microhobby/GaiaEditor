@@ -14,6 +14,7 @@ function KeyBoardUtils()
         var _eventsRight = new Array();
         var _eventsCopy = new Array();
         var _eventsPaste = new Array();
+        var _eventsNew = new Array();
         
         window.onkeyup = function(event)
         {
@@ -58,6 +59,15 @@ function KeyBoardUtils()
                                 for(var i = 0; i < _eventsY.length; i++)
                                 {
                                         _eventsY[i]();
+                                }
+                        }
+                        else if(event.ctrlKey && (event.keyCode === 88)) // new between pages
+                        {
+                                console.log("NEW");
+                                for(var i = 0; i < _eventsNew.length; i++)
+                                {
+                                        _eventsNew[i]();
+                                        event.preventDefault();
                                 }
                         }
                 }
@@ -147,5 +157,10 @@ function KeyBoardUtils()
         this.onCtrVPressed = function(func)
         {
                 _eventsPaste.push(func);
+        };
+        
+        this.onCtrNPressed = function(func)
+        {
+                _eventsNew.push(func);
         };
 }
