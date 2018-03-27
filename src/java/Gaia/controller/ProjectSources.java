@@ -274,29 +274,33 @@ public class ProjectSources
         return ret;
     }
 
-    private String getMidiaFiles()
+    private String getMidiaFiles(String user)
     {
-        String ret = "var __total___Events__ = " + Midias.size() + "; var ___catch__Event = 0;\n"
-                + "function VERIFY__EVENTS__LOAD(){ if(__total___Events__ === ___catch__Event){ hideLoading(); } }\n"
-                + "function ____incrementCatch(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); this.src = \"\"; }";
+        String ret = "var __total___Events__ = " + projeto.recursos.size() + "; var ___catch__Event = 0;\n"
+                + "function VERIFY__EVENTS__LOAD(){ var _pc_ = (( ___catch__Event * 100) / __total___Events__ ); $('#loadingNumber').attr('aria-valuenow', _pc_); $('#loadingNumber').css('width', _pc_ + '%'); if(__total___Events__ === ___catch__Event){ hideLoading(); } }\n"
+                + "function ____incrementCatch(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); /*this.src = \"\";*/ console.log('image ' + this.complete); }";
         String calls = "";
         int i;
-        for (i = 0; i < Midias.size(); i++)
+        
+        for (i = 0; i < projeto.recursos.size(); i++)
         {
-            if (Midias.get(i).Type == 1)
+            if (projeto.recursos.get(i).Tipo == 0)
             {
-                calls += " ____loading" + i + ".src = '" + Midias.get(i).FileName + "';";
-                ret += "var ____loading" + i + " = new Image(); ____loading" + i + ".onload = ____incrementCatch;\n";
-            } else if (Midias.get(i).Type == 2)
+                calls += " ____loading" + i + ".src = '../"+ user + "/" + projeto.recursos.get(i).Arquivo + "';\n";
+                ret += "var ____loading" + i + " = new Image();\n "
+                        + "____loading" + i + ".onload = ____incrementCatch;\n"
+                        + "____loading" + i + ".onerror = ____incrementCatch;\n";
+            } 
+            else if (projeto.recursos.get(i).Tipo == 1)
             {
-                calls += " ____loading" + i + ".src = '" + Midias.get(i).FileName + "';";
+                calls += " ____loading" + i + ".src = '" + projeto.recursos.get(i).Arquivo + "';\n";
                 ret += "var ____loading" + i + " = new Audio(); ____loading" + i + ".addEventListener('canplaythrough', ____incrementCatch);\n";
             }
         }
 
         ret += "var ____ID_FETCH = 0;\n var ____ID_FETCH_OK = 0;\n var ____LOAD_THREAD = new Thread(function(){ if(____ID_FETCH == ____ID_FETCH_OK){ $(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); ____LOAD_THREAD.stop(); } });\n"
                 + "function showLoading(){ markZero(); centra('page'); if($(\"#blackOut\").css(\"display\") != \"block\"){\n"
-                + "$(\"#main\").append(\'<div id=\"loadloading\" style=\"display: none; background-color: white; position: absolute; top: " + (projeto.AlturaPaginas / 2 - 110) + "px; left: " + (projeto.LarguraPaginas / 2 - 100) + "px; width: 210px; height: 110px; z-index: 5000\"><center><img style=\"\" src=\"../img/loader.gif\"></center><div id=\"msgloading\"><center>Carregando Mídias...</center></div></div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);  }"
+                + "$(\"#main\").append(\'<div id=\"loadloading\" style=\" top: " + (projeto.AlturaPaginas / 2 - 130) + "px; left: " + (0) + "px;\"> <div class=\"progress\" style=\"margin: 20px; height: 40px;\">  <div id=\"loadingNumber\" class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: 0%;\">    <span class=\"sr-only\">45% Complete</span>  </div> </div> <center><span id=\"loadingtext\" style=\"font-size: 30px; margin-top: -200px;\"> Loading ... </span></center> </div>\'); escurece(true); $(\"#loadloading\").fadeIn(500);  }"
                 + " ____ID_FETCH++; ____LOAD_THREAD.run(); }\n";
         ret += "function hideLoading(){ ____ID_FETCH_OK++; if(____ID_FETCH <= ____ID_FETCH_OK){"
                 + "$(\"#loadloading\").fadeOut(500, function(){ $(\"#main\").find(\"#loadloading\").remove(); }); escurece(false); }}\n";
@@ -414,7 +418,7 @@ public class ProjectSources
                  "    var preload = new Image();\n" +
                  "    preload.src = imagem_lista[i];\n" +
                  "}\n" +*/ // carrega as midias
-                getMidiaFiles()
+                getMidiaFiles(user)
                 + " \n"
                 + " //quando inicia vamos ajustar os slides\n"
                 + " function iniS(numP)\n"

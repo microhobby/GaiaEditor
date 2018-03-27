@@ -931,3 +931,17 @@ img{
           height: 25px;
           padding: 5px;
 }
+
+#loadloading {
+    background-color: white;
+    position: absolute;
+    width: 100%;
+    height: 130px;
+    z-index: 5000;
+}
+
+.btn-primary:hover {
+    color: inherit !important;
+    background-color: inherit !important;
+    background-position: 0 0px !important;
+}
