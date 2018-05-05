@@ -165,6 +165,21 @@ function newProject()
         alert("Todos os campos devem ser preenchidos!");
 }
 
+function copyProject () 
+{
+    ajax.setData ( {
+                        user: LogedUser.cod, 
+                        projectCod: ptrProject.cod,
+                        method: "copyProject"
+                    });
+    ajax.onSucces(function (data)
+    {
+        console.warn(data);
+        window.location.reload(false); 
+    });
+    ajax.execute();
+}
+
 function newResource(rec)
 {
     var ajaxR = new Ajax();

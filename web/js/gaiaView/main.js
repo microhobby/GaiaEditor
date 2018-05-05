@@ -1033,6 +1033,17 @@ $(document).ready(function ()
         openProject(item.obj);
         scalePanels("windowProjects", true);
     });
+    
+    /**
+     * COPY PROJECT
+     */
+    listProj.addWhellClickListener(function (item)
+    {
+        console.log("dbclick project then copy");
+        ptrProject = item.obj;
+        ptrProject.ParseJsonEntities();
+        copyProject();
+    });
 
     /**
      * Adiciona elemento
