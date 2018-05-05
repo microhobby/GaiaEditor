@@ -807,7 +807,7 @@ public class ProjectSources
                         + "    /*text-align:left; /* \"remédio\" para o hack do IE */\n"
                         + "    /*border: 1px solid #333;*/\n"
                         + "	background-color: transparent;\n"
-                        + "	/*overflow-x: hidden;*/\n"
+                        + "	overflow: hidden;\n"
                         + "}";
                 break;
             case 5: //WEB
