@@ -3,6 +3,7 @@ package Gaia.model;
 import java.util.List;
 import java.util.ArrayList;
 import mpro.MproEntity.MproEntity;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Reference;
 
 /**
@@ -36,6 +37,26 @@ public class Projeto extends MproEntity
         this.Obs = obs;
     }
 
+    public void resetAllIds () 
+    {
+        this.cod = new ObjectId();
+        
+        for (Paginas pagina : this.paginas)
+        {
+            pagina.resetAllIds();
+        }
+        
+        for (Layout layout : this.layout)
+        {
+            layout.resetAllIds();
+        }
+        
+        for (Recursos recurso : this.recursos)
+        {
+            recurso.resetAllIds();
+        }
+    }
+    
     public void deleteDeleteds()
     {
         for (Paginas pagina : this.paginas)

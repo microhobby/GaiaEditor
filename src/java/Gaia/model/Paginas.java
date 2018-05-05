@@ -3,6 +3,7 @@ package Gaia.model;
 import java.util.ArrayList;
 import java.util.List;
 import mpro.MproEntity.MproEntity;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Reference;
 
 /**
@@ -25,6 +26,16 @@ public class Paginas extends MproEntity
     {
         this.ScriptGeral = script;
         this.Indice = indice;
+    }
+    
+    public void resetAllIds()
+    {
+        this.cod = new ObjectId();
+        
+        for (Objetos Elemento : this.Elementos)
+        {
+            Elemento.resetAllIds();
+        }
     }
 
     public void deleteDeleteds()

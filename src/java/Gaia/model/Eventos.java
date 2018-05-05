@@ -1,6 +1,7 @@
 package Gaia.model;
 
 import mpro.MproEntity.MproEntity;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -27,6 +28,11 @@ public class Eventos extends MproEntity
         this.TargetJqueryId = target;
         this.Script = "";
         this.Deleted = false;
+    }
+    
+    public void resetAllIds()
+    {
+        this.cod = new ObjectId();
     }
 
     public void deleteDeleteds()

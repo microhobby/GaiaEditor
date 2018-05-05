@@ -81,6 +81,11 @@ public class Estados extends MproEntity
                 this.Deleted = false;
         }
         
+        public void resetAllIds()
+        {
+            this.cod = new ObjectId();
+        }
+        
         public void deleteDeleteds()
         {
                 if(this.Deleted)

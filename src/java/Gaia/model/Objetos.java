@@ -117,6 +117,21 @@ public class Objetos extends MproEntity
         }
     }
 
+    public void resetAllIds()
+    {
+        this.cod = new ObjectId();
+        
+        for (Eventos evento : this.eventos)
+        {
+            evento.resetAllIds();
+        }
+
+        for (Estados estado : this.estados)
+        {
+            estado.resetAllIds();
+        }
+    }
+    
     public void deleteDeleteds()
     {
         if (this.Deleted)

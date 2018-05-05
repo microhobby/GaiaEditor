@@ -3,6 +3,7 @@ package Gaia.model;
 import java.util.ArrayList;
 import java.util.List;
 import mpro.MproEntity.MproEntity;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Reference;
 
 /**
@@ -42,6 +43,21 @@ public class Layout extends MproEntity
         this.Tipo = tipo;
     }
 
+    public void resetAllIds()
+    {
+        this.cod = new ObjectId();
+        
+        for (LayoutPaginaTopo topo : this.Topo)
+        {
+            topo.resetAllIds();
+        }
+
+        for (LayoutPaginaRodape rodape : this.Rodape)
+        {
+            rodape.resetAllIds();
+        }
+    }
+    
     public List<Paginas> resolveHeaderFooter(Projeto p)
     {
         List<Paginas> projsLayout = new ArrayList();

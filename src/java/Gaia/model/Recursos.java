@@ -1,6 +1,7 @@
 package Gaia.model;
 
 import mpro.MproEntity.MproEntityRelation;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -19,5 +20,12 @@ public class Recursos extends MproEntityRelation
                 this.Nome = nome;
                 this.Tipo = tipo;
                 this.Arquivo = arquivo;
+        }
+        
+        public void resetAllIds()
+        {
+            /* Recursos are used in recursoInt and have to be a same cod
+               than the copied project */
+            //this.cod = new ObjectId();
         }
 }
