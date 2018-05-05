@@ -1782,7 +1782,7 @@ $(document).ready(function ()
         
         for (var i = 0; i < elems.length; i++)
         {
-            var objTmp = elems[i];
+            var objTmp = elems[i].copy();
             
             objs.add(new Item(objTmp.JqueryId, objTmp));
             var strTmp = newElem(objTmp.returnCode(true, false));
