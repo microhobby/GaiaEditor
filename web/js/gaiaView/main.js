@@ -349,6 +349,30 @@ $(document).ready(function ()
         window.open("../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + rec.Arquivo);
     });
 
+    /* remove the resource from the list */
+    listRecursos.addWhellClickListener(function (obj)
+    {
+        /* TODO made a modal for sure of delete */
+        for (var i = 0 ; i < modelRecursos.tam; i++) {
+            if (modelRecursos.get(i) === obj) {
+                console.log("Delete resource from this project");
+                
+                /* search in project resources */
+                for (var j = 0; j < ptrProject.recursos.length; j++) {
+                    if (ptrProject.recursos[j] === obj.obj) {
+                        ptrProject.recursos.splice(j, 1);
+                    }
+                }
+                
+                modelRecursos.rem(i);
+                saveRecursos(obj.obj.cod);
+            }
+        }
+        
+        /* refresh model */
+        listRecursos.reArrange();
+    });
+
     listDebug.setElement("#debugErros");
     listDebug.setModel(errList);
 

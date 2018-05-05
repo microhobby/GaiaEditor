@@ -130,6 +130,19 @@ function saveProject()
     envios++;
 }
 
+function saveRecursos(id)
+{
+    var ajaxi = new Ajax();
+    ajaxi.Url = slice_url + "server.jsp";
+
+    ajaxi.setData({user: LogedUser.cod, projectCod: ptrProject.cod, resourceCod: id, method: "deleteResource"});
+    ajaxi.onSucces(function ()
+    {
+        console.log("Resource " + id + " removed from " + ptrProject.Nome);
+    });
+    ajaxi.execute();
+}
+
 function newProject()
 {
     // Testa a integridade das informações
