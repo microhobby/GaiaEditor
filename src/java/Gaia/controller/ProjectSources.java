@@ -277,7 +277,7 @@ public class ProjectSources
     private String getMidiaFiles(String user)
     {
         String ret = "var __total___Events__ = " + projeto.recursos.size() + "; var ___catch__Event = 0;\n"
-                + "function VERIFY__EVENTS__LOAD(){ var _pc_ = (( ___catch__Event * 100) / __total___Events__ ); $('#loadingNumber').attr('aria-valuenow', _pc_); $('#loadingNumber').css('width', _pc_ + '%'); if(__total___Events__ === ___catch__Event){ hideLoading(); } }\n"
+                + "function VERIFY__EVENTS__LOAD(){ var _pc_ = (( ___catch__Event * 100) / __total___Events__ ); $('#loadingNumber').attr('aria-valuenow', _pc_); $('#loadingNumber').css('width', _pc_ + '%'); $('#loadingtext').text('Loading Media: ' + ___catch__Event + ' / ' + __total___Events__); if(__total___Events__ === ___catch__Event){ hideLoading(); pageIn('1'); } }\n"
                 + "function ____incrementCatch(){ ___catch__Event++; VERIFY__EVENTS__LOAD(); /*this.src = \"\";*/ console.log('image ' + this.complete); }";
         String calls = "";
         int i;
@@ -1094,7 +1094,7 @@ public class ProjectSources
                     + "</head>\n"
                     + "\n"
                     + "<!-- ONLOAD INICIA ENGINE E ENTRA PRIMEIRA PAGINA -->\n"
-                    + "<body style=\" background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.paginas.size() - 2) + "'); enableProx(false); pageIn('1');\">\n"
+                    + "<body style=\" background-color: " + projeto.layout.get(0).BackgroundColor + "; margin: 0;\" onload=\"iniS('" + (projeto.paginas.size() - 2) + "'); enableProx(false); \">\n"
                     + "<!--FACEBOOK-->"
                     + /*" <div id=\"fb-root\"></div>\n" +
                      "<script>(function(d, s, id) {\n" +
