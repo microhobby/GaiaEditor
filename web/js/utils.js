@@ -32,19 +32,13 @@ function blackOut()
 }
 
 //centralizar elemento horizontal e verticalmente
+/* TODO make a centro for each type of project */
 function centra(id)
 {
     var docW = document.documentElement.clientWidth;
     var docH = document.documentElement.clientHeight;
 
-    if (docW > ($("#" + id).width() * scale))
-    {
-        $("#" + id).css("left", (docW - $("#" + id).width()) / 2);
-    } 
-    else
-    {
-        $("#" + id).css("left", $('#' + id).offset().left * -1);
-    }
+    $("#" + id).css("left", (docW - $("#" + id).width()) / 2);
 
     if ((!__webType) && (!__eadType))
     {
@@ -60,9 +54,7 @@ function centra(id)
     else if(!__eadType)
         $("#" + id).css("top", $('#' + id).offset().top * -1);
     else {
-        if (scale < 1) {
-            $("#" + id).css("top", (docH - $("#" + id).height()) / 2);
-        }
+        $("#" + id).css("top", (docH - $("#" + id).height()) / 2);
     }
 
     if (window.onCenter !== undefined && typeof (window.onCenter) === "function")
