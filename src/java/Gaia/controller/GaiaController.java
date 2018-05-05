@@ -253,6 +253,23 @@ public class GaiaController
 
         this.writeStream("Projeto salvo", "", false);
     }
+    
+    public void deleteResource()
+    {
+        String projectCod = this.request.getParameter("projectCod");
+        Projeto ptrProjeto = filterProjeto(projectCod);
+        String id = this.request.getParameter("resourceCod");
+        
+        /* find and remove */
+        for (int i = 0; i < ptrProjeto.recursos.size(); i++) {
+            if (ptrProjeto.recursos.get(i).cod.toString().equals(id))
+                ptrProjeto.recursos.remove(i);
+        }
+        
+        ptrProjeto.Save();
+        
+        this.writeStream("Resource removed from project", "", false);
+    }
 
     public void saveEntity()
     {
