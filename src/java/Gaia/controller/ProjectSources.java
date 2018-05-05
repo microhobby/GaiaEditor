@@ -337,22 +337,14 @@ public class ProjectSources
         switch (projeto.layout.get(0).Tipo)
         {
             case 2: // EAD
-                double somaAltura = projeto.layout.get(0).Topo.get(0).Altura + projeto.layout.get(0).Rodape.get(0).Altura + projeto.AlturaPaginas;
-                ret += "	 //verifica tamanho da tela para aplicar escala\n"
-                        + "		 if(document.documentElement.clientWidth < " + projeto.LarguraPaginas + ")\n"
-                        + "		 {\n"
-                        + "		 	scale = (document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ";\n"
-                        + "                                                               /*scale = Math.min((document.documentElement.clientHeight) / " + projeto.AlturaPaginas + ",\n"
-                        + "			(document.documentElement.clientWidth) / " + projeto.LarguraPaginas + ");\n*/"
-                        + " 		 }\n"
-                        + "	 	 if(document.documentElement.clientHeight < " + (somaAltura + 80) + ")\n"
-                        + "	 	 {\n"
-                        + "	 	 	scale = (document.documentElement.clientHeight) / " + (somaAltura + 80) + ";\n"
-                        + "	 	 }\n"
-                        /*+ "              scale *= 10;\n"
-                        + "              scale = Math.floor(scale);\n"
-                        + "              scale /= 10;\n"*/
-                        + "              $('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");\n";
+                double somaAltura = projeto.layout.get(0).Topo.get(0).Altura + projeto.layout.get(0).Rodape.get(0).Altura + projeto.AlturaPaginas + 5;
+                ret     += "    // generated\n"
+                        + "\n"
+                        + "	scale = (document.documentElement.clientWidth) / " + (projeto.LarguraPaginas + 5) + ";\n"
+                        + "\n"
+                        + "     scaleAux = (document.documentElement.clientHeight) / " + somaAltura + ";\n"
+                        + "     scale = Math.min(scale, scaleAux);\n"
+                        + "     $('#page').css(\"transform\", \"scale(\" + (scale + uScale) + \")\");";
                 break;
             case 5: // WEB
                 ret += "	 //verifica tamanho da tela para aplicar escala\n"
@@ -807,7 +799,7 @@ public class ProjectSources
                         + "    /*text-align:left; /* \"remédio\" para o hack do IE */\n"
                         + "    /*border: 1px solid #333;*/\n"
                         + "	background-color: transparent;\n"
-                        + "	overflow: hidden;\n"
+                        + "	/*overflow: hidden;*/\n"
                         + "}";
                 break;
             case 5: //WEB
