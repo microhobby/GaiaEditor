@@ -23,6 +23,7 @@ function List()
          */
         var _input = null;
         var _funcMouseListener = null;
+        var _funcWhellClickListener = null;
         
         this.reArrange = function()
         {
@@ -57,21 +58,45 @@ function List()
                 
                 if(_check)
                 {
+                        /* whell click */
+                        $("." + _model.ObjectId).mousedown(function(e)
+                        {
+                            var retObj = _model
+                                    .get(parseInt($(this).attr('id')));
+
+                            if(_funcWhellClickListener && e.which == 2) {
+                                e.stopPropagation();
+                                 _funcWhellClickListener(retObj, 
+                                        $(this).is(":checked"));
+                            }
+                        });
                         $("." + _model.ObjectId).click(function()
                         {
                                 var retObj = _model.get(parseInt($(this).attr('id')));
                                 if(_funcMouseListener)
                                         _funcMouseListener(retObj, $(this).is(":checked"));
                         });
-                        $(".labelis").mousedown(function(e)
+                        /*$(".labelis").mousedown(function(e)
                         {
                                 var retObj = _model.get(parseInt($(this).attr('id')));
                                 e.stopPropagation();
                                  _funcMouseListener(retObj, null, 2);
-                        });
+                        });*/
                 }
                 else
                 {
+                        /* whell click */
+                        $("." + _model.ObjectId).mousedown(function(e)
+                        {
+                            var retObj = _model
+                                    .get(parseInt($(this).attr('id')));
+
+                            if(_funcWhellClickListener && e.which == 2) {
+                                e.stopPropagation();
+                                 _funcWhellClickListener(retObj, 
+                                        $(this).is(":checked"));
+                            }
+                        });
                         $("." + _model.ObjectId).click(function()
                         {
                                 var retObj = _model.get(parseInt($(this).attr('id')));
@@ -112,6 +137,18 @@ function List()
                         
                         if(_check)
                         {
+                                /* whell click */
+                                $("." + _model.ObjectId).mousedown(function(e)
+                                {
+                                    var retObj = _model
+                                            .get(parseInt($(this).attr('id')));
+
+                                    if(_funcWhellClickListener && e.which == 2) {
+                                        e.stopPropagation();
+                                         _funcWhellClickListener(retObj, 
+                                                $(this).is(":checked"));
+                                    }
+                                });
                                 $("." + _model.ObjectId).change(function()
                                 {
                                         var retObj = _model.get(parseInt($(this).attr('id')));
@@ -121,6 +158,18 @@ function List()
                         }
                         else
                         {
+                                /* whell click */
+                                $("." + _model.ObjectId).mousedown(function(e)
+                                {
+                                    var retObj = _model
+                                            .get(parseInt($(this).attr('id')));
+
+                                    if(_funcWhellClickListener && e.which == 2) {
+                                        e.stopPropagation();
+                                         _funcWhellClickListener(retObj, 
+                                                $(this).is(":checked"));
+                                    }
+                                });
                                 $("." + _model.ObjectId).click(function()
                                 {
                                         var retObj = _model.get(parseInt($(this).attr('id')));
@@ -173,7 +222,14 @@ function List()
                 _funcMouseListener = func;
         };
         
+        /* this will copy the project oremos */
+        this.addWhellClickListener = function (func)
+        {
+            _funcWhellClickListener = func;
+        };
+        
         this.click = this.addMouseActionListener;
+        this.whellclick = this.addWhellClickListener;
 }
 
 List.ID = 0;
