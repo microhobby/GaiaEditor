@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -129,6 +130,38 @@ public class GaiaController
         writeStream("Projeto retornado", this.userContext.Projetos.get(this.userContext.Projetos.size() - 1).toJson(), false);
     }
 
+    public void copyProject()
+    {   
+        /* instantiate a new project */
+        Projeto newPro = new Projeto();
+        
+        /* get project to be copied */
+        Projeto ptrProjeto = filterProjeto(this.request
+                                            .getParameter("projectCod"));
+        
+        /* reset cod id */
+        newPro = MproEntity.fromJson(ptrProjeto.toJson(), Projeto.class);
+        newPro.resetAllIds();
+        
+        /* add all to new project */
+        Date date = new Date();
+        
+        /* set project name */
+        newPro.Nome = ptrProjeto.Nome + " (" 
+                        + date.getDate() + "/" + date.getMonth() + "/"
+                        + date.getHours() + "/" + date.getMinutes()
+                        + ")_copy_";
+
+        /* save copied project */
+        newPro.Save();
+        
+        /* save */
+        this.userContext.Projetos.add(newPro);
+        this.userContext.Save();
+        
+        writeStream("Refresh Page", "{refresh=true}", false);
+    }
+    
     public void newRecurso()
     {
         Projeto ptrProjeto = filterProjeto(this.request.getParameter("projectCod"));
