@@ -380,6 +380,9 @@ function deleteObjeto()
 {
     /** @type Array */
     var selecionados = _stack();
+    /* @type Array */
+    var deleteThis = [];
+    
     if (selecionados.length > 0)
     {
         for (var i = 0; i < ptrPage.Elementos.length; i++)
@@ -408,11 +411,15 @@ function deleteObjeto()
                     $("#objZindex").val("");
                     $("#objBorda").val("");
                     $("#objOpacity").val("");
+                    
+                    /* mark to unreference */
+                    deleteThis.push(obj.JqueryId);
                 }
             }
         }
+        
         ptrObject = null;
-        saveAfter(true);
+        //saveAfter(true);
     }
     else if (ptrObject !== null)
     {
@@ -441,12 +448,30 @@ function deleteObjeto()
                 $("#objZindex").val("");
                 $("#objBorda").val("");
                 $("#objOpacity").val("");
+                
+                /* mark to unreference */
+                deleteThis.push(obj.JqueryId);
             }
 
-            saveAfter(true);
+            //saveAfter(true);
         }
         ptrObject = null;
     }
+    
+    /* unref the selecteds */
+    while(deleteThis.length) {
+        
+        var jqueryId = deleteThis.pop();
+        
+        for (var i = 0; i < ptrPage.Elementos.length; i++) {
+            if (jqueryId === ptrPage.Elementos[i].JqueryId) {
+                ptrPage.Elementos.splice(i, 1);
+            }
+        }
+    }
+
+    /* then save */
+    saveAfter(true);
 
     /*var ajaxi = new Ajax();
      ajaxi.Url = slice_url + "server.jsp";
