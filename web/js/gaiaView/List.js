@@ -76,12 +76,12 @@ function List()
                                 if(_funcMouseListener)
                                         _funcMouseListener(retObj, $(this).is(":checked"));
                         });
-                        /*$(".labelis").mousedown(function(e)
+                        $(".labelis").mousedown(function(e)
                         {
                                 var retObj = _model.get(parseInt($(this).attr('id')));
                                 e.stopPropagation();
                                  _funcMouseListener(retObj, null, 2);
-                        });*/
+                        });
                 }
                 else
                 {
