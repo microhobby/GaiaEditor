@@ -1864,6 +1864,10 @@ $(document).ready(function ()
             saveAfter(true);
         }
     });
+    
+    
+    /* remove body fixed position for editor */
+    $("body").css("position", "initial");
 });
 
 function saveAfter(dontStack, gogo)
