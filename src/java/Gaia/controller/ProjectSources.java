@@ -308,7 +308,8 @@ public class ProjectSources
         ret += "function ____loadMidias(){\n " + calls + "\n";
         ret
                 += "if(__total___Events__ !== 0)\n"
-                + "{ showLoading(); }\n";
+                + "{ showLoading(); }\n" +
+                "else { pageIn('1'); }\n";
 
         return ret + "\n}\n";
     }
@@ -319,13 +320,19 @@ public class ProjectSources
         switch (projeto.layout.get(0).Tipo)
         {
             case 2: // EAD
-                ret += "var __eadType = true;\n";
+                ret += "var __eadType = true;\n" +
+                        "var __webType = false;\n" +
+                        "var __nullType = false;\n";
                 break;
             case 5: // WEB
-                ret += "var __webType = true;\n";
+                ret += "var __eadType = false;\n" +
+                        "var __webType = true;\n" +
+                        "var __nullType = false;\n";
                 break;
             case 6:
-                ret += "var __nullType = true;\n";
+                ret += "var __eadType = false;\n" +
+                        "var __webType = false;\n" +
+                        "var __nullType = true;\n";
                 break;
         }
         return ret;
