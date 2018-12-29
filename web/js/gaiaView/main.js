@@ -475,6 +475,7 @@ $(document).ready(function ()
     modelFonts.add(new Item("Oleo Script", "Oleo Script"));
     modelFonts.add(new Item("PT Serif", "PT Serif"));
     modelFonts.add(new Item("Ubuntu", "Ubuntu"));
+    modelFonts.add(new Item("Roboto", "Roboto"));
 
     objEventosTipo.setElement("#objEventosTipo");
     objEventosTipo.setModel(modelEventos);
