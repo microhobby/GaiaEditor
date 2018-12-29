@@ -275,14 +275,19 @@ function Objetos()
 
     this.GetFileResource = function (recursoInt)
     {
-        return "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function(element)
+        try 
         {
-            return element.cod === recursoInt;
-        })[0].Arquivo;
-        /*return "../dados/" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function (element)
-        {
-            return element.cod === recursoInt;
-        })[0].Arquivo;*/
+            return "../" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function(element)
+            {
+                return element.cod === recursoInt;
+            })[0].Arquivo;
+            /*return "../dados/" + LogedUser.UserName + "_" + LogedUser.cod + "/" + ptrProject.recursos.filter(function (element)
+            {
+                return element.cod === recursoInt;
+            })[0].Arquivo;*/
+        } catch(e) {
+            console.error("Objetos::GetFileResource " + recursoInt);
+        }
     };
 
     this.copy = function ()
