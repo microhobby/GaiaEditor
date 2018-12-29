@@ -68,7 +68,7 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
         
         this.setType = function(type)
         {
-                this.getPrivateAttrs()[0].Data = type;
+                this.getPrivateAttrs()[1].Data = type;
                 $(this.JqueryId).css("overflow", type);
         };
         
