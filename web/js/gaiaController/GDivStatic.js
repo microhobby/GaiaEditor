@@ -119,7 +119,7 @@ function GDivStatic(largura, altura, topo, esquerda, visivel)
                 }
                 
                 code =	'\n<div id="divStatic' + this.Id + '"\n' +
-                                                ' class="badWolf" style="display:' + display + '; position: ' +  position + '; \n' +
+                                                ' class="GDivStatic badWolf" style="display:' + display + '; position: ' +  position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +

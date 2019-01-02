@@ -75,7 +75,7 @@ function GAudio(largura, altura, topo, esquerda, visivel)
                         what = '<img src="../img/ui-audio.png" ondragstart="return false" onselectstart="return false"> </img>';
                 }*/
 
-                code = '<div id="GAudio' + this.Id + '" class="badWolf" style="width: ' + this.W + 'px; height: ' + this.H + 'px; \n' +
+                code = '<div id="GAudio' + this.Id + '" class="GAudio badWolf" style="width: ' + this.W + 'px; height: ' + this.H + 'px; \n' +
                                 'background-color:' + bgColor + '; display: block; position: absolute;\n' +
                                 'left: ' + this.L + 'px; top: ' + this.T + 'px; z-index: ' + this.Zindex + '; opacity: ' + (this.Opacity / 100) + ';">\n'+
                                 '<audio controls id="GAudio' + this.Id + 'aud" preload="metadata" style="width: inherit; height: inherit;">\n'+

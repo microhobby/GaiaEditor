@@ -119,7 +119,7 @@ function GImage(largura, altura, topo, esquerda, visivel)
             display = "block";
 
         code = '\n<div id="img' + this.Id + '" \n' +
-                ' class="badWolf" style="display:' + display + '; position: ' + position + '; padding: ' + this.P + 'px; \n' +
+                ' class="GImage badWolf" style="display:' + display + '; position: ' + position + '; padding: ' + this.P + 'px; \n' +
                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; background-color: ' + this.Cb + '; float: '
                 + (this.getPrivateAttrs()[0].Data !== "" ? this.getPrivateAttrs()[0].Data + ";" : 'none;') + ' \n' +
                 ' width: ' + width + '; height: ' + height + ';\n' +

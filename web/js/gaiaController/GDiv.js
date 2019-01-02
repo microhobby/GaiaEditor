@@ -104,7 +104,7 @@ function GDiv(largura, altura, topo, esquerda, visivel)
                 }
                 
                 code =	'\n<div id="div' + this.Id + '"\n' +
-                                                ' class="badWolf" style="display:' + display + '; position: absolute; \n' +
+                                                ' class="GDiv badWolf" style="display:' + display + '; position: absolute; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + this.W + 'px; \n' +
                                                 ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +

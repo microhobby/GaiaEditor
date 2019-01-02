@@ -76,7 +76,7 @@ function GText(largura, altura, topo, esquerda, visivel)
                         subline = "normal";
                 
                 code =	'\n<div id="text' + this.Id + '"\n' +
-                                                ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
+                                                ' class="GText badWolf" style="display:' + display + '; position: ' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + this.H + 'px; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +
