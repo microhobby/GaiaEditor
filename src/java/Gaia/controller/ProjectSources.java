@@ -942,9 +942,12 @@ public class ProjectSources
                 if ((field.Type.equals("TEXT")) || (field.Type.equals("NUMERIC")))
                 {
                     js += "this." + field.Name + " = " + (field.Type.equals("TEXT") ? "\"\"" : "2147483647") + ";\n";
-                    js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
-                    js += "this.set" + field.Name + " = function(arg){ this." + field.Name + " = arg; };\n";
-                } else //relation
+                    
+                    /* new version of MproEntity create getters and setters already */
+                    //js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
+                    //js += "this.set" + field.Name + " = function(arg){ this." + field.Name + " = arg; };\n";
+                } 
+                else //relation
                 {
                     if (!entitiesInUse.containsKey(field.Type))
                     {
@@ -955,18 +958,24 @@ public class ProjectSources
                     }
 
                     joined = true;
-                    js += "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = new Array();\n";
-                    js += "this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + ";\n";
+                    
+                    /* new version use annotations */
+                    js += "//@Reference<" + field.Type + ">\n";
+                    js += "this." + field.Name + " = [];\n";
+                    
+                    //js += "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = new Array();\n";
+                    //js += "this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + ";\n";
 
-                    js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
-                    js += "this.set" + field.Name + " = function(arg){ this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = arg;\n"
-                            + " this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + "; };\n";
+                    /* new version of MproEntity create getters and settrs already */
+                    //js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
+                    //js += "this.set" + field.Name + " = function(arg){ this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = arg;\n"
+                    //        + " this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + "; };\n";
 
                     refCount++;
                 }
             }
 
-            js += "this.class = '" + entity.Name + "';\n";
+            //js += "this.class = '" + entity.Name + "';\n";
             js += "MproEntity.call(this);\n";
             js += "}\n "; /*+ entity.Name + ".prototype = new MproEntity();\n";
                         
@@ -1088,7 +1097,7 @@ public class ProjectSources
                     + "	<script src=\"../lib/MproEntity/EntityTables.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../lib/MproEntity/EntityUserAuth.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../lib/MproEntity/EntityUserRule.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../lib/MproEntity/FormCreator.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../lib/MproEntity/FormCreator.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../lib/MproEntity/idbstore.min.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../lib/MproEntity/IDBLauDB.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../lib/MproEntity/InternalEnviroment.js\" type=\"text/javascript\"> </script>\n"
@@ -1116,7 +1125,7 @@ public class ProjectSources
                     + "	<script src=\"../js/gaiaView/MproChart.js\" type=\"text/javascript\"> </script>\n"
                     //+ "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n"
                     //+ "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n"
-                    //+ "	<script src=\"../js/gaiaView/FormCreator.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../js/gaiaView/FormCreator.js\" type=\"text/javascript\"> </script>\n"
                     + "	</script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n<script src=\"../dist/js/summernote.min.js\"></script>\n"
                     + "	<script src=\"../js/looper.js\" type=\"text/javascript\"> </script>\n"
                     + " <script src=\"../js/gaiaView/FileUpload.js\" type=\"text/javascript\"> </script>\n"
