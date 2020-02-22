@@ -68,7 +68,7 @@ var modelTypes = new ItemModel();
 var objs = new ItemModel();
 var verifica = null;
 //var slice_url = "http://gaia.mpro3.com.br/system/";
-var slice_url = "http://localhost:8084/GaiaEditor/system/";
+var slice_url = "http://localhost:8085/GaiaEditor/system/";
 //var slice_url = "http://nut.unifenas.br:8080/GaiaEditor/system/";
 //var slice_url = "http://mpro3.com.br/java/system/";
 var ajax = new Ajax();
@@ -475,6 +475,7 @@ $(document).ready(function ()
     modelFonts.add(new Item("Oleo Script", "Oleo Script"));
     modelFonts.add(new Item("PT Serif", "PT Serif"));
     modelFonts.add(new Item("Ubuntu", "Ubuntu"));
+    modelFonts.add(new Item("Roboto", "Roboto"));
 
     objEventosTipo.setElement("#objEventosTipo");
     objEventosTipo.setModel(modelEventos);

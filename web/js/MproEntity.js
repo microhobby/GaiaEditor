@@ -53,7 +53,7 @@ function MproEntity()
             MproEntity.scriptQuery = "http://gaia.mpro3.com.br/system/Query.jsp";*/
             /*MproEntity.scriptExecution = "http://localhost:8084/GaiaEditor/system/Executions.jsp";
             MproEntity.scriptQuery = "http://localhost:8084/GaiaEditor/system/Query.jsp";*/
-            MproEntity.serverUrl = "http://localhost:8084/GaiaEditor/system/server";
+            MproEntity.serverUrl = "http://localhost:8085/GaiaEditor/system/server";
             MproEntity.serverTech = ".jsp";
         }
         else

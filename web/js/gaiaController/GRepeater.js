@@ -68,7 +68,7 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
         
         this.setType = function(type)
         {
-                this.getPrivateAttrs()[0].Data = type;
+                this.getPrivateAttrs()[1].Data = type;
                 $(this.JqueryId).css("overflow", type);
         };
         
@@ -130,7 +130,7 @@ function GRepeater(largura, altura, topo, esquerda, visivel)
                 }
                 
                 code =	'\n<div id="divStatic' + this.Id + '"\n' +
-                                                ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
+                                                ' class="GReapeater badWolf" style="display:' + display + '; position: ' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
                                                 ' background-color: ' + this.Cb + '; ' +

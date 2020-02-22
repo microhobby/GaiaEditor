@@ -153,7 +153,7 @@ function GComboBox(largura, altura, topo, esquerda, visivel)
                         subline = "normal";
                 
                 code =	'\n<div id="GComboBox' + this.Id + '"\n' +
-                                                ' class="badWolf" style="display:' + display + '; position:' + position + '; \n' +
+                                                ' class="GComboBox badWolf" style="display:' + display + '; position:' + position + '; \n' +
                                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                                                 ' height: ' + height + '; padding: ' + this.P + 'px;\n' + 
                                                 /*' background-color: ' + this.Cb + '; ' +*/

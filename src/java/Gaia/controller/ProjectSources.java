@@ -308,7 +308,8 @@ public class ProjectSources
         ret += "function ____loadMidias(){\n " + calls + "\n";
         ret
                 += "if(__total___Events__ !== 0)\n"
-                + "{ showLoading(); }\n";
+                + "{ showLoading(); }\n" +
+                "else { pageIn('1'); }\n";
 
         return ret + "\n}\n";
     }
@@ -319,13 +320,19 @@ public class ProjectSources
         switch (projeto.layout.get(0).Tipo)
         {
             case 2: // EAD
-                ret += "var __eadType = true;\n";
+                ret += "var __eadType = true;\n" +
+                        "var __webType = false;\n" +
+                        "var __nullType = false;\n";
                 break;
             case 5: // WEB
-                ret += "var __webType = true;\n";
+                ret += "var __eadType = false;\n" +
+                        "var __webType = true;\n" +
+                        "var __nullType = false;\n";
                 break;
             case 6:
-                ret += "var __nullType = true;\n";
+                ret += "var __eadType = false;\n" +
+                        "var __webType = false;\n" +
+                        "var __nullType = true;\n";
                 break;
         }
         return ret;
@@ -935,9 +942,12 @@ public class ProjectSources
                 if ((field.Type.equals("TEXT")) || (field.Type.equals("NUMERIC")))
                 {
                     js += "this." + field.Name + " = " + (field.Type.equals("TEXT") ? "\"\"" : "2147483647") + ";\n";
-                    js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
-                    js += "this.set" + field.Name + " = function(arg){ this." + field.Name + " = arg; };\n";
-                } else //relation
+                    
+                    /* new version of MproEntity create getters and setters already */
+                    //js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
+                    //js += "this.set" + field.Name + " = function(arg){ this." + field.Name + " = arg; };\n";
+                } 
+                else //relation
                 {
                     if (!entitiesInUse.containsKey(field.Type))
                     {
@@ -948,18 +958,24 @@ public class ProjectSources
                     }
 
                     joined = true;
-                    js += "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = new Array();\n";
-                    js += "this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + ";\n";
+                    
+                    /* new version use annotations */
+                    js += "//@Reference<" + field.Type + ">\n";
+                    js += "this." + field.Name + " = [];\n";
+                    
+                    //js += "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = new Array();\n";
+                    //js += "this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + ";\n";
 
-                    js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
-                    js += "this.set" + field.Name + " = function(arg){ this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = arg;\n"
-                            + " this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + "; };\n";
+                    /* new version of MproEntity create getters and settrs already */
+                    //js += "this.get" + field.Name + " = function(){ return this." + field.Name + "; };\n";
+                    //js += "this.set" + field.Name + " = function(arg){ this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + " = arg;\n"
+                    //        + " this." + field.Name + " = " + "this.Entity" + entitiesInUse.get(field.Type) + "" + field.Type + "; };\n";
 
                     refCount++;
                 }
             }
 
-            js += "this.class = '" + entity.Name + "';\n";
+            //js += "this.class = '" + entity.Name + "';\n";
             js += "MproEntity.call(this);\n";
             js += "}\n "; /*+ entity.Name + ".prototype = new MproEntity();\n";
                         
@@ -1032,6 +1048,7 @@ public class ProjectSources
                     + "	<!--<![endif]-->\n"
                     + "<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />\n"
                     + "<link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />\n"
+                    + "<link href=\"https://fonts.googleapis.com/css?family=Roboto\" rel=\"stylesheet\">\n"
                     + " <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />\n"
                     + "<link href='https://fonts.googleapis.com/css?family=PT Serif' rel='stylesheet' type='text/css' />\n"
                     + "<link href='https://fonts.googleapis.com/css?family=Creepster' rel='stylesheet' type='text/css' />\n"
@@ -1058,23 +1075,56 @@ public class ProjectSources
                     + "    <script type=\"text/javascript\" src=\"../js/jquerycsstransform.js\"> </script>\n"
                     + "	<script type=\"text/javascript\" src=\"../js/rotate3Di.js\"> </script>\n"
                     + "    <script type=\"text/javascript\" src=\"../js/iscroll.js\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/Ajax.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/Ajax.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Ajax.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../js/gaiaController/Thread.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaController/DBsource.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaController/DBsource.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../lib/app.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/MproEntity.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/MproEntity.js\" type=\"text/javascript\"> </script>\n"
+                    /* new MproEntity lib */
+                    + "	<script src=\"../lib/MproEntity/List.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Lista.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/MproEntity.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/MproEntityAnnotations.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/MproEntityDefconfigs.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../lib/MproEntity/MproEntityPlugins.min.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/MproEntityStatics.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/CreateTable.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/DataRecord.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/DataReference.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/DataRequest.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/DBsource.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/EntityTables.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/EntityUserAuth.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/EntityUserRule.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../lib/MproEntity/FormCreator.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/idbstore.min.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/IDBLauDB.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/InternalEnviroment.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Item.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/ItemModel.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/LauDB.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Logic.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/IDBLauDB.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Order.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Query.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Repeater.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/SQLBuilder.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Table.js\" type=\"text/javascript\"> </script>\n"
+                    /* new MproEntity lib */
                     + "	<script src=\"../js/MproEntityRemote.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../js/MproEntityRelation.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../js/UserEntities.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/Lista.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/List.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/Combobox.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/Repeater.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/Table.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/Lista.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/List.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/Combobox.js\" type=\"text/javascript\"> </script>\n"
+                    + "	<script src=\"../lib/MproEntity/Combobox.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/Repeater.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/Table.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../js/Chart.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../js/gaiaView/MproChart.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n"
-                    + "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/Item.js\" type=\"text/javascript\"> </script>\n"
+                    //+ "	<script src=\"../js/gaiaView/ItemModel.js\" type=\"text/javascript\"> </script>\n"
                     + "	<script src=\"../js/gaiaView/FormCreator.js\" type=\"text/javascript\"> </script>\n"
                     + "	</script>\n <script src=\"../dist/js/bootstrap.min.js\"></script>\n<script src=\"../dist/js/summernote.min.js\"></script>\n"
                     + "	<script src=\"../js/looper.js\" type=\"text/javascript\"> </script>\n"

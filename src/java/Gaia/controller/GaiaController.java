@@ -29,7 +29,7 @@ import org.bson.types.ObjectId;
 public class GaiaController
 {
     public static String PHP_CONTEXT = "/var/www";
-    public static String PHP_URL = "http://localhost:8084/GaiaEditor";
+    public static String PHP_URL = "http://localhost:8085/GaiaEditor";
 
     /*public static String PHP_CONTEXT = "C:\\Data\\domains\\mpro3.com.br\\wwwroot";
         public static String PHP_URL = "http://mpro3.com.br";*/

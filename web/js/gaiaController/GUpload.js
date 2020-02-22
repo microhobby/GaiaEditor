@@ -90,7 +90,7 @@ function GUpload(largura, altura, topo, esquerda, visivel)
                 
                 
                 code =    '\n<div id="cont_bt' + this.Id +'"\n' +
-                                ' class="badWolf fileinput-button" style="display: ' + display + '; position:' + position + ';\n' +
+                                ' class="GUpload badWolf fileinput-button" style="display: ' + display + '; position:' + position + ';\n' +
                                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; ' +
                                 ' height: ' + height + '; width: ' + width + '; \n' +
                                 ' padding: ' + this.P + "px; \n" +

@@ -19,7 +19,7 @@
 
     // primeiro acesso
     /*User u = new User();
-        u.UserName = "matheus";
+        u.UserName = "jujubas";
         u.Nome = "Matheus Castello";
         u.Email = "matheus@mpro3.com.br";
         u.DataNascimento = "14/11/1990";
@@ -83,6 +83,7 @@
                 <link rel="stylesheet" href="../css/exMain.css" type="text/css" />
                 <!--<![endif]-->
                 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
                 <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css' />
                 <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css' />
                 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css' />

@@ -61,7 +61,7 @@ function KeyBoardUtils()
                                         _eventsY[i]();
                                 }
                         }
-                        else if(event.ctrlKey && (event.keyCode === 88)) // new between pages
+                        else if(event.ctrlKey && (event.keyCode === 88)) // ctrl-x copy between pages
                         {
                                 console.log("NEW");
                                 for(var i = 0; i < _eventsNew.length; i++)

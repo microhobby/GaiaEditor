@@ -148,7 +148,7 @@ function GTable(largura, altura, topo, esquerda, visivel)
             subline = "normal";
 
         code = '\n<div id="GTable' + this.Id + '"\n' +
-                ' class="badWolf" style="display:' + display + '; position: ' + position + '; \n' +
+                ' class="GTable badWolf" style="display:' + display + '; position: ' + position + '; \n' +
                 ' left: ' + this.L + 'px; top: ' + this.T + 'px; width: ' + width + '; \n' +
                 ' height: ' + height + '; padding: ' + this.P + 'px;\n' +
                 ' background-color: ' + this.Cb + '; ' +

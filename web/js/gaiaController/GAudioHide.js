@@ -77,7 +77,7 @@ function GAudioHide(largura, altura, topo, esquerda, visivel)
                         what = '<img src="../img/ui-audio.png" ondragstart="return false" onselectstart="return false"> </img>';
                 }
 
-                code =	'<div id="Haudio' + this.Id + '" class="badWolf" style="width: 1px; height: 1px; \n' +
+                code =	'<div id="Haudio' + this.Id + '" class="GAudioHide badWolf" style="width: 1px; height: 1px; \n' +
                                 'background-color:' + bgColor + '; display: block; position: absolute;\n' +
                                 'left: ' + this.L + 'px; top: ' + this.T + 'px; z-index: ' + this.Zindex + '; opacity: ' + (!flag ? "0.001" : "1") + ';">\n'+
                                 '<audio id="Haudio' + this.Id + 'aud" preload="auto" style="width: 1px; height:1px;">\n'+
