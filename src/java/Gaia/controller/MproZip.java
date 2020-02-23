@@ -71,7 +71,7 @@ public class MproZip
                                                 } catch (IOException ex) {
                                                         Logger.getLogger(MproZip.class.getName()).log(Level.SEVERE, null, ex);
                                                 }
-                                                FileInputStream in = new FileInputStream(source + file);
+                                                FileInputStream in = new FileInputStream(source + "/" + file);
                                                 int len;
                                                 while((len = in.read(buffer)) > 0)
                                                 {
