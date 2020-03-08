@@ -89,6 +89,7 @@ function escurece(ix)
 {
     if (ix)
     {
+        disableSwipe();
         if (ieHell())
         {
             $('#blackOut').show();
@@ -98,6 +99,7 @@ function escurece(ix)
         }
     } else
     {
+        enableSwipe();
         if (ieHell())
         {
             $('#blackOut').hide();
@@ -390,14 +392,15 @@ function instantState(jqueryId, objDest)
 function Anima(jqueryId, objDest, tempo, call)
 {
     //$(jqueryId).css("background-color", (objDest.Cb === "transparent" ? "rgba(255, 255, 255, 255)" : objDest.Cb));
-    $(jqueryId).rotate(
+    /*$(jqueryId).rotate(
             {
                 angle: (parseFloat($(jqueryId).getRotateAngle()) ? parseFloat($(jqueryId).getRotateAngle()) : 0),
                 animateTo: objDest.A,
                 duration: tempo,
                 callback: null
             }
-    );
+    );*/
+    
     if ((objDest.Cb === "transparent" ? true : false))
     {
         $(jqueryId).animate(
